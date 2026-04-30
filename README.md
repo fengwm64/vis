@@ -2,7 +2,7 @@
 
 一个基于 Web 的交互式算法可视化平台，通过动画直观展示经典算法的运行过程。
 
-🔗 **在线预览**: [https://algo-vis.pages.dev](https://algo-vis.pages.dev) *(部署后替换)*
+🔗 **在线预览**: [https://alg.102465.xyz/](https://alg.102465.xyz/) *(部署后替换)*
 
 ---
 
