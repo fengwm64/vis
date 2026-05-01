@@ -1,6 +1,9 @@
 import React from 'react'
-import { Routes, Route, Link, useLocation } from 'react-router-dom'
+import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom'
 import PageRankProcessAnimation from './animations/pagerank_process_animation'
+import Submit from './pages/Submit'
+import Status from './pages/Status'
+import { Button } from './components/ui/button'
 
 const animations = [
   {
@@ -61,9 +64,20 @@ function Footer() {
 }
 
 function Home() {
+  const navigate = useNavigate()
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
       <div className="mx-auto max-w-5xl px-6 py-16 flex-1 w-full">
+        <div className="mb-10 flex justify-end gap-3">
+          <Button variant="outline" onClick={() => navigate('/status')}>
+            查看自动开发进度
+          </Button>
+          <Button onClick={() => navigate('/submit')}>
+            提交算法需求
+          </Button>
+        </div>
+
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
             算法可视化
@@ -137,6 +151,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/submit" element={<Submit />} />
+      <Route path="/status" element={<Status />} />
       {animations.map((item) => (
         <Route
           key={item.id}

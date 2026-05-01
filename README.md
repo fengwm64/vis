@@ -1,8 +1,31 @@
 # 算法可视化 | Algorithm Visualizations
 
-一个基于 Web 的交互式算法可视化平台，通过动画直观展示经典算法的运行过程。
+一个多 Agent 驱动的算法可视化项目：网站提供交互式算法动画，也提供需求入口，让 PM、算法工程师、前端可视化专家、QA 四个 Claude Code Agent 自动完成“接需求 -> 写 PRD -> 写算法 -> 做可视化 -> 测试 -> 发 PR”的开发流程。
 
 🔗 **在线预览**: [https://alg.102465.xyz/](https://alg.102465.xyz/)
+
+---
+
+## 多 Agent 自动开发
+
+自动开发链路：
+
+```text
+/submit 表单
+  -> Cloudflare Pages Function 创建 auto-dev Issue
+  -> GitHub Actions 监听 issue.labeled
+  -> scripts/start.sh 启动 Claude Code
+  -> PM / algorithm / frontend / QA 四个 agent 点对点协作
+  -> QA 通过后创建 auto-dev/issue-N 分支和 PR
+```
+
+关键设计：
+
+- **无后端服务**：网站仍是 Cloudflare Pages SPA，API 只用 Pages Functions。
+- **无中央 orchestrator agent**：入口脚本只启动 PM，后续由 agent 使用 Task 工具非线性交接。
+- **三路可观测性**：`.auto-dev/status/issue-N.json`、Issue sticky comment、网站 `/status` 页面。
+- **实时通知**：阶段切换、handoff、失败会通过飞书机器人广播。
+- **LLM 调用统一入口**：所有模型调用都由 Claude Code 完成，workflow 通过 MiMo Anthropic 兼容网关注入 `ANTHROPIC_BASE_URL`。
 
 ---
 
@@ -13,6 +36,7 @@
 - **样式**: [Tailwind CSS](https://tailwindcss.com/)
 - **动画**: [Framer Motion](https://www.framer.com/motion/)
 - **部署**: [Cloudflare Pages](https://pages.cloudflare.com/)
+- **自动开发**: GitHub Actions + Claude Code Agents + Cloudflare Pages Functions
 
 ---
 
@@ -58,16 +82,34 @@ npm run preview
 ```
 ├── public/                        # 静态资源
 │   └── _redirects                 # Cloudflare Pages SPA 路由回退规则
+├── functions/
+│   └── api/                       # Cloudflare Pages Functions
+│       ├── submit.js              # 自动开发需求提交接口
+│       └── status.js              # 自动开发状态聚合接口
+├── .claude/
+│   ├── agents/                    # Claude Code 子 agent 定义
+│   └── context/                   # 自动开发团队共享上下文
+├── .github/
+│   └── workflows/
+│       └── auto-dev.yml           # auto-dev Issue 触发的自动开发 workflow
+├── .auto-dev/
+│   └── status/                    # 自动开发状态 JSON，随 PR 入仓
+├── scripts/
+│   ├── start.sh                   # 自动开发入口，启动 PM agent
+│   ├── update-status.sh           # 更新 status JSON 和 Issue sticky comment
+│   └── feishu.sh                  # 飞书状态与 handoff 通知
 ├── src/
 │   ├── main.jsx                   # 应用入口
 │   ├── App.jsx                    # 根组件（首页 + 路由配置）
 │   ├── index.css                  # Tailwind 基础样式
+│   ├── pages/                     # 站点页面
+│   │   ├── Submit.jsx             # 自动开发需求入口
+│   │   └── Status.jsx             # 自动开发状态总览
 │   ├── components/ui/             # 通用 UI 组件
 │   │   ├── button.jsx             # Button 组件
 │   │   └── card.jsx               # Card 组件
 │   └── animations/                # 算法动画页面
 │       └── pagerank_process_animation.jsx
-├── animations/                    # 原始动画组件备份
 ├── index.html                     # HTML 入口
 ├── vite.config.js                 # Vite 配置
 ├── tailwind.config.js             # Tailwind CSS 配置
@@ -120,36 +162,119 @@ npm run preview
 
 ---
 
-## 部署
+## 部署教程
 
-### 部署到 Cloudflare Pages
+### 1. GitHub 仓库准备
 
-#### 方式一：Git 集成（推荐）
+1. 确认仓库已推送到 GitHub，例如 `fengwm64/vis`。
+2. 创建 Issue label：`auto-dev`。
+3. 在仓库设置中启用 Actions：
+   - `Settings -> Actions -> General`
+   - 确认允许 workflow 运行。
+   - `Workflow permissions` 选择 `Read and write permissions`，并允许 GitHub Actions 创建 PR。
 
-1. 将代码推送到 GitHub / GitLab
-2. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/) → **Pages**
-3. 点击「创建项目」→ 连接 Git 仓库
+### 2. 配置 GitHub Actions Secrets
+
+进入 `Settings -> Secrets and variables -> Actions -> New repository secret`，添加：
+
+| Secret | 说明 |
+| --- | --- |
+| `ANTHROPIC_BASE_URL` | MiMo Anthropic 兼容网关地址，例如 `https://token-plan-cn.xiaomimimo.com/anthropic` |
+| `ANTHROPIC_API_KEY` | MiMo 网关 API Key |
+| `ANTHROPIC_MODEL` | MiMo 模型 ID，例如 `MiMo-V2.5-Pro` 或网关映射 ID |
+| `FEISHU_WEBHOOK` | 飞书自定义机器人 webhook |
+
+`GH_TOKEN` 不需要手动配置，workflow 使用 GitHub Actions 内置 token。
+
+### 3. 创建 GitHub Token 给 Cloudflare Pages Function
+
+`/api/submit` 需要从网站创建 GitHub Issue，因此 Cloudflare 侧需要一个 GitHub fine-grained token：
+
+1. 打开 GitHub `Settings -> Developer settings -> Personal access tokens -> Fine-grained tokens`。
+2. 选择目标仓库 `fengwm64/vis`。
+3. Repository permissions 至少开启：
+   - `Issues: Read and write`
+   - `Metadata: Read-only`
+4. 生成 token，后续填到 Cloudflare Pages 环境变量 `GITHUB_TOKEN`。
+
+### 4. 部署 Cloudflare Pages
+
+推荐使用 Git 集成：
+
+1. 登录 Cloudflare Dashboard。
+2. 进入 `Workers & Pages -> Pages -> Create a project`。
+3. 连接 GitHub 仓库。
 4. 构建设置：
-   - **构建命令**: `npm run build`
-   - **输出目录**: `dist`
-5. 保存并部署
+   - Framework preset: `Vite`
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+   - Root directory: 留空
+5. 环境变量添加：
 
-#### 方式二：Wrangler CLI
+| Variable | 作用 |
+| --- | --- |
+| `GITHUB_TOKEN` | Pages Function 创建 Issue 使用的 fine-grained token |
+
+6. 保存并部署。
+
+Cloudflare Pages 会自动识别 `functions/api/submit.js` 和 `functions/api/status.js`：
+
+- `POST /api/submit`：创建带 `auto-dev` label 的 GitHub Issue。
+- `GET /api/status`：聚合自动开发状态供 `/status` 页面轮询。
+
+> `public/_redirects` 已配置 SPA 路由回退规则，确保刷新页面不会 404；Cloudflare Pages Functions 的 `/api/*` 路径优先级高于 SPA fallback。
+
+### 5. 验证普通站点部署
+
+本地先跑：
 
 ```bash
-# 安装 Wrangler
+npm ci
+npm run build
+```
+
+部署后检查：
+
+- 首页能打开。
+- `/animations/pagerank` 能打开。
+- `/submit` 能打开表单。
+- `/status` 能打开总览页。
+
+### 6. 验证自动开发链路
+
+1. 访问 `/submit`。
+2. 提交一个小需求，例如“二分查找可视化”。
+3. 确认 GitHub 出现新 Issue，并带 `auto-dev` label。
+4. 确认 GitHub Actions 自动启动 `Auto Dev Agents` workflow。
+5. 在飞书群里确认收到 `[#issue]` 前缀的状态消息。
+6. 等待 workflow 结束后检查：
+   - Issue sticky comment 有状态表。
+   - PR 分支名类似 `auto-dev/issue-N`。
+   - PR 中包含 `.auto-dev/status/issue-N.json`、`.auto-dev/prd.md`、`.auto-dev/qa-report.md` 和动画代码。
+   - `/status` 页面能看到当前阶段和 PR 链接。
+
+### 7. 常见问题
+
+- 如果 `/api/submit` 返回 GitHub 错误，先确认 Cloudflare Pages 的 `GITHUB_TOKEN` 是否存在，且 token 对目标仓库有 `Issues: Read and write` 权限。
+- 如果 Issue 创建失败并提示 label 相关错误，确认仓库中已存在 `auto-dev` label。
+- 如果 workflow 没启动，确认 Issue 是被加上 `auto-dev` label 后触发的，且 Actions 已启用。
+- 如果 Claude Code 无法调用模型，确认 GitHub Secrets 中的 `ANTHROPIC_BASE_URL`、`ANTHROPIC_API_KEY`、`ANTHROPIC_MODEL` 已配置。
+- 如果没有飞书消息，确认 `FEISHU_WEBHOOK` 是 GitHub Actions Secret，而不是 Cloudflare Pages 环境变量。
+- 如果 `/status` 暂时看不到 PR 状态，先看 Issue sticky comment；`/status` 会依次尝试 main 分支、`auto-dev/issue-N` 分支和 sticky comment。
+
+### 8. Wrangler 手动部署
+
+如需不用 Git 集成，也可以手动部署：
+
+```bash
+npm ci
+npm run build
 npm install -g wrangler
-
-# 登录 Cloudflare
 wrangler login
-
-# 部署
 wrangler pages deploy dist
 ```
 
-> `public/_redirects` 已配置 SPA 路由回退规则，确保刷新页面不会 404。
-
----
+手动部署后仍需在 Cloudflare Pages 项目里配置 `GITHUB_TOKEN`，否则 `/api/submit` 无法创建 Issue。
 
 ## 已有可视化
 

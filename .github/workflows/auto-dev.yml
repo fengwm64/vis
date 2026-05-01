@@ -1,0 +1,45 @@
+name: Auto Dev Agents
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  auto-dev:
+    if: github.event.label.name == 'auto-dev'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+      ISSUE_TITLE: ${{ github.event.issue.title }}
+      ISSUE_BODY: ${{ github.event.issue.body }}
+      ISSUE_URL: ${{ github.event.issue.html_url }}
+      ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ANTHROPIC_MODEL: ${{ secrets.ANTHROPIC_MODEL }}
+      FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Claude Code
+        run: npm i -g @anthropic-ai/claude-code
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run auto-dev agent team
+        run: bash scripts/start.sh
