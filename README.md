@@ -184,7 +184,7 @@ npm run preview
 | `ANTHROPIC_MODEL` | MiMo 模型 ID，推荐填 `mimo-v2.5-pro`。注意这是接口 ID，不是展示名 `MiMo-V2.5-Pro` |
 | `FEISHU_WEBHOOK` | 飞书自定义机器人 webhook |
 
-`GH_TOKEN` 不需要手动配置，workflow 使用 GitHub Actions 内置 token。workflow 会把 `ANTHROPIC_API_KEY` 同时映射成 Claude Code 使用的 `ANTHROPIC_AUTH_TOKEN`，并把 Sonnet / Opus / Haiku 默认模型都指向同一个 MiMo 模型。
+`GH_TOKEN` 不需要手动配置，workflow 使用 GitHub Actions 内置 token。workflow 会把 `ANTHROPIC_API_KEY` 同时映射成 Claude Code 使用的 `ANTHROPIC_AUTH_TOKEN`。`scripts/start.sh` 会把 Sonnet / Opus / Haiku / Subagent 默认模型都指向同一个 MiMo 模型，并在日志中打印安全诊断信息。
 
 ### 3. 创建 GitHub Token 给 Cloudflare Pages Function
 
@@ -259,6 +259,8 @@ npm run build
 - 如果 Issue 创建失败并提示 label 相关错误，确认仓库中已存在 `auto-dev` label。
 - 如果 workflow 没启动，确认 Issue 是被加上 `auto-dev` label 后触发的，且 Actions 已启用。
 - 如果 Claude Code 报 `Not supported model ***`，把 GitHub Secret `ANTHROPIC_MODEL` 改成小写接口 ID，例如 `mimo-v2.5-pro`。`MiMo-V2.5-Pro` 是展示名，网关会拒绝。
+- 如果日志里没有 `Claude Code environment diagnostics` 分组，说明 workflow 还没有运行到包含诊断逻辑的最新提交。
+- `Claude Code environment diagnostics` 只打印 `ANTHROPIC_BASE_URL` 的 protocol / host / path，以及 token 是否存在，不会打印 API Key。
 - 如果 Claude Code 无法调用模型，确认 GitHub Secrets 中的 `ANTHROPIC_BASE_URL`、`ANTHROPIC_API_KEY`、`ANTHROPIC_MODEL` 已配置；Token Plan 用户的 Base URL 以订阅控制台显示为准。
 - 如果没有飞书消息，确认 `FEISHU_WEBHOOK` 是 GitHub Actions Secret，而不是 Cloudflare Pages 环境变量。
 - 如果 `/status` 暂时看不到 PR 状态，先看 Issue sticky comment；`/status` 会依次尝试 main 分支、`auto-dev/issue-N` 分支和 sticky comment。

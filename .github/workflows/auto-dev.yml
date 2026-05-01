@@ -23,10 +23,7 @@ jobs:
       ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_API_KEY }}
-      ANTHROPIC_MODEL: ${{ secrets.ANTHROPIC_MODEL || 'mimo-v2.5-pro' }}
-      ANTHROPIC_DEFAULT_SONNET_MODEL: ${{ secrets.ANTHROPIC_MODEL || 'mimo-v2.5-pro' }}
-      ANTHROPIC_DEFAULT_OPUS_MODEL: ${{ secrets.ANTHROPIC_MODEL || 'mimo-v2.5-pro' }}
-      ANTHROPIC_DEFAULT_HAIKU_MODEL: ${{ secrets.ANTHROPIC_MODEL || 'mimo-v2.5-pro' }}
+      ANTHROPIC_MODEL: ${{ secrets.ANTHROPIC_MODEL }}
       CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
       FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
 

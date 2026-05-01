@@ -15,7 +15,14 @@ if [[ -z "${ANTHROPIC_AUTH_TOKEN:-}" && -n "${ANTHROPIC_API_KEY:-}" ]]; then
   export ANTHROPIC_AUTH_TOKEN="$ANTHROPIC_API_KEY"
 fi
 
-ANTHROPIC_MODEL="${ANTHROPIC_MODEL:-mimo-v2.5-pro}"
+ANTHROPIC_BASE_URL="$(printf '%s' "${ANTHROPIC_BASE_URL:-}" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+ANTHROPIC_BASE_URL="${ANTHROPIC_BASE_URL%/}"
+ANTHROPIC_MODEL="$(printf '%s' "${ANTHROPIC_MODEL:-mimo-v2.5-pro}" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+ANTHROPIC_MODEL="${ANTHROPIC_MODEL%\"}"
+ANTHROPIC_MODEL="${ANTHROPIC_MODEL#\"}"
+ANTHROPIC_MODEL="${ANTHROPIC_MODEL%\'}"
+ANTHROPIC_MODEL="${ANTHROPIC_MODEL#\'}"
+
 case "$ANTHROPIC_MODEL" in
   MiMo-V2.5-Pro|MIMO-V2.5-PRO|XiaomiMiMo/MiMo-V2.5-Pro|mimo-v2.5-pro)
     ANTHROPIC_MODEL="mimo-v2.5-pro"
@@ -28,10 +35,16 @@ case "$ANTHROPIC_MODEL" in
     ;;
 esac
 
+export ANTHROPIC_BASE_URL
 export ANTHROPIC_MODEL
 export ANTHROPIC_DEFAULT_SONNET_MODEL="$ANTHROPIC_MODEL"
 export ANTHROPIC_DEFAULT_OPUS_MODEL="$ANTHROPIC_MODEL"
 export ANTHROPIC_DEFAULT_HAIKU_MODEL="$ANTHROPIC_MODEL"
+export ANTHROPIC_SMALL_FAST_MODEL="$ANTHROPIC_MODEL"
+export CLAUDE_CODE_SUBAGENT_MODEL="$ANTHROPIC_MODEL"
+export ANTHROPIC_CUSTOM_MODEL_OPTION="$ANTHROPIC_MODEL"
+export ANTHROPIC_CUSTOM_MODEL_OPTION_NAME="MiMo ${ANTHROPIC_MODEL}"
+export ANTHROPIC_CUSTOM_MODEL_OPTION_DESCRIPTION="MiMo model routed through Anthropic-compatible gateway"
 export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC="${CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC:-1}"
 
 if [[ -z "${ANTHROPIC_BASE_URL:-}" || -z "${ANTHROPIC_AUTH_TOKEN:-}" ]]; then
@@ -39,7 +52,34 @@ if [[ -z "${ANTHROPIC_BASE_URL:-}" || -z "${ANTHROPIC_AUTH_TOKEN:-}" ]]; then
   exit 2
 fi
 
-echo "Claude Code model: ${ANTHROPIC_MODEL}"
+node --input-type=module <<'NODE'
+const baseUrl = process.env.ANTHROPIC_BASE_URL || ''
+let parsed = null
+
+try {
+  parsed = new URL(baseUrl)
+} catch {
+  parsed = null
+}
+
+console.log('::group::Claude Code environment diagnostics')
+console.log(`ANTHROPIC_BASE_URL set: ${baseUrl ? 'yes' : 'no'}`)
+console.log(`ANTHROPIC_BASE_URL protocol: ${parsed?.protocol || 'invalid'}`)
+console.log(`ANTHROPIC_BASE_URL host: ${parsed?.host || 'invalid'}`)
+console.log(`ANTHROPIC_BASE_URL path: ${parsed?.pathname || 'invalid'}`)
+console.log(`ANTHROPIC_AUTH_TOKEN set: ${process.env.ANTHROPIC_AUTH_TOKEN ? 'yes' : 'no'}`)
+console.log(`ANTHROPIC_API_KEY set: ${process.env.ANTHROPIC_API_KEY ? 'yes' : 'no'}`)
+console.log(`ANTHROPIC_MODEL normalized: ${process.env.ANTHROPIC_MODEL || '(empty)'}`)
+console.log(`ANTHROPIC_DEFAULT_SONNET_MODEL: ${process.env.ANTHROPIC_DEFAULT_SONNET_MODEL || '(empty)'}`)
+console.log(`ANTHROPIC_DEFAULT_OPUS_MODEL: ${process.env.ANTHROPIC_DEFAULT_OPUS_MODEL || '(empty)'}`)
+console.log(`ANTHROPIC_DEFAULT_HAIKU_MODEL: ${process.env.ANTHROPIC_DEFAULT_HAIKU_MODEL || '(empty)'}`)
+console.log(`CLAUDE_CODE_SUBAGENT_MODEL: ${process.env.CLAUDE_CODE_SUBAGENT_MODEL || '(empty)'}`)
+console.log('::endgroup::')
+NODE
+
+if command -v claude >/dev/null 2>&1; then
+  claude --version || true
+fi
 
 mkdir -p ".auto-dev/incoming" ".auto-dev/status"
 
@@ -96,6 +136,7 @@ bash scripts/feishu.sh status submitted "新需求已进入 PM 评估：${ISSUE_
 SHARED_SYSTEM_PROMPT="$(cat .claude/context/team-charter.md && printf '\n\n' && cat .claude/context/auto-dev-context.md)"
 
 claude -p \
+  --model "$ANTHROPIC_MODEL" \
   --permission-mode acceptEdits \
   --append-system-prompt "$SHARED_SYSTEM_PROMPT" <<EOF_PROMPT
 你是算法可视化自动开发团队的入口进程。不要自己扮演中央 orchestrator。

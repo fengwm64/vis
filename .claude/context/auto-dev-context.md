@@ -34,6 +34,7 @@
   - `ANTHROPIC_AUTH_TOKEN`
   - `ANTHROPIC_MODEL`
 - MiMo 模型名必须使用接口 ID，例如 `mimo-v2.5-pro`，不要使用展示名 `MiMo-V2.5-Pro`。
+- `scripts/start.sh` 会在 GitHub Actions 日志中打印安全诊断信息，并强制用 `claude -p --model "$ANTHROPIC_MODEL"` 启动，避免 Claude Code 默认别名回退到 Anthropic 官方模型。
 - 飞书通知使用 `FEISHU_WEBHOOK`。
 - GitHub 操作使用 workflow 内置 `GH_TOKEN`。
 
