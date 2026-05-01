@@ -11,6 +11,36 @@ ISSUE_BODY="${ISSUE_BODY:-}"
 ISSUE_URL="${ISSUE_URL:-https://github.com/${GITHUB_REPOSITORY:-fengwm64/vis}/issues/$ISSUE_NUMBER}"
 export ISSUE_NUMBER ISSUE_TITLE ISSUE_BODY ISSUE_URL
 
+if [[ -z "${ANTHROPIC_AUTH_TOKEN:-}" && -n "${ANTHROPIC_API_KEY:-}" ]]; then
+  export ANTHROPIC_AUTH_TOKEN="$ANTHROPIC_API_KEY"
+fi
+
+ANTHROPIC_MODEL="${ANTHROPIC_MODEL:-mimo-v2.5-pro}"
+case "$ANTHROPIC_MODEL" in
+  MiMo-V2.5-Pro|MIMO-V2.5-PRO|XiaomiMiMo/MiMo-V2.5-Pro|mimo-v2.5-pro)
+    ANTHROPIC_MODEL="mimo-v2.5-pro"
+    ;;
+  MiMo-V2.5|MIMO-V2.5|XiaomiMiMo/MiMo-V2.5|mimo-v2.5)
+    ANTHROPIC_MODEL="mimo-v2.5"
+    ;;
+  MiMo-V2.5-Flash|MIMO-V2.5-FLASH|mimo-v2.5-flash)
+    ANTHROPIC_MODEL="mimo-v2.5-flash"
+    ;;
+esac
+
+export ANTHROPIC_MODEL
+export ANTHROPIC_DEFAULT_SONNET_MODEL="$ANTHROPIC_MODEL"
+export ANTHROPIC_DEFAULT_OPUS_MODEL="$ANTHROPIC_MODEL"
+export ANTHROPIC_DEFAULT_HAIKU_MODEL="$ANTHROPIC_MODEL"
+export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC="${CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC:-1}"
+
+if [[ -z "${ANTHROPIC_BASE_URL:-}" || -z "${ANTHROPIC_AUTH_TOKEN:-}" ]]; then
+  echo "ANTHROPIC_BASE_URL and ANTHROPIC_API_KEY/ANTHROPIC_AUTH_TOKEN are required for Claude Code." >&2
+  exit 2
+fi
+
+echo "Claude Code model: ${ANTHROPIC_MODEL}"
+
 mkdir -p ".auto-dev/incoming" ".auto-dev/status"
 
 INCOMING_PATH=".auto-dev/incoming/issue-${ISSUE_NUMBER}.md"

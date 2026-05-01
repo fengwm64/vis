@@ -31,7 +31,9 @@
 - workflow 通过以下环境变量接入 MiMo 网关：
   - `ANTHROPIC_BASE_URL`
   - `ANTHROPIC_API_KEY`
+  - `ANTHROPIC_AUTH_TOKEN`
   - `ANTHROPIC_MODEL`
+- MiMo 模型名必须使用接口 ID，例如 `mimo-v2.5-pro`，不要使用展示名 `MiMo-V2.5-Pro`。
 - 飞书通知使用 `FEISHU_WEBHOOK`。
 - GitHub 操作使用 workflow 内置 `GH_TOKEN`。
 
