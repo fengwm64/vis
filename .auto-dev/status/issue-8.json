@@ -1,0 +1,121 @@
+{
+  "issue": 8,
+  "title": "二分查找",
+  "current_stage": "pr_opened",
+  "current_owner": "qa",
+  "pinned_comment_id": 4362865367,
+  "pr_url": "https://github.com/fengwm64/vis/pull/10",
+  "history": [
+    {
+      "ts": "2026-05-02T03:58:15.858Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-8.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T03:58:36.405Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-8.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T03:59:42.916Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/prd.md",
+      "message": "PRD is ready. Binary search: sorted array + target, computeSteps(array, target), left/right/mid pointers, up to 30 elements, negative numbers supported."
+    },
+    {
+      "ts": "2026-05-02T04:00:09.793Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/prd.md",
+      "message": "Algorithm design started."
+    },
+    {
+      "ts": "2026-05-02T04:01:01.467Z",
+      "from": "algorithm",
+      "to": "algorithm",
+      "stage": "algorithm_coding",
+      "artifact": "src/animations/binary-search/algorithm.js",
+      "message": "Algorithm coding started."
+    },
+    {
+      "ts": "2026-05-02T04:01:34.764Z",
+      "from": "algorithm",
+      "to": "algorithm",
+      "stage": "algorithm_testing",
+      "artifact": "src/animations/binary-search/algorithm.js",
+      "message": "Running algorithm self-tests."
+    },
+    {
+      "ts": "2026-05-02T04:01:41.531Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/binary-search/algorithm.js",
+      "message": "Algorithm module and tests are ready."
+    },
+    {
+      "ts": "2026-05-02T04:02:15.670Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T04:03:46.672Z",
+      "from": "frontend",
+      "to": "frontend",
+      "stage": "frontend_coding",
+      "artifact": "src/animations/binary-search.jsx",
+      "message": "Implementing binary search animation component."
+    },
+    {
+      "ts": "2026-05-02T04:04:19.279Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/binary-search.jsx",
+      "message": "Frontend animation is ready. BinarySearchAnimation component with input controls, playback controls, array visualization with L/R/mid pointers, speed slider, and result banner. npm run build passed."
+    },
+    {
+      "ts": "2026-05-02T04:04:52.985Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T04:06:17.688Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T04:06:36.952Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}

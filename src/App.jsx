@@ -2,6 +2,7 @@ import React from 'react'
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom'
 import PageRankProcessAnimation from './animations/pagerank_process_animation'
 import BubbleSortAnimation from './animations/bubble-sort'
+import BinarySearchAnimation from './animations/binary-search'
 import Submit from './pages/Submit'
 import Status from './pages/Status'
 import { Button } from './components/ui/button'
@@ -21,6 +22,13 @@ const animations = [
     description: '经典排序算法可视化，支持自定义数组和随机生成，展示每一步比较和交换过程。',
     path: '/animations/bubble-sort',
     component: BubbleSortAnimation,
+  },
+  {
+    id: 'binary-search',
+    title: '二分查找',
+    description: '经典查找算法可视化，支持自定义数组和目标值，展示每一步缩小搜索范围的过程。',
+    path: '/animations/binary-search',
+    component: BinarySearchAnimation,
   },
 ]
 
