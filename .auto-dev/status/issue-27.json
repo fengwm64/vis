@@ -1,0 +1,98 @@
+{
+  "issue": 27,
+  "title": "[auto-dev] 快速排序",
+  "pipeline": "auto-dev",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4363505338,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T09:31:31.294Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-27.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T09:31:48.238Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-27.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T09:32:36.649Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-27/prd.md",
+      "message": "PRD is ready."
+    },
+    {
+      "ts": "2026-05-02T09:33:10.443Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/issues/issue-27/prd.md",
+      "message": "Algorithm design started."
+    },
+    {
+      "ts": "2026-05-02T09:33:59.444Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/quick-sort/algorithm.js",
+      "message": "Algorithm module and tests are ready."
+    },
+    {
+      "ts": "2026-05-02T09:34:48.131Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-27/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T09:36:39.141Z",
+      "from": "frontend",
+      "to": "frontend",
+      "stage": "frontend_coding",
+      "artifact": "src/animations/quick-sort/index.jsx",
+      "message": "Writing frontend animation components."
+    },
+    {
+      "ts": "2026-05-02T09:37:05.778Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/quick-sort/index.jsx",
+      "message": "Frontend animation is ready."
+    },
+    {
+      "ts": "2026-05-02T09:37:50.866Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-27/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T09:39:10.062Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-27/qa-report.md",
+      "message": "QA passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
