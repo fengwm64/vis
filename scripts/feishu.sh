@@ -5,7 +5,7 @@ COMMAND="${1:-}"
 shift || true
 
 ISSUE_NUMBER="${ISSUE_NUMBER:-unknown}"
-ISSUE_URL="${ISSUE_URL:-https://github.com/${GITHUB_REPOSITORY:-fengwm64/vis}/issues/${ISSUE_NUMBER}}"
+ISSUE_URL="${ISSUE_URL:-https://github.com/${GITHUB_REPOSITORY:-fengwm64/AlgorithmVisualizations}/issues/${ISSUE_NUMBER}}"
 
 send_text() {
   local text="$1"

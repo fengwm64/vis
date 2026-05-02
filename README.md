@@ -191,7 +191,7 @@ npm run preview
 
 ### 1. GitHub 仓库准备
 
-1. 确认仓库已推送到 GitHub，例如 `fengwm64/vis`。
+1. 确认仓库已推送到 GitHub，例如 `fengwm64/AlgorithmVisualizations`。
 2. 创建 Issue label：`auto-dev` 和 `auto-fix`。
 3. 在仓库设置中启用 Actions：
    - `Settings -> Actions -> General`
@@ -216,7 +216,7 @@ npm run preview
 `/api/submit` 需要从网站创建 GitHub Issue，因此 Cloudflare 侧需要一个 GitHub fine-grained token：
 
 1. 打开 GitHub `Settings -> Developer settings -> Personal access tokens -> Fine-grained tokens`。
-2. 选择目标仓库 `fengwm64/vis`。
+2. 选择目标仓库 `fengwm64/AlgorithmVisualizations`。
 3. Repository permissions 至少开启：
    - `Issues: Read and write`
    - `Actions: Read and write`
@@ -298,7 +298,7 @@ npm run build
    - PR 分支名类似 `auto-fix/issue-N`。
    - PR 只修改目标现有动画或必要的共享文件。
    - `/status` 页面能区分显示“新算法”和“修复优化”。
-6. 如果修复后仍未解决且修复 PR 仍处于打开状态，在 `/status` 对应 auto-fix 行点击“继续修复”，填写新的复现步骤；系统会创建新的 auto-fix Issue，并自动引用原 Issue / PR。新 Issue 创建后会评论原 Issue / PR，新的修复 PR 创建成功后会自动关闭被接管的旧 PR，避免误合并。没有 PR、已关闭或已合并的修复不会显示“继续修复”入口，应从动画页提交新的 Auto-Fix。
+6. 如果修复后仍未解决且修复 PR 仍处于打开状态，在 `/status` 对应 auto-fix 行点击“继续修复”，填写新的复现步骤；系统会创建新的 auto-fix Issue，并自动引用原 Issue / PR。新 Issue 创建后会评论原 Issue / PR；新的修复 PR 创建成功后会自动关闭被接管的旧 Issue 和旧 PR，避免误合并或继续跟踪旧入口。没有 PR、已关闭或已合并的修复不会显示“继续修复”入口，应从动画页提交新的 Auto-Fix。
 
 ### 8. 常见问题
 

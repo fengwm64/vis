@@ -1,5 +1,5 @@
 const REPO_OWNER = 'fengwm64'
-const REPO_NAME = 'vis'
+const REPO_NAME = 'AlgorithmVisualizations'
 const DEFAULT_BRANCH = 'main'
 const PIPELINE_LABELS = ['auto-dev', 'auto-fix']
 

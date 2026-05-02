@@ -8,7 +8,7 @@ cd "$REPO_ROOT"
 ISSUE_NUMBER="${ISSUE_NUMBER:?ISSUE_NUMBER is required}"
 ISSUE_TITLE="${ISSUE_TITLE:-Auto-dev request #$ISSUE_NUMBER}"
 ISSUE_BODY="${ISSUE_BODY:-}"
-ISSUE_URL="${ISSUE_URL:-https://github.com/${GITHUB_REPOSITORY:-fengwm64/vis}/issues/$ISSUE_NUMBER}"
+ISSUE_URL="${ISSUE_URL:-https://github.com/${GITHUB_REPOSITORY:-fengwm64/AlgorithmVisualizations}/issues/$ISSUE_NUMBER}"
 AUTO_PIPELINE="${AUTO_PIPELINE:-auto-dev}"
 
 case "$AUTO_PIPELINE" in
@@ -189,6 +189,26 @@ console.log(body.match(patterns[process.env.FIELD])?.[1] || '')
 NODE
 }
 
+resolve_previous_prs() {
+  local previous_issue="${1:-}"
+  local previous_pr="${2:-}"
+
+  if [[ -n "$previous_pr" ]]; then
+    printf '%s\n' "$previous_pr"
+    return 0
+  fi
+
+  if [[ -z "$previous_issue" ]]; then
+    return 0
+  fi
+
+  gh pr list \
+    --state open \
+    --search "#${previous_issue} in:body" \
+    --json number \
+    --jq '.[].number' 2>/dev/null || true
+}
+
 prepare_issue_artifacts() {
   mkdir -p "$ISSUE_ARTIFACT_DIR"
 
@@ -207,7 +227,7 @@ prepare_issue_artifacts() {
 
 mark_superseded_follow_up() {
   local new_pr_url="${1:?new PR URL is required}"
-  local previous_issue previous_pr new_pr_ref
+  local previous_issue previous_pr previous_prs previous_pr_number new_pr_ref
 
   if [[ "$AUTO_PIPELINE" != "auto-fix" ]]; then
     return 0
@@ -229,13 +249,24 @@ mark_superseded_follow_up() {
 
   if [[ -n "$previous_issue" ]]; then
     gh issue comment "$previous_issue" \
-      --body "后续修复 PR 已创建：${new_pr_ref}。这个 Issue 的修复链路已由 #${ISSUE_NUMBER} / ${new_pr_ref} 接管。" >/dev/null || true
+      --body "后续修复 PR 已创建：${new_pr_ref}。这个 Issue 的修复链路已由 #${ISSUE_NUMBER} / ${new_pr_ref} 接管，自动关闭以避免继续跟踪旧入口。" >/dev/null || true
+
+    if [[ "$previous_issue" != "$ISSUE_NUMBER" ]]; then
+      gh issue close "$previous_issue" \
+        --comment "Superseded by #${ISSUE_NUMBER} / ${new_pr_ref}." >/dev/null || true
+    fi
   fi
 
-  if [[ -n "$previous_pr" ]]; then
-    gh pr comment "$previous_pr" \
-      --body "后续修复 PR 已创建：${new_pr_ref}。本 PR 已被 #${ISSUE_NUMBER} / ${new_pr_ref} 接管，自动关闭以避免误合并旧修复。" >/dev/null || true
-    gh pr close "$previous_pr" --comment "Superseded by #${ISSUE_NUMBER} / ${new_pr_ref}." >/dev/null || true
+  previous_prs="$(resolve_previous_prs "$previous_issue" "$previous_pr")"
+
+  if [[ -n "$previous_prs" ]]; then
+    while IFS= read -r previous_pr_number; do
+      [[ -z "$previous_pr_number" ]] && continue
+
+      gh pr comment "$previous_pr_number" \
+        --body "后续修复 PR 已创建：${new_pr_ref}。本 PR 已被 #${ISSUE_NUMBER} / ${new_pr_ref} 接管，自动关闭以避免误合并旧修复。" >/dev/null || true
+      gh pr close "$previous_pr_number" --comment "Superseded by #${ISSUE_NUMBER} / ${new_pr_ref}." >/dev/null || true
+    done <<< "$previous_prs"
   fi
 }
 

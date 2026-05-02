@@ -125,7 +125,7 @@ function Footer() {
             alg.102465.xyz
           </a>
           <a
-            href="https://github.com/fengwm64/vis"
+            href="https://github.com/fengwm64/AlgorithmVisualizations"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 hover:text-indigo-600 transition-colors"

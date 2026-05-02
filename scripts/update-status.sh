@@ -58,7 +58,7 @@ fi
 
 ISSUE_NUMBER="${ISSUE_NUMBER:?ISSUE_NUMBER is required}"
 ISSUE_TITLE="${ISSUE_TITLE:-Issue #$ISSUE_NUMBER}"
-REPO="${GITHUB_REPOSITORY:-fengwm64/vis}"
+REPO="${GITHUB_REPOSITORY:-fengwm64/AlgorithmVisualizations}"
 STATUS_DIR=".auto-dev/status"
 STATUS_PATH="$STATUS_DIR/issue-${ISSUE_NUMBER}.json"
 mkdir -p "$STATUS_DIR"
