@@ -24,7 +24,7 @@ function Icon({ type }) {
 }
 
 function randomArray(length) {
-  return Array.from({ length }, () => Math.floor(Math.random() * 198) - 99);
+  return Array.from({ length }, () => Math.floor(Math.random() * 99) + 1);
 }
 
 function parseInput(text) {
