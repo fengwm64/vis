@@ -1,0 +1,138 @@
+{
+  "issue": 54,
+  "title": "[auto-dev] 二分图最大匹配",
+  "pipeline": "auto-dev",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4364228622,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T16:20:35.718Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-54.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T16:21:00.741Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-54.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T16:21:41.286Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-54/prd.md",
+      "message": "PRD is ready."
+    },
+    {
+      "ts": "2026-05-02T16:22:14.404Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/issues/issue-54/prd.md",
+      "message": "Algorithm design started."
+    },
+    {
+      "ts": "2026-05-02T16:23:16.925Z",
+      "from": "algorithm",
+      "to": "algorithm",
+      "stage": "algorithm_coding",
+      "artifact": "src/animations/bipartite-matching/algorithm.js",
+      "message": "Algorithm coding in progress."
+    },
+    {
+      "ts": "2026-05-02T16:23:25.875Z",
+      "from": "algorithm",
+      "to": "algorithm",
+      "stage": "algorithm_testing",
+      "artifact": "src/animations/bipartite-matching/algorithm.js",
+      "message": "Algorithm self-tests passed."
+    },
+    {
+      "ts": "2026-05-02T16:23:34.027Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/bipartite-matching/algorithm.js",
+      "message": "Algorithm module and tests are ready."
+    },
+    {
+      "ts": "2026-05-02T16:24:19.846Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-54/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T16:26:22.467Z",
+      "from": "frontend",
+      "to": "frontend",
+      "stage": "frontend_coding",
+      "artifact": "src/animations/bipartite-matching/index.jsx",
+      "message": "Frontend coding in progress."
+    },
+    {
+      "ts": "2026-05-02T16:26:50.362Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/bipartite-matching/index.jsx",
+      "message": "Frontend animation is ready."
+    },
+    {
+      "ts": "2026-05-02T16:27:37.848Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-54/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T16:28:48.387Z",
+      "from": "qa",
+      "to": "frontend",
+      "stage": "qa_returned_to_frontend",
+      "artifact": ".auto-dev/issues/issue-54/qa-report.md",
+      "message": "QA found frontend defects: speed slider labels swapped."
+    },
+    {
+      "ts": "2026-05-02T16:29:49.142Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/bipartite-matching/index.jsx",
+      "message": "Fixed speed slider labels: swapped '快'/'慢' to match actual behavior. Left=慢(slowest), Right=快(fastest)."
+    },
+    {
+      "ts": "2026-05-02T16:30:29.797Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-54/prd.md",
+      "message": "QA restarted after frontend fix."
+    },
+    {
+      "ts": "2026-05-02T16:32:05.573Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-54/qa-report.md",
+      "message": "QA passed. All 14 acceptance items, UI controls, interaction bugs, and layout checks passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 1,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
