@@ -1,0 +1,106 @@
+{
+  "issue": 36,
+  "title": "[auto-dev] 插入排序",
+  "pipeline": "auto-dev",
+  "current_stage": "pr_opened",
+  "current_owner": "qa",
+  "pinned_comment_id": 4363558422,
+  "pr_url": "https://github.com/fengwm64/AlgorithmVisualizations/pull/37",
+  "history": [
+    {
+      "ts": "2026-05-02T10:07:05.766Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-36.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T10:07:20.898Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-36.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T10:08:01.378Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_drafting_prd",
+      "artifact": ".auto-dev/issues/issue-36/prd.md",
+      "message": "Drafting PRD."
+    },
+    {
+      "ts": "2026-05-02T10:08:10.668Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-36/prd.md",
+      "message": "PRD is ready. Insertion sort algorithm with visualization of sorted/unsorted partition, comparison, shift and insertion steps."
+    },
+    {
+      "ts": "2026-05-02T10:08:52.001Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/issues/issue-36/prd.md",
+      "message": "Algorithm design started."
+    },
+    {
+      "ts": "2026-05-02T10:09:44.659Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/insertion-sort/algorithm.js",
+      "message": "Algorithm module and tests are ready."
+    },
+    {
+      "ts": "2026-05-02T10:10:24.267Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-36/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T10:12:33.073Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/insertion-sort/index.jsx",
+      "message": "Frontend animation is ready."
+    },
+    {
+      "ts": "2026-05-02T10:13:33.495Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-36/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T10:14:58.479Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-36/qa-report.md",
+      "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T10:15:49.737Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-36/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
