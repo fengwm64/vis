@@ -2,10 +2,10 @@
   "issue": 28,
   "title": "[auto-dev] 普里姆（Prim）最小生成树算法",
   "pipeline": "auto-dev",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4363471579,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/vis/pull/31",
   "history": [
     {
       "ts": "2026-05-02T09:08:43.880Z",
@@ -94,6 +94,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-28/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T09:17:35.802Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-28/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
