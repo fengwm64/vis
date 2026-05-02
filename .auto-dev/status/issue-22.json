@@ -1,0 +1,74 @@
+{
+  "issue": 22,
+  "title": "[auto-fix] PageRank 过程动画: 继续修复 - 还是看不见有向边的箭头",
+  "pipeline": "auto-fix",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4363406771,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T08:27:58.630Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-22.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T08:28:15.894Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-22.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T08:28:46.707Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-22/prd.md",
+      "message": "PRD is ready. Visual fix only, routing to frontend."
+    },
+    {
+      "ts": "2026-05-02T08:30:19.642Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-22/prd.md",
+      "message": "Frontend design started. Analyzing Arrow component and SVG rendering order."
+    },
+    {
+      "ts": "2026-05-02T08:31:18.920Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/pagerank_process_animation.jsx",
+      "message": "Frontend fix ready. Arrow component now uses dynamic offset (targetRadius + 6) and edges render after nodes for correct z-order."
+    },
+    {
+      "ts": "2026-05-02T08:31:48.857Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-22/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T08:32:49.972Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-22/qa-report.md",
+      "message": "QA passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
