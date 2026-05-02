@@ -249,8 +249,9 @@ export function runAlgorithmTests() {
     const last = steps[steps.length - 1];
     console.assert(last.found === true, 'Should find 50');
     console.assert(last.foundIndex === 15, '50 should be at index 15');
-    // Max steps for 30 elements: floor(log2(30)) + 1 ≈ 6
-    console.assert(steps.length <= 7, `Steps for 30 elements should be ≤ 7, got ${steps.length}`);
+    // For 30 elements, binary search needs at most floor(log2(30)) + 1 = 5 comparisons.
+    // Including the initial visualization state (step 0), total steps should be ≤ 6.
+    console.assert(steps.length <= 6, `Steps for 30 elements should be ≤ 6, got ${steps.length}`);
   }
 
   // 14. Each step has valid left/right/mid
