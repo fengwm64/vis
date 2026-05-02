@@ -1,0 +1,106 @@
+{
+  "issue": 52,
+  "title": "[auto-dev] Tarjan 强连通分量",
+  "pipeline": "auto-dev",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4364227756,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T16:20:06.563Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-52.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T16:20:59.611Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-52/prd.md",
+      "message": "PRD is ready."
+    },
+    {
+      "ts": "2026-05-02T16:21:41.451Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/issues/issue-52/prd.md",
+      "message": "Algorithm design started."
+    },
+    {
+      "ts": "2026-05-02T16:22:46.788Z",
+      "from": "algorithm",
+      "to": "algorithm",
+      "stage": "algorithm_coding",
+      "artifact": "src/animations/tarjan-scc/algorithm.js",
+      "message": "Algorithm coding in progress."
+    },
+    {
+      "ts": "2026-05-02T16:22:57.031Z",
+      "from": "algorithm",
+      "to": "algorithm",
+      "stage": "algorithm_testing",
+      "artifact": "src/animations/tarjan-scc/algorithm.js",
+      "message": "Running algorithm self-tests."
+    },
+    {
+      "ts": "2026-05-02T16:23:02.671Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/tarjan-scc/algorithm.js",
+      "message": "Algorithm module and tests are ready."
+    },
+    {
+      "ts": "2026-05-02T16:23:56.504Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-52/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T16:25:11.630Z",
+      "from": "frontend",
+      "to": "frontend",
+      "stage": "frontend_coding",
+      "artifact": "src/animations/tarjan-scc/index.jsx",
+      "message": "Frontend coding in progress."
+    },
+    {
+      "ts": "2026-05-02T16:25:31.138Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/tarjan-scc/index.jsx",
+      "message": "Frontend animation is ready."
+    },
+    {
+      "ts": "2026-05-02T16:26:38.399Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-52/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T16:30:10.482Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-52/qa-report.md",
+      "message": "QA passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
