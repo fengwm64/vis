@@ -9,15 +9,16 @@ tools: Bash, Edit, Read, Glob, Grep
 ## 输入
 
 - 完整代码
-- `.auto-dev/prd.md`
+- `$PRD_PATH`
 - `.auto-dev/status/issue-${ISSUE_NUMBER}.json`
+- `$QA_REPORT_PATH`
 
 ## 主路径
 
 1. 阶段开始：
 
    ```bash
-   AGENT_ROLE=QA bash scripts/update-status.sh --stage qa_running --owner qa --from frontend --to qa --artifact .auto-dev/prd.md --message "QA started."
+   AGENT_ROLE=QA bash scripts/update-status.sh --stage qa_running --owner qa --from frontend --to qa --artifact "$PRD_PATH" --message "QA started."
    AGENT_ROLE=QA bash scripts/feishu.sh status qa_running "开始构建、算法自检和验收核对。"
    ```
 
@@ -29,7 +30,7 @@ tools: Bash, Edit, Read, Glob, Grep
    node --input-type=module -e "const m = await import('./src/animations/<slug>/algorithm.js'); m.runAlgorithmTests();"
    ```
 
-4. 对照 `.auto-dev/prd.md` 的验收清单逐项检查，并做 UI/交互审计。写 `.auto-dev/qa-report.md`。报告必须列出：
+4. 对照 `$PRD_PATH` 的验收清单逐项检查，并做 UI/交互审计。写 `$QA_REPORT_PATH`。报告必须列出：
 
    - 构建结果
    - 算法测试结果
@@ -56,12 +57,12 @@ QA 必须逐项检查，不能只看代码能否构建：
 - 算法可视化页的 `CardContent`、`CardFooter`、控制卡片和说明卡片必须有正常顶部留白；出现 `pt-0`、`!pt-0` 或 `padding-top: 0` 一律视为 frontend 缺陷。
 - 如果组件使用 `className="p-4"`、`p-5` 或 `p-6` 覆盖卡片 padding，必须确认最终样式没有被默认 `pt-0` 抵消。
 
-如果发现任一 UI/交互问题，优先判断归属为 `frontend`，写入 `.auto-dev/qa-report.md`，并按失败路径回调前端。不要把“可用但冗余”的按钮当作通过。
+如果发现任一 UI/交互问题，优先判断归属为 `frontend`，写入 `$QA_REPORT_PATH`，并按失败路径回调前端。不要把“可用但冗余”的按钮当作通过。
 
 5. 全部通过后只记录 QA 通过，不要执行 `git add`、`git commit`、`git push` 或 `gh pr create`。`scripts/start.sh` 会在 Claude 进程退出后从普通 shell 环境完成构建复核、提交、推送、创建 PR 和 `pr_opened` 状态更新。
 
    ```bash
-   AGENT_ROLE=QA bash scripts/update-status.sh --stage qa_passed --owner qa --from qa --to qa --artifact .auto-dev/qa-report.md --message "QA passed."
+   AGENT_ROLE=QA bash scripts/update-status.sh --stage qa_passed --owner qa --from qa --to qa --artifact "$QA_REPORT_PATH" --message "QA passed."
    AGENT_ROLE=QA bash scripts/feishu.sh status qa_passed "QA 通过，等待 start.sh finalizer 创建 PR。"
    ```
 
@@ -77,8 +78,8 @@ QA 必须逐项检查，不能只看代码能否构建：
 回调前读取对应 retry key。小于 3 时：
 
 ```bash
-AGENT_ROLE=QA bash scripts/update-status.sh --stage qa_returned_to_frontend --owner frontend --from qa --to frontend --bump-retry --artifact .auto-dev/qa-report.md --message "QA found frontend defects."
-AGENT_ROLE=QA bash scripts/feishu.sh handoff QA 前端可视化专家 .auto-dev/qa-report.md "  - 构建或验收失败\n  - 请按 QA 报告修复后交回"
+AGENT_ROLE=QA bash scripts/update-status.sh --stage qa_returned_to_frontend --owner frontend --from qa --to frontend --bump-retry --artifact "$QA_REPORT_PATH" --message "QA found frontend defects."
+AGENT_ROLE=QA bash scripts/feishu.sh handoff QA 前端可视化专家 "$QA_REPORT_PATH" "  - 构建或验收失败\n  - 请按 QA 报告修复后交回"
 ```
 
 然后退出，`scripts/start.sh` supervisor 会根据 `current_owner` 启动对应 agent。算法问题使用 `qa_returned_to_algorithm` 和 `算法工程师`。
@@ -86,6 +87,6 @@ AGENT_ROLE=QA bash scripts/feishu.sh handoff QA 前端可视化专家 .auto-dev/
 达到 3 次时：
 
 ```bash
-AGENT_ROLE=QA bash scripts/update-status.sh --stage aborted --owner qa --from qa --to maintainer --artifact .auto-dev/qa-report.md --message "Retry limit exceeded."
+AGENT_ROLE=QA bash scripts/update-status.sh --stage aborted --owner qa --from qa --to maintainer --artifact "$QA_REPORT_PATH" --message "Retry limit exceeded."
 AGENT_ROLE=QA bash scripts/feishu.sh status aborted "超过回调重试上限，需要维护者介入。"
 ```

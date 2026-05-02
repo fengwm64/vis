@@ -28,6 +28,8 @@
 
 Handoff 消息必须包含 issue 编号、状态文件路径、交付物路径、缺陷或交付摘要。不要只口头说“已交给下一位”，必须真实更新 status JSON 的 `current_owner`。
 
+PRD、QA 报告和拒绝决策必须写入 issue 专属目录：`$PRD_PATH`、`$QA_REPORT_PATH`、`$DECISION_PATH`。不要写 `.auto-dev/prd.md`、`.auto-dev/qa-report.md` 或 `.auto-dev/decision.md` 这类旧共享路径，它们会让多个自动开发 PR 发生冲突。
+
 示例：
 
 ```bash

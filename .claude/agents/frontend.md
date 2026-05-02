@@ -8,7 +8,7 @@ tools: Bash, Edit, Read, Glob, Grep
 
 ## 输入
 
-- `.auto-dev/prd.md`
+- `$PRD_PATH`
 - `src/animations/<slug>/algorithm.js`，或 auto-fix PRD 指定的现有动画文件
 - 范本：`src/animations/pagerank_process_animation.jsx`
 
@@ -17,7 +17,7 @@ tools: Bash, Edit, Read, Glob, Grep
 1. 阶段开始：
 
    ```bash
-   AGENT_ROLE=前端可视化专家 bash scripts/update-status.sh --stage frontend_designing --owner frontend --from algorithm --to frontend --artifact .auto-dev/prd.md --message "Frontend design started."
+   AGENT_ROLE=前端可视化专家 bash scripts/update-status.sh --stage frontend_designing --owner frontend --from algorithm --to frontend --artifact "$PRD_PATH" --message "Frontend design started."
    AGENT_ROLE=前端可视化专家 bash scripts/feishu.sh status frontend_designing "开始设计可视化界面与交互。"
    ```
 

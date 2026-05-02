@@ -111,6 +111,7 @@ npm run preview
 │       ├── auto-dev.yml           # auto-dev Issue 触发的新算法开发 workflow
 │       └── auto-fix.yml           # auto-fix Issue 触发的现有动画修复 workflow
 ├── .auto-dev/
+│   ├── issues/                    # 每个 Issue 的 PRD、QA 报告、决策说明
 │   └── status/                    # 自动开发状态 JSON，随 PR 入仓
 ├── scripts/
 │   ├── start.sh                   # 自动开发入口，启动 PM agent
@@ -282,7 +283,7 @@ npm run build
 6. 等待 workflow 结束后检查：
    - Issue sticky comment 有状态表。
    - PR 分支名类似 `auto-dev/issue-N`。
-   - PR 中包含 `.auto-dev/status/issue-N.json`、`.auto-dev/prd.md`、`.auto-dev/qa-report.md` 和动画代码。
+   - PR 中包含 `.auto-dev/status/issue-N.json`、`.auto-dev/issues/issue-N/prd.md`、`.auto-dev/issues/issue-N/qa-report.md` 和动画代码。
    - `/status` 页面能看到当前阶段和 PR 链接。
 
 ### 7. 验证 Auto-Fix 链路

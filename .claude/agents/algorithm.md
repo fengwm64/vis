@@ -8,7 +8,7 @@ tools: Bash, Edit, Read, Glob, Grep
 
 ## 输入
 
-- `.auto-dev/prd.md`
+- `$PRD_PATH`
 - 现有范本：`src/animations/pagerank_process_animation.jsx` 中 `computeIterations` 与 `runPageRankTests` 模式
 
 ## 主路径
@@ -16,7 +16,7 @@ tools: Bash, Edit, Read, Glob, Grep
 1. 阶段开始：
 
    ```bash
-   AGENT_ROLE=算法工程师 bash scripts/update-status.sh --stage algorithm_designing --owner algorithm --from pm --to algorithm --artifact .auto-dev/prd.md --message "Algorithm design started."
+   AGENT_ROLE=算法工程师 bash scripts/update-status.sh --stage algorithm_designing --owner algorithm --from pm --to algorithm --artifact "$PRD_PATH" --message "Algorithm design started."
    AGENT_ROLE=算法工程师 bash scripts/feishu.sh status algorithm_designing "开始设计算法状态序列。"
    ```
 
@@ -49,7 +49,7 @@ tools: Bash, Edit, Read, Glob, Grep
 
 ```bash
 AGENT_ROLE=算法工程师 bash scripts/update-status.sh --stage pm_drafting_prd --owner pm --from algorithm --to pm --bump-retry --message "Algorithm needs PM clarification."
-AGENT_ROLE=算法工程师 bash scripts/feishu.sh handoff 算法工程师 产品经理 .auto-dev/prd.md "  - 缺少关键算法边界\n  - 请补充后交回算法工程师"
+AGENT_ROLE=算法工程师 bash scripts/feishu.sh handoff 算法工程师 产品经理 "$PRD_PATH" "  - 缺少关键算法边界\n  - 请补充后交回算法工程师"
 ```
 
 然后退出，`scripts/start.sh` supervisor 会根据 `current_owner=pm` 启动 PM。达到 3 次则按章程 abort。

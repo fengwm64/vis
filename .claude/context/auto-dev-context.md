@@ -46,8 +46,10 @@
 
 - `.auto-dev/incoming/issue-N.md`：原始 Issue 内容，只作为本次运行输入，不入仓库。
 - `.auto-dev/status/issue-N.json`：本需求的状态机、当前 owner、history、retry_count、PR URL，必须入 PR。
-- `.auto-dev/prd.md`：PM 输出的产品需求文档，必须入 PR。
-- `.auto-dev/qa-report.md`：QA 输出的验收报告，必须入 PR。
+- `.auto-dev/issues/issue-N/prd.md`：PM 输出的产品需求文档，必须入 PR。
+- `.auto-dev/issues/issue-N/qa-report.md`：QA 输出的验收报告，必须入 PR。
+- `.auto-dev/issues/issue-N/decision.md`：拒绝路径的决策说明，如有则入 PR 或留作 Issue 审计。
+- `.auto-dev/prd.md`、`.auto-dev/qa-report.md`、`.auto-dev/decision.md` 是旧共享路径，agent 不要再写；`scripts/start.sh` 只在兼容旧输出时复制它们到 issue 专属目录。
 
 脚本：
 
@@ -74,8 +76,8 @@ Claude agents：
 
 PM 必须产出：
 
-- `.auto-dev/prd.md`，包含算法定义、边界、输入规模、可视化步骤、复杂度、验收清单、建议 slug。
-- 如果拒绝，产出 `.auto-dev/decision.md`，状态进入 `rejected`，不再交给其他 agent。
+- `$PRD_PATH`，即 `.auto-dev/issues/issue-N/prd.md`，包含算法定义、边界、输入规模、可视化步骤、复杂度、验收清单、建议 slug。
+- 如果拒绝，产出 `$DECISION_PATH`，即 `.auto-dev/issues/issue-N/decision.md`，状态进入 `rejected`，不再交给其他 agent。
 - 如果是 auto-fix Issue，PRD 必须包含目标动画 ID、目标路径、现有文件、问题类型、复现方式和验收标准；交互/视觉/文案问题可直接交给 frontend。
 
 算法工程师必须产出：
@@ -100,14 +102,14 @@ PM 必须产出：
 
 QA 必须产出：
 
-- `.auto-dev/qa-report.md`。
+- `$QA_REPORT_PATH`，即 `.auto-dev/issues/issue-N/qa-report.md`。
 - 构建结果、算法测试结果、PRD 验收项逐项结论。
 - UI 控件审计结果：逐项说明是否存在无用按钮、重复按钮、死按钮、文案行为不一致、禁用态错误。
 - 交互 bug 审计结果：逐项说明播放/暂停、单步、回退、重置、边界步骤、自动播放定时器、路由和响应式布局是否通过。
 - 布局留白审计结果：重点检查算法可视化卡片是否存在 `pt-0` / `padding-top: 0` 导致的顶部拥挤；发现后必须回调 frontend 修复。
 - 通过后只把状态推进到 `qa_passed`；不要直接执行 git 或 gh 命令。
 - `scripts/start.sh` finalizer 负责按 `AUTO_PIPELINE` 创建 `auto-dev/issue-N` 或 `auto-fix/issue-N` 分支和 PR，并把 `pr_opened`、`pr_url` 写回 status JSON 后推送。
-- finalizer 在创建 PR 分支前会 stash 生成变更、`git fetch origin main`、从 `origin/main` 创建分支，再 pop 回变更；如果 pop 冲突则失败并停止，避免静默覆盖其他任务。
+- finalizer 在创建 PR 分支前会把 `src`、issue 专属产物目录和 status JSON 生成 patch，`git fetch origin main` 后从 `origin/main` 创建分支，再只应用这份 issue 专属 patch；不再把旧共享 PRD/QA 文件带入分支，避免多个 issue 互相冲突。
 - 新动画必须使用独立目录自动注册，不要编辑 `src/App.jsx` 这种共享入口文件，降低多个未合并 PR 之间的冲突概率。
 
 ## 状态与可观测性

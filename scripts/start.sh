@@ -36,7 +36,12 @@ if [[ "$AUTO_PIPELINE" == "auto-fix" ]]; then
   PIPELINE_SUCCESS_MESSAGE="fix visualization"
 fi
 
-export ISSUE_NUMBER ISSUE_TITLE ISSUE_BODY ISSUE_URL AUTO_PIPELINE
+ISSUE_ARTIFACT_DIR=".auto-dev/issues/issue-${ISSUE_NUMBER}"
+PRD_PATH="${ISSUE_ARTIFACT_DIR}/prd.md"
+QA_REPORT_PATH="${ISSUE_ARTIFACT_DIR}/qa-report.md"
+DECISION_PATH="${ISSUE_ARTIFACT_DIR}/decision.md"
+
+export ISSUE_NUMBER ISSUE_TITLE ISSUE_BODY ISSUE_URL AUTO_PIPELINE ISSUE_ARTIFACT_DIR PRD_PATH QA_REPORT_PATH DECISION_PATH
 
 if [[ -z "${ANTHROPIC_AUTH_TOKEN:-}" && -n "${ANTHROPIC_API_KEY:-}" ]]; then
   export ANTHROPIC_AUTH_TOKEN="$ANTHROPIC_API_KEY"
@@ -165,6 +170,22 @@ console.log(value == null ? '' : value)
 NODE
 }
 
+prepare_issue_artifacts() {
+  mkdir -p "$ISSUE_ARTIFACT_DIR"
+
+  if [[ ! -f "$PRD_PATH" && -f ".auto-dev/prd.md" ]]; then
+    cp ".auto-dev/prd.md" "$PRD_PATH"
+  fi
+
+  if [[ ! -f "$QA_REPORT_PATH" && -f ".auto-dev/qa-report.md" ]]; then
+    cp ".auto-dev/qa-report.md" "$QA_REPORT_PATH"
+  fi
+
+  if [[ ! -f "$DECISION_PATH" && -f ".auto-dev/decision.md" ]]; then
+    cp ".auto-dev/decision.md" "$DECISION_PATH"
+  fi
+}
+
 run_agent_role() {
   local role="${1:?role is required}"
   local agent_file=".claude/agents/${role}.md"
@@ -191,8 +212,10 @@ run_agent_role() {
 当前文件：
 - 原始需求: ${INCOMING_PATH}
 - 状态文件: .auto-dev/status/issue-${ISSUE_NUMBER}.json
-- PRD: .auto-dev/prd.md
-- QA 报告: .auto-dev/qa-report.md
+- Issue 产物目录: ${ISSUE_ARTIFACT_DIR}
+- PRD: ${PRD_PATH}
+- QA 报告: ${QA_REPORT_PATH}
+- 拒绝决策: ${DECISION_PATH}
 
 当前状态：
 - current_stage: ${stage}
@@ -202,6 +225,7 @@ run_agent_role() {
 - 先读取 .claude/context/team-charter.md、.claude/context/auto-dev-context.md 和 ${agent_file}。
 - 不要等待用户输入。
 - 不要假装已经交给下一个 agent；必须真实写入交付物并调用 scripts/update-status.sh 更新 owner/stage。
+- 不要再写 .auto-dev/prd.md、.auto-dev/qa-report.md 或 .auto-dev/decision.md；这些旧共享路径会造成多个 issue 的 PR 冲突。
 - 本次调用不要使用 Task 工具拉起下一个 agent。GitHub Actions 中由 scripts/start.sh supervisor 根据 status 文件继续启动下一位。
 - 如果你完成 handoff，只需更新 status、发飞书消息并退出。
 - 如果你发现需要回退，更新 owner/stage 到对应角色并退出。
@@ -247,6 +271,8 @@ open_pr_from_current_changes() {
   local status_path=".auto-dev/status/issue-${ISSUE_NUMBER}.json"
   local stash_name="${AUTO_PIPELINE}-issue-${ISSUE_NUMBER}"
   local stashed="false"
+  local stash_ref=""
+  local patch_file=""
   local pr_url
 
   echo "::group::${PIPELINE_TITLE} finalization"
@@ -260,9 +286,21 @@ open_pr_from_current_changes() {
     return 1
   fi
 
+  prepare_issue_artifacts
+  patch_file="$(mktemp)" || return 1
+  git add -A -- src "$status_path" "$ISSUE_ARTIFACT_DIR" || return 1
+
+  if git diff --cached --quiet; then
+    echo "No generated code changes found after qa_passed; aborting PR creation." >&2
+    return 1
+  fi
+
+  git diff --cached --binary -- src "$status_path" "$ISSUE_ARTIFACT_DIR" > "$patch_file" || return 1
+
   if ! git diff --quiet || ! git diff --cached --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
     git stash push --include-untracked -m "$stash_name" || return 1
     stashed="true"
+    stash_ref="stash@{0}"
   fi
 
   git fetch origin main || return 1
@@ -271,10 +309,13 @@ open_pr_from_current_changes() {
   git checkout -B "$branch" origin/main || return 1
 
   if [[ "$stashed" == "true" ]]; then
-    git stash pop || return 1
+    git apply --index "$patch_file" || return 1
+    if [[ -n "$stash_ref" ]]; then
+      git stash drop "$stash_ref" >/dev/null || true
+    fi
   fi
 
-  git add -A -- src .auto-dev || return 1
+  git add -A -- src "$status_path" "$ISSUE_ARTIFACT_DIR" || return 1
 
   if git diff --cached --quiet; then
     echo "No generated code changes found after qa_passed; aborting PR creation." >&2
@@ -297,7 +338,7 @@ open_pr_from_current_changes() {
     --owner qa \
     --from qa \
     --to maintainer \
-    --artifact .auto-dev/qa-report.md \
+    --artifact "$QA_REPORT_PATH" \
     --pr-url "$pr_url" \
     --message "PR opened by start.sh finalizer." || return 1
 
@@ -311,7 +352,7 @@ open_pr_from_current_changes() {
   echo "::endgroup::"
 }
 
-mkdir -p ".auto-dev/incoming" ".auto-dev/status"
+mkdir -p ".auto-dev/incoming" ".auto-dev/status" "$ISSUE_ARTIFACT_DIR"
 
 INCOMING_PATH=".auto-dev/incoming/issue-${ISSUE_NUMBER}.md"
 cat > "$INCOMING_PATH" <<EOF_INCOMING
