@@ -14,7 +14,7 @@
 | `pm` | 产品经理 | 需求评估、PRD、拒绝不可行需求、补充澄清 |
 | `algorithm` | 算法工程师 | 纯算法实现、自检用例、为前端暴露稳定 API |
 | `frontend` | 前端可视化专家 | React/Framer Motion 可视化、路由接入、构建通过 |
-| `qa` | 测试 + Reviewer | 构建、算法单测、验收清单、PR 创建、缺陷回调 |
+| `qa` | 测试 + Reviewer | 构建、算法单测、验收清单、UI/交互审计、缺陷回调 |
 
 没有中央 orchestrator agent。`scripts/start.sh` 是 shell supervisor，会根据 status JSON 的 `current_owner` 逐个启动 PM / algorithm / frontend / QA；agent 自己不要在 GitHub Actions 中使用 Task 拉起下一位。
 
@@ -82,5 +82,6 @@ bash scripts/update-status.sh --stage qa_returned_to_frontend --owner frontend -
 - 动画组件放在 `src/animations/<slug>.jsx`，复用 `src/components/ui/button.jsx`、`src/components/ui/card.jsx`、Framer Motion 和 `pagerank_process_animation.jsx` 的播放控制模式。
 - 在 `src/App.jsx` 的 `animations` 数组追加配置。
 - 运行 `npm run build`，算法自检使用 Node ESM import。
+- QA 必须检查无用按钮、重复按钮、死按钮、文案行为不一致、播放控制边界 bug 和自动播放定时器泄漏；发现问题时回调 frontend。
 
 不要改动无关文件，不要删除用户已有改动，不要使用破坏性 git 命令。

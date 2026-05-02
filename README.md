@@ -25,6 +25,7 @@
 - **无中央 orchestrator agent**：`scripts/start.sh` 是 shell supervisor，按 status JSON 启动各角色；agent 只负责产物和 handoff 状态，PR 创建由 finalizer 统一收口。
 - **三路可观测性**：`.auto-dev/status/issue-N.json`、Issue sticky comment、网站 `/status` 页面。
 - **实时通知**：阶段切换、handoff、失败会通过飞书机器人广播。
+- **QA 交互审计**：QA 会检查无用/冗余按钮、死按钮、播放控制边界、文案行为一致性和潜在交互 bug。
 - **LLM 调用统一入口**：所有模型调用都由 Claude Code 完成，workflow 通过 MiMo Anthropic 兼容网关注入 `ANTHROPIC_BASE_URL`。
 
 ---
