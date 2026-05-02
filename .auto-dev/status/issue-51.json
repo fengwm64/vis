@@ -1,0 +1,104 @@
+{
+  "issue": 51,
+  "title": "[auto-dev] 拓扑排序",
+  "pipeline": "auto-dev",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4364227041,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T16:19:42.940Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-51.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T16:20:00.034Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-51.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T16:20:42.534Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-51/prd.md",
+      "message": "PRD is ready. Topological sort (Kahn's algorithm) with 3 example graphs, full visualization spec."
+    },
+    {
+      "ts": "2026-05-02T16:21:23.270Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/issues/issue-51/prd.md",
+      "message": "Algorithm design started."
+    },
+    {
+      "ts": "2026-05-02T16:21:31.149Z",
+      "from": "algorithm",
+      "to": "algorithm",
+      "stage": "algorithm_coding",
+      "message": "Writing algorithm module."
+    },
+    {
+      "ts": "2026-05-02T16:22:16.256Z",
+      "from": "algorithm",
+      "to": "algorithm",
+      "stage": "algorithm_testing",
+      "message": "Running Node ESM self-tests."
+    },
+    {
+      "ts": "2026-05-02T16:22:29.599Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/topological-sort/algorithm.js",
+      "message": "Algorithm module and tests are ready."
+    },
+    {
+      "ts": "2026-05-02T16:23:11.167Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-51/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T16:25:04.244Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/topological-sort/index.jsx",
+      "message": "Frontend animation is ready."
+    },
+    {
+      "ts": "2026-05-02T16:26:07.873Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-51/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T16:27:05.812Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-51/qa-report.md",
+      "message": "QA passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
