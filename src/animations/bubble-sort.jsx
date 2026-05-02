@@ -49,10 +49,11 @@ export default function BubbleSortAnimation() {
 
   const current = steps[stepIndex] ?? steps[steps.length - 1];
   const totalSteps = steps.length;
-  const maxVal = useMemo(
-    () => Math.max(...current.array.map(Math.abs), 1),
-    [current.array]
-  );
+  const { minVal, maxVal, range } = useMemo(() => {
+    const lo = Math.min(...current.array, 0);
+    const hi = Math.max(...current.array, 0);
+    return { minVal: lo, maxVal: hi, range: hi - lo || 1 };
+  }, [current.array]);
 
   // --- Input handlers ---
   const handleRandom = useCallback(() => {
@@ -182,10 +183,18 @@ export default function BubbleSortAnimation() {
               </div>
 
               {/* Bar chart */}
-              <div className="flex items-end justify-center gap-1 h-[320px] rounded-2xl bg-white p-4">
+              <div className="relative flex items-stretch justify-center gap-1 h-[320px] rounded-2xl bg-white p-4">
+                {/* Zero baseline */}
+                {minVal < 0 && (
+                  <div
+                    className="absolute left-4 right-4 border-t border-dashed border-slate-300 z-10"
+                    style={{ bottom: `${4 + (maxVal / range) * 92}%` }}
+                  >
+                    <span className="absolute -top-4 -left-1 text-[10px] text-slate-400">0</span>
+                  </div>
+                )}
                 {current.array.map((value, i) => {
-                  const heightPct =
-                    maxVal > 0 ? (Math.abs(value) / maxVal) * 100 : 0;
+                  const heightPct = (Math.abs(value) / range) * 92;
                   const isComparing =
                     current.comparing &&
                     (i === current.comparing[0] ||
@@ -195,15 +204,21 @@ export default function BubbleSortAnimation() {
                     (i === current.swapping[0] ||
                       i === current.swapping[1]);
                   const isSorted = current.sorted.includes(i);
+                  const isNegative = value < 0;
+
+                  const zeroBottom = minVal < 0 ? (maxVal / range) * 92 : 0;
+                  const barBottom = isNegative ? zeroBottom - heightPct : zeroBottom;
+                  const labelBottom = isNegative ? barBottom - 20 : barBottom + heightPct + 4;
 
                   return (
                     <div
                       key={i}
-                      className="flex flex-col items-center flex-1 max-w-[60px]"
+                      className="relative flex-1 max-w-[60px]"
                     >
                       {/* Value label */}
                       <motion.span
-                        className="text-xs font-medium mb-1 text-slate-700"
+                        className="absolute left-0 right-0 text-center text-xs font-medium text-slate-700"
+                        style={{ bottom: `${labelBottom}%` }}
                         layout
                         transition={{ type: "spring", stiffness: 200, damping: 25 }}
                       >
@@ -212,11 +227,12 @@ export default function BubbleSortAnimation() {
 
                       {/* Bar */}
                       <motion.div
-                        className={`w-full rounded-t-md ${barColor(i)}`}
+                        className={`absolute left-0 right-0 ${barColor(i)} ${isNegative ? "rounded-b-md" : "rounded-t-md"}`}
                         layout
                         initial={false}
                         animate={{
-                          height: `${Math.max(4, heightPct * 2.6)}px`,
+                          bottom: `${Math.max(0, barBottom)}%`,
+                          height: `${Math.max(2, heightPct)}%`,
                           scale: isComparing || isSwapping ? 1.08 : 1,
                         }}
                         transition={{
@@ -227,13 +243,13 @@ export default function BubbleSortAnimation() {
                       />
 
                       {/* Index label */}
-                      <span className="text-[10px] text-slate-400 mt-1">
+                      <span className="absolute bottom-0 left-0 right-0 text-center text-[10px] text-slate-400">
                         {i}
                       </span>
 
                       {/* Status indicators */}
                       {isSorted && (
-                        <span className="text-[10px] text-emerald-600 font-medium mt-0.5">
+                        <span className="absolute -bottom-4 left-0 right-0 text-center text-[10px] text-emerald-600 font-medium">
                           ✓
                         </span>
                       )}
