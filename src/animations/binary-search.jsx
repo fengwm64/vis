@@ -70,8 +70,10 @@ export default function BinarySearchAnimation() {
 
   const handleConfirm = useCallback(() => {
     const arr = parseInput(inputText).sort((a, b) => a - b);
-    const target = Number(targetText);
-    if (arr.length < 1 || Number.isNaN(target)) return;
+    const trimmedTargetText = targetText.trim();
+    if (arr.length < 1 || trimmedTargetText === "") return;
+    const target = Number(trimmedTargetText);
+    if (Number.isNaN(target)) return;
     setInputText(arr.join(", "));
     const s = computeSteps(arr, target);
     setSteps(s);
