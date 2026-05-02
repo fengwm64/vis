@@ -91,7 +91,23 @@ function PipelineBadge({ pipeline }) {
 }
 
 function canContinueFix(item) {
-  return item?.pipeline === 'auto-fix' && item?.target && !item?.prMerged
+  return (
+    item?.pipeline === 'auto-fix'
+    && item?.target
+    && item?.prUrl
+    && item?.prState === 'open'
+    && !item?.prMerged
+  )
+}
+
+function fixActionLabel(item) {
+  if (item?.pipeline !== 'auto-fix') return '-'
+  if (!item?.target) return '-'
+  if (!item?.prUrl) return '等待 PR'
+  if (item?.prMerged) return '已合并'
+  if (item?.prState === 'closed') return '已关闭'
+  if (item?.prState && item.prState !== 'open') return item.prState
+  return '-'
 }
 
 function ContinueFixDialog({
@@ -415,8 +431,8 @@ export default function Status() {
                             >
                               继续修复
                             </Button>
-                          ) : item.pipeline === 'auto-fix' && item.prMerged ? (
-                            <span className="text-slate-400">已合并</span>
+                          ) : item.pipeline === 'auto-fix' ? (
+                            <span className="text-slate-400">{fixActionLabel(item)}</span>
                           ) : (
                             <span className="text-slate-400">-</span>
                           )}
