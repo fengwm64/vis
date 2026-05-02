@@ -43,6 +43,10 @@ function pullRequestRef(url) {
   return url || '未提供'
 }
 
+function numberFromUrl(url, type) {
+  return String(url || '').match(new RegExp(`/${type}/(\\d+)`))?.[1] || ''
+}
+
 function buildFollowUpSection({ previousIssueNumber, previousIssueUrl, previousPrUrl }) {
   if (!previousIssueNumber && !previousIssueUrl && !previousPrUrl) return ''
 
@@ -55,6 +59,55 @@ function buildFollowUpSection({ previousIssueNumber, previousIssueUrl, previousP
 - 先阅读原 Issue、原 PR 和本次说明，判断为什么上次修复没有完全解决。
 - QA 必须重点验证本次描述的复现步骤，不能只验证构建通过。
 `
+}
+
+async function createIssueComment({ token, issueNumber, body }) {
+  if (!issueNumber || !body) return
+
+  const response = await fetch(
+    `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${issueNumber}/comments`,
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'User-Agent': 'vis-auto-fix-follow-up',
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+      body: JSON.stringify({ body }),
+    },
+  )
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.message || `comment failed: ${response.status}`)
+  }
+}
+
+async function notifySupersededTargets({
+  token,
+  previousIssueNumber,
+  previousIssueUrl,
+  previousPrUrl,
+  newIssueNumber,
+  newIssueUrl,
+}) {
+  const issueNumber = previousIssueNumber || numberFromUrl(previousIssueUrl, 'issues')
+  const prNumber = numberFromUrl(previousPrUrl, 'pull')
+  const body = `后续修复已创建：#${newIssueNumber}\n\n这个任务将继续处理当前问题，请后续以 #${newIssueNumber} 为准。`
+
+  if (issueNumber) {
+    await createIssueComment({ token, issueNumber, body })
+  }
+
+  if (prNumber && prNumber !== issueNumber) {
+    await createIssueComment({
+      token,
+      issueNumber: prNumber,
+      body: `后续修复已创建：#${newIssueNumber}\n\n如果这个 PR 仍未合并，请不要再合并它；后续变更会由 ${newIssueUrl} 对应的新 PR 接管。`,
+    })
+  }
 }
 
 function buildIssueBody({
@@ -200,6 +253,14 @@ export async function onRequestPost({ request, env }) {
   }
 
   try {
+    await notifySupersededTargets({
+      token: env.GITHUB_TOKEN,
+      previousIssueNumber,
+      previousIssueUrl,
+      previousPrUrl,
+      newIssueNumber: data.number,
+      newIssueUrl: data.html_url,
+    })
     await dispatchWorkflow({ token: env.GITHUB_TOKEN, issueNumber: data.number })
   } catch (dispatchError) {
     return json(

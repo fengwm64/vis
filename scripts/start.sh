@@ -170,6 +170,25 @@ console.log(value == null ? '' : value)
 NODE
 }
 
+extract_follow_up_field() {
+  local field="${1:?field is required}"
+
+  INCOMING_PATH="$INCOMING_PATH" FIELD="$field" node --input-type=module <<'NODE'
+import fs from 'node:fs'
+
+const body = fs.existsSync(process.env.INCOMING_PATH)
+  ? fs.readFileSync(process.env.INCOMING_PATH, 'utf8')
+  : ''
+
+const patterns = {
+  previousIssue: /- 原 Issue:\s*(?:#)?(\d+)/,
+  previousPr: /- 原 PR:\s*(?:#)?(\d+)/,
+}
+
+console.log(body.match(patterns[process.env.FIELD])?.[1] || '')
+NODE
+}
+
 prepare_issue_artifacts() {
   mkdir -p "$ISSUE_ARTIFACT_DIR"
 
@@ -183,6 +202,40 @@ prepare_issue_artifacts() {
 
   if [[ ! -f "$DECISION_PATH" && -f ".auto-dev/decision.md" ]]; then
     cp ".auto-dev/decision.md" "$DECISION_PATH"
+  fi
+}
+
+mark_superseded_follow_up() {
+  local new_pr_url="${1:?new PR URL is required}"
+  local previous_issue previous_pr new_pr_ref
+
+  if [[ "$AUTO_PIPELINE" != "auto-fix" ]]; then
+    return 0
+  fi
+
+  previous_issue="$(extract_follow_up_field previousIssue)"
+  previous_pr="$(extract_follow_up_field previousPr)"
+
+  if [[ -z "$previous_issue" && -z "$previous_pr" ]]; then
+    return 0
+  fi
+
+  new_pr_ref="$(printf '%s' "$new_pr_url" | sed -n 's#.*/pull/\([0-9][0-9]*\).*#\1#p')"
+  if [[ -n "$new_pr_ref" ]]; then
+    new_pr_ref="#${new_pr_ref}"
+  else
+    new_pr_ref="$new_pr_url"
+  fi
+
+  if [[ -n "$previous_issue" ]]; then
+    gh issue comment "$previous_issue" \
+      --body "后续修复 PR 已创建：${new_pr_ref}。这个 Issue 的修复链路已由 #${ISSUE_NUMBER} / ${new_pr_ref} 接管。" >/dev/null || true
+  fi
+
+  if [[ -n "$previous_pr" ]]; then
+    gh pr comment "$previous_pr" \
+      --body "后续修复 PR 已创建：${new_pr_ref}。本 PR 已被 #${ISSUE_NUMBER} / ${new_pr_ref} 接管，自动关闭以避免误合并旧修复。" >/dev/null || true
+    gh pr close "$previous_pr" --comment "Superseded by #${ISSUE_NUMBER} / ${new_pr_ref}." >/dev/null || true
   fi
 }
 
@@ -332,6 +385,8 @@ open_pr_from_current_changes() {
       --base main \
       --head "$branch")" || return 1
   fi
+
+  mark_superseded_follow_up "$pr_url"
 
   AGENT_ROLE=QA bash scripts/update-status.sh \
     --stage pr_opened \
