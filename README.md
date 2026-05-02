@@ -167,11 +167,21 @@ npm run preview
    export const title = 'Dijkstra 最短路径'
    export const description = '可视化贪心策略下的单源最短路径求解过程。'
    export const path = '/animations/dijkstra'
+   export const category = 'graph'
    ```
 
 3. **完成**
 
-   `src/App.jsx` 会通过 Vite `import.meta.glob` 自动发现动画，不需要手动改共享入口文件。首页会自动展示新卡片，路由和导航栏均已配置完毕。
+   `src/App.jsx` 会通过 Vite `import.meta.glob` 自动发现动画，不需要手动改共享入口文件。首页会自动按 `category` 分组展示新卡片，路由和导航栏均已配置完毕。
+
+   当前支持的分类 key：
+
+   - `sorting`：排序算法
+   - `search`：查找算法
+   - `graph`：图算法
+   - `dynamic`：动态规划
+   - `dataStructure`：数据结构
+   - `other`：其他算法
 
 ---
 

@@ -79,7 +79,7 @@ bash scripts/update-status.sh --stage qa_returned_to_frontend --owner frontend -
 新增动画遵循现有结构：
 
 - 算法纯函数放在 `src/animations/<slug>/algorithm.js`，零 DOM 依赖，导出计算函数和测试函数。
-- 动画组件放在 `src/animations/<slug>/index.jsx`，元数据放在 `src/animations/<slug>/meta.js`；复用 `src/components/ui/button.jsx`、`src/components/ui/card.jsx`、Framer Motion 和 `pagerank_process_animation.jsx` 的播放控制模式。
+- 动画组件放在 `src/animations/<slug>/index.jsx`，元数据放在 `src/animations/<slug>/meta.js`；`meta.js` 必须包含 `category`，用 `sorting`、`search`、`graph`、`dynamic`、`dataStructure` 或 `other` 驱动首页分组；复用 `src/components/ui/button.jsx`、`src/components/ui/card.jsx`、Framer Motion 和 `pagerank_process_animation.jsx` 的播放控制模式。
 - 不要为了新增动画修改 `src/App.jsx`；应用会通过 Vite `import.meta.glob` 自动发现动画目录，避免多个自动开发 PR 冲突。
 - 卡片内容和 footer 必须保留顶部留白；不要在算法可视化页使用 `pt-0` 或 `padding-top: 0`，这类布局问题必须在 QA 阶段拦截。
 - 运行 `npm run build`，算法自检使用 Node ESM import。

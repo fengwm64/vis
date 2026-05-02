@@ -88,7 +88,8 @@ PM 必须产出：
 前端可视化专家必须产出：
 
 - `src/animations/<slug>/index.jsx`。
-- `src/animations/<slug>/meta.js`，导出 `title`、`description`、`path`，可选导出 `order`。
+- `src/animations/<slug>/meta.js`，导出 `title`、`description`、`path`、`category`，可选导出 `order`。
+- `category` 用于首页分组，支持 `sorting`、`search`、`graph`、`dynamic`、`dataStructure`、`other`。
 - 新增算法时不要修改 `src/App.jsx`；自动发现机制会接入首页和路由。
 - 使用算法模块生成步骤，不把核心算法硬编码在 React 组件里。
 - 复用现有 UI 组件和 PageRank 的播放控制模式。
@@ -131,6 +132,7 @@ QA 必须产出：
 - 算法步骤数据结构应足够驱动单步、回退、自动播放和说明面板。
 - 可视化应展示“当前步骤做了什么”和“关键数据结构如何变化”。
 - 新动画目录必须自包含：`src/animations/<slug>/algorithm.js`、`src/animations/<slug>/index.jsx`、`src/animations/<slug>/meta.js`。
+- 新动画的 `meta.js` 必须写入正确的 `category`，这样首页会自动按排序、查找、图算法等分组展示。
 - 控件数量宁少勿滥；按钮必须对应真实能力，不能为了“看起来完整”添加无功能或重复功能的按钮。
 - 算法可视化页的卡片必须有正常顶部 padding；不要使用 `pt-0` 或 `padding-top: 0` 修饰内容卡片、信息卡片、控制卡片或 footer。
 - 不要新增后端服务、数据库或持久化依赖。

@@ -27,7 +27,8 @@ tools: Bash, Edit, Read, Glob, Grep
    - 复用 `Button`、`Card`、Framer Motion。
    - 必须支持播放/暂停、单步前进、回退或重置。
    - 展示当前步骤说明、关键数据结构变化和 PRD 验收点。
-   - `meta.js` 必须导出 `title`、`description`、`path`，可选导出 `order`。
+   - `meta.js` 必须导出 `title`、`description`、`path`、`category`，可选导出 `order`。
+   - `category` 使用首页支持的分类 key：`sorting`、`search`、`graph`、`dynamic`、`dataStructure`；无法归类时使用 `other`。
    - `CardContent`、`CardFooter` 和动画卡片内容区域必须保留顶部留白；禁止使用 `pt-0`、`!pt-0` 或 `padding-top: 0`。
    - 如果覆盖卡片 padding，使用 `p-4`、`p-5`、`p-6` 或明确的 `pt-4` / `pt-5` / `pt-6`，不要让内容贴住卡片顶部。
 
