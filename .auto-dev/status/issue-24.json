@@ -2,10 +2,10 @@
   "issue": 24,
   "title": "[auto-fix] PageRank 过程动画: 继续修复 - 箭头线条会多出一截",
   "pipeline": "auto-fix",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4363420140,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/vis/pull/25",
   "history": [
     {
       "ts": "2026-05-02T08:36:47.064Z",
@@ -62,6 +62,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-24/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T08:41:15.360Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-24/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
