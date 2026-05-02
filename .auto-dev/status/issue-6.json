@@ -1,0 +1,81 @@
+{
+  "issue": 6,
+  "title": "[auto-fix] 冒泡排序: 排序 按钮无效",
+  "current_stage": "pr_opened",
+  "current_owner": "qa",
+  "pinned_comment_id": 4362858969,
+  "pr_url": "https://github.com/fengwm64/vis/pull/7",
+  "history": [
+    {
+      "ts": "2026-05-02T03:54:22.007Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-6.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T03:54:56.227Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-6.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T03:55:28.232Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/prd.md",
+      "message": "PRD is ready. Button redundancy fix, no algorithm change needed."
+    },
+    {
+      "ts": "2026-05-02T03:55:54.024Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T03:56:14.894Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/bubble-sort.jsx",
+      "message": "Frontend animation is ready. Removed redundant 排序 button, added onBlur and Enter key handlers."
+    },
+    {
+      "ts": "2026-05-02T03:56:36.969Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T03:57:26.016Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T03:57:38.964Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}

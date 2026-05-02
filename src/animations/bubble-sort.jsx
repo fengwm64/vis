@@ -279,21 +279,20 @@ export default function BubbleSortAnimation() {
                     <label className="text-xs text-slate-600 mb-1 block">
                       自定义数组（逗号分隔）
                     </label>
-                    <div className="flex gap-2">
-                      <input
+                    <input
                         type="text"
                         value={inputText}
                         onChange={(e) => setInputText(e.target.value)}
-                        className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-indigo-500 focus:outline-none"
+                        onBlur={handleConfirm}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleConfirm();
+                          }
+                        }}
+                        className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-indigo-500 focus:outline-none"
                         placeholder="例如: 64, 34, 25, 12"
                       />
-                      <Button
-                        onClick={handleConfirm}
-                        className="rounded-lg text-sm"
-                      >
-                        排序
-                      </Button>
-                    </div>
                   </div>
 
                   {/* Random generation */}
