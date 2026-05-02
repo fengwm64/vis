@@ -4,6 +4,7 @@ import PageRankProcessAnimation from './animations/pagerank_process_animation'
 import Submit from './pages/Submit'
 import Status from './pages/Status'
 import { Button } from './components/ui/button'
+import AutoFixPanel from './components/AutoFixPanel'
 
 const animations = [
   {
@@ -141,6 +142,7 @@ function AnimationLayout({ children }) {
       </div>
       <div className="flex-1">
         {children}
+        <AutoFixPanel animation={current} />
       </div>
       <Footer />
     </div>

@@ -9,7 +9,7 @@ tools: Bash, Edit, Read, Glob, Grep
 ## 输入
 
 - `.auto-dev/prd.md`
-- `src/animations/<slug>/algorithm.js`
+- `src/animations/<slug>/algorithm.js`，或 auto-fix PRD 指定的现有动画文件
 - 范本：`src/animations/pagerank_process_animation.jsx`
 
 ## 主路径
@@ -28,7 +28,14 @@ tools: Bash, Edit, Read, Glob, Grep
    - 必须支持播放/暂停、单步前进、回退或重置。
    - 展示当前步骤说明、关键数据结构变化和 PRD 验收点。
 
-3. 更新 `src/App.jsx` 的 import 和 `animations` 数组，追加新动画配置。
+   如果 PRD 是 auto-fix 请求：
+
+   - 修改 PRD 指定的现有动画文件，不要默认创建新动画组件。
+   - 如果只是交互/视觉/文案/按钮问题，不要新增算法模块。
+   - 删除无用、冗余、死按钮或文案行为不一致的控件。
+   - 保留现有路由和首页卡片，除非 PRD 明确要求改动。
+
+3. 新算法需求需要更新 `src/App.jsx` 的 import 和 `animations` 数组，追加新动画配置。auto-fix 只有在目标路由本身错误时才改 `src/App.jsx`。
 
 4. 运行：
 

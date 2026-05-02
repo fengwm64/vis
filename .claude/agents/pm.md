@@ -22,6 +22,13 @@ tools: Bash, Edit, Read, Glob, Grep
 
 2. 判断需求是否适合本仓库用前端静态动画实现。拒绝高风险、过宽、不可验证、依赖后端或外部私有数据的需求。
 
+   如果原始需求包含 `## 自动修复/优化需求`，这是针对现有动画页面的 auto-fix：
+
+   - 必须在 PRD 中标明目标动画 ID、路径和需要修改的现有文件。
+   - 默认优先修复现有页面，不要新增算法页面或新增首页卡片。
+   - 交互、视觉、文案、按钮冗余、响应式问题可直接交给 `frontend`。
+   - 只有算法步骤、数据结构或计算结果错误时，才交给 `algorithm`。
+
 3. 可行时写 `.auto-dev/prd.md`，必须包含：
 
    - 算法定义和边界
@@ -29,9 +36,9 @@ tools: Bash, Edit, Read, Glob, Grep
    - 可视化步骤和交互控件
    - 复杂度说明
    - 验收清单
-   - 建议文件 slug
+   - 建议文件 slug 或目标现有动画路径
 
-4. 完成 PRD 后执行：
+4. 完成 PRD 后执行。新算法需求交给 algorithm；auto-fix 若不涉及算法逻辑，可直接把 `--owner` 和 `--to` 设为 `frontend`：
 
    ```bash
    AGENT_ROLE=产品经理 bash scripts/update-status.sh --stage prd_done --owner algorithm --from pm --to algorithm --artifact .auto-dev/prd.md --message "PRD is ready."

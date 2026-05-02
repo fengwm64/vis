@@ -19,6 +19,17 @@
   -> QA 通过后创建 auto-dev/issue-N 分支和 PR
 ```
 
+现有动画修复链路：
+
+```text
+动画页 Auto-Fix 表单
+  -> /api/fix 创建 auto-dev Issue
+  -> PM 判断是否直接交给 frontend 或先交给 algorithm
+  -> Agent 修改现有动画页面
+  -> QA 检查交互 bug 和冗余控件
+  -> 自动创建修复 PR
+```
+
 关键设计：
 
 - **无后端服务**：网站仍是 Cloudflare Pages SPA，API 只用 Pages Functions。
@@ -26,6 +37,7 @@
 - **三路可观测性**：`.auto-dev/status/issue-N.json`、Issue sticky comment、网站 `/status` 页面。
 - **实时通知**：阶段切换、handoff、失败会通过飞书机器人广播。
 - **QA 交互审计**：QA 会检查无用/冗余按钮、死按钮、播放控制边界、文案行为一致性和潜在交互 bug。
+- **Auto-Fix 入口**：每个算法动画页底部都可以提交对当前动画的修复或优化建议。
 - **LLM 调用统一入口**：所有模型调用都由 Claude Code 完成，workflow 通过 MiMo Anthropic 兼容网关注入 `ANTHROPIC_BASE_URL`。
 
 ---
@@ -86,6 +98,7 @@ npm run preview
 ├── functions/
 │   └── api/                       # Cloudflare Pages Functions
 │       ├── submit.js              # 自动开发需求提交接口
+│       ├── fix.js                 # 现有动画 auto-fix 提交接口
 │       └── status.js              # 自动开发状态聚合接口
 ├── .claude/
 │   ├── agents/                    # Claude Code 子 agent 定义
@@ -218,9 +231,10 @@ npm run preview
 
 6. 保存并部署。
 
-Cloudflare Pages 会自动识别 `functions/api/submit.js` 和 `functions/api/status.js`：
+Cloudflare Pages 会自动识别 `functions/api/submit.js`、`functions/api/fix.js` 和 `functions/api/status.js`：
 
 - `POST /api/submit`：创建带 `auto-dev` label 的 GitHub Issue。
+- `POST /api/fix`：为现有动画创建带 `auto-dev` label 的修复/优化 Issue。
 - `GET /api/status`：聚合自动开发状态供 `/status` 页面轮询。
 
 > `public/_redirects` 已配置 SPA 路由回退规则，确保刷新页面不会 404；Cloudflare Pages Functions 的 `/api/*` 路径优先级高于 SPA fallback。
@@ -256,7 +270,7 @@ npm run build
 
 ### 7. 常见问题
 
-- 如果 `/api/submit` 返回 GitHub 错误，先确认 Cloudflare Pages 的 `GITHUB_TOKEN` 是否存在，且 token 对目标仓库有 `Issues: Read and write` 权限。
+- 如果 `/api/submit` 或 `/api/fix` 返回 GitHub 错误，先确认 Cloudflare Pages 的 `GITHUB_TOKEN` 是否存在，且 token 对目标仓库有 `Issues: Read and write` 权限。
 - 如果 Issue 创建失败并提示 label 相关错误，确认仓库中已存在 `auto-dev` label。
 - 如果 workflow 没启动，确认 Issue 是被加上 `auto-dev` label 后触发的，且 Actions 已启用。
 - 如果 Claude Code 报 `Not supported model ***`，把 GitHub Secret `ANTHROPIC_MODEL` 改成小写接口 ID，例如 `mimo-v2.5-pro`。`MiMo-V2.5-Pro` 是展示名，网关会拒绝。
@@ -279,7 +293,7 @@ wrangler login
 wrangler pages deploy dist
 ```
 
-手动部署后仍需在 Cloudflare Pages 项目里配置 `GITHUB_TOKEN`，否则 `/api/submit` 无法创建 Issue。
+手动部署后仍需在 Cloudflare Pages 项目里配置 `GITHUB_TOKEN`，否则 `/api/submit` 和 `/api/fix` 无法创建 Issue。
 
 ## 已有可视化
 

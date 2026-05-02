@@ -19,11 +19,12 @@
 
 1. 用户在网站 `/submit` 填表。
 2. `functions/api/submit.js` 调 GitHub API 创建 Issue。
-3. Issue 自动带 `auto-dev` label。
-4. GitHub Actions 的 `.github/workflows/auto-dev.yml` 监听该 label。
-5. workflow 安装 Claude Code 和 npm 依赖，然后执行 `bash scripts/start.sh`。
-6. `scripts/start.sh` 初始化 `.auto-dev/incoming/issue-N.md` 和 `.auto-dev/status/issue-N.json`，再启动 Claude Code，让 PM agent 接单。
-7. QA agent 推进到 `qa_passed` 后退出；`scripts/start.sh` finalizer 从普通 shell 环境复核构建和算法测试，然后提交、推送并创建 PR。
+3. 用户也可以在任意动画页底部的 Auto-Fix 表单提交现有动画的修复/优化建议，`functions/api/fix.js` 会创建 auto-fix Issue。
+4. Issue 自动带 `auto-dev` label。
+5. GitHub Actions 的 `.github/workflows/auto-dev.yml` 监听该 label。
+6. workflow 安装 Claude Code 和 npm 依赖，然后执行 `bash scripts/start.sh`。
+7. `scripts/start.sh` 初始化 `.auto-dev/incoming/issue-N.md` 和 `.auto-dev/status/issue-N.json`，再启动 Claude Code，让 PM agent 接单。
+8. QA agent 推进到 `qa_passed` 后退出；`scripts/start.sh` finalizer 从普通 shell 环境复核构建和算法测试，然后提交、推送并创建 PR。
 
 ## LLM 和运行环境
 
@@ -59,6 +60,7 @@
 Cloudflare Pages Functions：
 
 - `functions/api/submit.js`：接收网站表单，创建 `auto-dev` Issue。
+- `functions/api/fix.js`：接收动画页 Auto-Fix 表单，创建针对现有动画的 `auto-dev` Issue。
 - `functions/api/status.js`：聚合 Issue、status JSON、PR 分支状态和 sticky comment，供 `/status` 页面轮询。
 
 Claude agents：
@@ -74,6 +76,7 @@ PM 必须产出：
 
 - `.auto-dev/prd.md`，包含算法定义、边界、输入规模、可视化步骤、复杂度、验收清单、建议 slug。
 - 如果拒绝，产出 `.auto-dev/decision.md`，状态进入 `rejected`，不再交给其他 agent。
+- 如果是 auto-fix Issue，PRD 必须包含目标动画 ID、目标路径、现有文件、问题类型、复现方式和验收标准；交互/视觉/文案问题可直接交给 frontend。
 
 算法工程师必须产出：
 
@@ -90,6 +93,7 @@ PM 必须产出：
 - 复用现有 UI 组件和 PageRank 的播放控制模式。
 - 每个按钮和交互控件都必须有明确用途、可触发可见状态变化，并和文案一致；不要添加占位、重复、无用或不可达按钮。
 - `npm run build` 必须通过。
+- 处理 auto-fix 时优先修改目标现有动画文件；除非 PRD 明确要求，不要新增动画路由或首页卡片。
 
 QA 必须产出：
 
