@@ -36,7 +36,7 @@
 - **无后端服务**：网站仍是 Cloudflare Pages SPA，API 只用 Pages Functions。
 - **无中央 orchestrator agent**：`scripts/start.sh` 是 shell supervisor，按 status JSON 启动各角色；agent 只负责产物和 handoff 状态，PR 创建由 finalizer 统一收口。
 - **分离入口**：新算法开发使用 `auto-dev` label 和 `Auto Dev Agents` workflow；现有动画修复使用 `auto-fix` label 和 `Auto Fix Agents` workflow。两个 workflow 都由 Pages Function 精确 dispatch，不再监听同一个 `issues.labeled` 事件。
-- **降低 PR 冲突**：两个 workflow 共用同一个 GitHub Actions concurrency group，因此 auto-dev / auto-fix 任务会排队串行执行；新动画通过 `src/animations/<slug>/meta.js` 和 `index.jsx` 自动注册，不需要改 `src/App.jsx`。
+- **降低 PR 冲突**：workflow concurrency 只按单个 issue 去重，不再使用全局串行队列，避免 GitHub Actions 在 pending 过多时取消旧任务；新动画通过 `src/animations/<slug>/meta.js` 和 `index.jsx` 自动注册，不需要改 `src/App.jsx`。
 - **三路可观测性**：`.auto-dev/status/issue-N.json`、带 PRD / QA 报告折叠预览的 Issue sticky comment、网站 `/status` 页面。
 - **实时通知**：阶段切换、handoff、失败会通过飞书机器人广播。
 - **QA 交互审计**：QA 会检查无用/冗余按钮、死按钮、播放控制边界、文案行为一致性和潜在交互 bug。
@@ -305,7 +305,7 @@ npm run build
 - 如果 `/api/submit` 或 `/api/fix` 返回 GitHub 错误，先确认 Cloudflare Pages 的 `GITHUB_TOKEN` 是否存在，且 token 对目标仓库有 `Issues: Read and write` 和 `Actions: Read and write` 权限。
 - 如果 Issue 创建失败并提示 label 相关错误，确认仓库中已存在 `auto-dev` 和 `auto-fix` 两个 label。
 - 如果 workflow 没启动，确认 Cloudflare `GITHUB_TOKEN` 有 `Actions: Read and write` 权限，且 `.github/workflows/auto-dev.yml` / `.github/workflows/auto-fix.yml` 已在默认分支。
-- 如果多个 auto-dev / auto-fix Issue 同时提交，后提交的 workflow 会排队等待前一个完成；这是为了减少自动生成 PR 之间的入口文件冲突。
+- 如果多个 auto-dev / auto-fix Issue 同时提交，它们可以并行运行；同一个 issue 被重复 dispatch 时会按 issue 级 concurrency 去重。若多个 PR 修改同一动画文件，最终以 GitHub PR 的合并冲突提示为准。
 - 如果 Claude Code 报 `Not supported model ***`，把 GitHub Secret `ANTHROPIC_MODEL` 改成小写接口 ID，例如 `mimo-v2.5-pro`。`MiMo-V2.5-Pro` 是展示名，网关会拒绝。
 - 如果 Claude Code 报 sandbox 阻止 `npm` 或 `git`，确认 workflow 已更新到使用 `--permission-mode bypassPermissions`，并且 QA agent 不再直接执行 git；最终 PR 应由 `scripts/start.sh` finalizer 创建。
 - 如果日志里没有 `Claude Code environment diagnostics` 分组，说明 workflow 还没有运行到包含诊断逻辑的最新提交。

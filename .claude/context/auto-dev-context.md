@@ -38,7 +38,7 @@
 - `scripts/start.sh` 会在 GitHub Actions 日志中打印安全诊断信息，并强制用 `claude -p --model "$ANTHROPIC_MODEL"` 启动，避免 Claude Code 默认别名回退到 Anthropic 官方模型。
 - 飞书通知使用 `FEISHU_WEBHOOK`。
 - GitHub 操作使用 workflow 内置 `GH_TOKEN`。
-- `.github/workflows/auto-dev.yml` 和 `.github/workflows/auto-fix.yml` 使用同一个 repo 级 concurrency group，多个 auto-dev / auto-fix issue 会排队串行执行，避免同时修改代码、status 文件或共享动画入口造成冲突。
+- `.github/workflows/auto-dev.yml` 和 `.github/workflows/auto-fix.yml` 使用 issue 级 concurrency group，只对同一个 issue 的重复运行做互斥；不同 issue 可以并行运行，避免 GitHub Actions 全局 pending 队列取消旧任务。
 
 ## 关键文件契约
 

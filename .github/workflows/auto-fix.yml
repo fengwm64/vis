@@ -14,7 +14,7 @@ permissions:
   issues: write
 
 concurrency:
-  group: auto-agent-team-${{ github.repository }}
+  group: auto-agent-team-${{ github.repository }}-${{ github.workflow }}-${{ inputs.issue_number }}
   cancel-in-progress: false
 
 jobs:
