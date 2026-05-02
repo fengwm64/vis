@@ -78,7 +78,7 @@ export default function BinarySearchAnimation() {
     const s = computeSteps(arr, target);
     setSteps(s);
     setStepIndex(0);
-    setPlaying(false);
+    setPlaying(true);
   }, [inputText, targetText]);
 
   const goNext = useCallback(() => {
