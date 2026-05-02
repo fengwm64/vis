@@ -28,6 +28,10 @@ function cleanText(value, limit) {
     .slice(0, limit)
 }
 
+function withPrefix(title, prefix) {
+  return title.startsWith(prefix) ? title : `${prefix} ${title}`
+}
+
 function buildIssueBody({ animationId, animationTitle, animationPath, area, title, description }) {
   return `## 自动修复/优化需求
 
@@ -104,7 +108,7 @@ export async function onRequestPost({ request, env }) {
       'X-GitHub-Api-Version': '2022-11-28',
     },
     body: JSON.stringify({
-      title: `[auto-fix] ${animationTitle}: ${title}`,
+      title: withPrefix(`${animationTitle}: ${title}`, '[auto-fix]'),
       body: buildIssueBody({ animationId, animationTitle, animationPath, area, title, description }),
       labels: ['auto-dev'],
     }),

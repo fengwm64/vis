@@ -28,6 +28,10 @@ function cleanText(value, limit) {
     .slice(0, limit)
 }
 
+function withPrefix(title, prefix) {
+  return title.startsWith(prefix) ? title : `${prefix} ${title}`
+}
+
 function formatRefs(value) {
   const lines = String(value || '')
     .split('\n')
@@ -103,7 +107,7 @@ export async function onRequestPost({ request, env }) {
       'X-GitHub-Api-Version': '2022-11-28',
     },
     body: JSON.stringify({
-      title,
+      title: withPrefix(title, '[auto-dev]'),
       body: buildIssueBody({ title, description, refs, expectedComplexity }),
       labels: ['auto-dev'],
     }),

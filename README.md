@@ -237,6 +237,11 @@ Cloudflare Pages 会自动识别 `functions/api/submit.js`、`functions/api/fix.
 - `POST /api/fix`：为现有动画创建带 `auto-dev` label 的修复/优化 Issue。
 - `GET /api/status`：聚合自动开发状态供 `/status` 页面轮询。
 
+Issue 标题约定：
+
+- 新算法需求：`[auto-dev] <算法名称>`
+- 现有动画修复：`[auto-fix] <动画标题>: <修改标题>`
+
 > `public/_redirects` 已配置 SPA 路由回退规则，确保刷新页面不会 404；Cloudflare Pages Functions 的 `/api/*` 路径优先级高于 SPA fallback。
 
 ### 5. 验证普通站点部署
