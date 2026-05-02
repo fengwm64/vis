@@ -2,10 +2,10 @@
   "issue": 41,
   "title": "[auto-dev] BFS遍历算法",
   "pipeline": "auto-dev",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4364114167,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/AlgorithmVisualizations/pull/44",
   "history": [
     {
       "ts": "2026-05-02T15:16:58.005Z",
@@ -78,6 +78,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-41/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T15:25:12.379Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-41/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
