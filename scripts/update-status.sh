@@ -139,12 +139,44 @@ const status = JSON.parse(fs.readFileSync(process.env.STATUS_PATH, 'utf8'))
 const history = Array.isArray(status.history) ? status.history : []
 const pipeline = status.pipeline || process.env.AUTO_PIPELINE || 'auto-dev'
 const cell = (value) => String(value || '').replace(/\n/g, ' ').replace(/\|/g, '\\|')
+const artifactDir = `.auto-dev/issues/issue-${status.issue}`
+const previewLimit = 9000
 const rows = history.slice(-12).map((item) => {
   const artifact = item.artifact ? `\`${cell(item.artifact)}\`` : ''
   return `| ${cell(item.ts)} | ${cell(item.from)} -> ${cell(item.to)} | ${cell(item.stage)} | ${artifact} | ${cell(item.message)} |`
 })
 
 const prLine = status.pr_url ? `\nPR: ${status.pr_url}\n` : ''
+const artifactSpecs = [
+  ['PRD', `${artifactDir}/prd.md`],
+  ['QA Report', `${artifactDir}/qa-report.md`],
+  ['Decision', `${artifactDir}/decision.md`],
+]
+
+function escapeDetails(value) {
+  return String(value || '').replace(/<\/details>/gi, '<\\/details>')
+}
+
+function readArtifactPreview(label, filePath) {
+  if (!fs.existsSync(filePath)) return null
+
+  const raw = fs.readFileSync(filePath, 'utf8').trim()
+  const truncated = raw.length > previewLimit
+    ? `${raw.slice(0, previewLimit)}\n\n... truncated in Issue comment; see \`${filePath}\` in the PR branch for the full file.`
+    : raw
+
+  return `<details>
+<summary>${label}: <code>${filePath}</code></summary>
+
+${escapeDetails(truncated)}
+
+</details>`
+}
+
+const artifactPreviews = artifactSpecs
+  .map(([label, filePath]) => readArtifactPreview(label, filePath))
+  .filter(Boolean)
+  .join('\n\n')
 
 console.log(`<!-- auto-agent-status:${status.issue} -->
 ## Auto Agent Status
@@ -163,6 +195,10 @@ ${prLine}
 | Time | Handoff | Stage | Artifact | Message |
 | --- | --- | --- | --- | --- |
 ${rows.join('\n') || '| - | - | - | - | - |'}
+
+### Intermediate Artifacts
+
+${artifactPreviews || '_No PRD / QA report / decision file has been generated yet._'}
 `)
 NODE
 }

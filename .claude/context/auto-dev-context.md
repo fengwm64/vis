@@ -117,7 +117,7 @@ QA 必须产出：
 每次状态变化必须保持三路一致：
 
 1. `.auto-dev/status/issue-N.json`
-2. GitHub Issue sticky status comment
+2. GitHub Issue sticky status comment，包含状态表、最近 history，以及当前 issue 的 PRD / QA 报告 / 决策说明折叠预览
 3. 飞书群消息
 
 网站 `/status` 是总览页，依次尝试读取：

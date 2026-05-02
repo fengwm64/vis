@@ -37,7 +37,7 @@
 - **无中央 orchestrator agent**：`scripts/start.sh` 是 shell supervisor，按 status JSON 启动各角色；agent 只负责产物和 handoff 状态，PR 创建由 finalizer 统一收口。
 - **分离入口**：新算法开发使用 `auto-dev` label 和 `Auto Dev Agents` workflow；现有动画修复使用 `auto-fix` label 和 `Auto Fix Agents` workflow。两个 workflow 都由 Pages Function 精确 dispatch，不再监听同一个 `issues.labeled` 事件。
 - **降低 PR 冲突**：两个 workflow 共用同一个 GitHub Actions concurrency group，因此 auto-dev / auto-fix 任务会排队串行执行；新动画通过 `src/animations/<slug>/meta.js` 和 `index.jsx` 自动注册，不需要改 `src/App.jsx`。
-- **三路可观测性**：`.auto-dev/status/issue-N.json`、Issue sticky comment、网站 `/status` 页面。
+- **三路可观测性**：`.auto-dev/status/issue-N.json`、带 PRD / QA 报告折叠预览的 Issue sticky comment、网站 `/status` 页面。
 - **实时通知**：阶段切换、handoff、失败会通过飞书机器人广播。
 - **QA 交互审计**：QA 会检查无用/冗余按钮、死按钮、播放控制边界、文案行为一致性和潜在交互 bug。
 - **Auto-Fix 入口**：每个算法动画页底部都可以提交对当前动画的修复或优化建议。
@@ -282,6 +282,7 @@ npm run build
 5. 在飞书群里确认收到 `[#issue]` 前缀的状态消息。
 6. 等待 workflow 结束后检查：
    - Issue sticky comment 有状态表。
+   - Issue sticky comment 里能展开查看当前 issue 的 PRD 和 QA 报告预览。
    - PR 分支名类似 `auto-dev/issue-N`。
    - PR 中包含 `.auto-dev/status/issue-N.json`、`.auto-dev/issues/issue-N/prd.md`、`.auto-dev/issues/issue-N/qa-report.md` 和动画代码。
    - `/status` 页面能看到当前阶段和 PR 链接。
