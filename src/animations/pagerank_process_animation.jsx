@@ -192,7 +192,7 @@ export default function PageRankProcessAnimation() {
 
         <div className="grid gap-5 lg:grid-cols-[1.35fr_1fr]">
           <Card className="rounded-2xl shadow-sm">
-            <CardContent className="p-4">
+            <CardContent className="p-4 !pt-4">
               <div className="mb-3 flex items-center justify-between">
                 <div className="font-semibold">有向链接图</div>
                 <div className="rounded-full bg-white px-3 py-1 text-sm shadow-sm">第 {round} 轮 / {history.length - 1}</div>
@@ -243,7 +243,7 @@ export default function PageRankProcessAnimation() {
 
           <div className="space-y-5">
             <Card className="rounded-2xl shadow-sm">
-              <CardContent className="p-5">
+              <CardContent className="p-5 !pt-5">
                 <div className="mb-2 text-sm font-semibold text-slate-500">迭代公式</div>
                 <div className="rounded-2xl bg-slate-100 p-4 text-center text-lg">
                   <span className="font-semibold">PR</span>(v) = 
@@ -268,7 +268,7 @@ export default function PageRankProcessAnimation() {
             </Card>
 
             <Card className="rounded-2xl shadow-sm">
-              <CardContent className="p-5">
+              <CardContent className="p-5 !pt-5">
                 <div className="mb-4 flex items-center justify-between">
                   <div className="font-semibold">当前排名</div>
                   <div className="text-sm text-slate-500">
@@ -300,7 +300,7 @@ export default function PageRankProcessAnimation() {
             </Card>
 
             <Card className="rounded-2xl shadow-sm">
-              <CardContent className="p-5 text-sm leading-6 text-slate-600">
+              <CardContent className="p-5 !pt-5 text-sm leading-6 text-slate-600">
                 <div className="mb-2 font-semibold text-slate-900">读图方式</div>
                 <p>圆越大，PageRank 越高。箭头表示链接方向。动画中的小点表示当前轮次中 PageRank 沿链接传递。</p>
               </CardContent>
