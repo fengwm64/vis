@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 
 const damping = 0.85;
 const nodes = [
-  { id: "A", x: 120, y: 100 },
-  { id: "B", x: 330, y: 70 },
-  { id: "C", x: 460, y: 230 },
-  { id: "D", x: 220, y: 300 },
-  { id: "E", x: 80, y: 250 },
+  { id: "A", x: 140, y: 80 },
+  { id: "B", x: 380, y: 80 },
+  { id: "C", x: 460, y: 260 },
+  { id: "D", x: 280, y: 340 },
+  { id: "E", x: 100, y: 260 },
 ];
 
 const edges = [
