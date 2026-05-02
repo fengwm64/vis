@@ -97,8 +97,8 @@ function Arrow({ from, to, active }) {
   const uy = dy / len;
   const sx = start.x + ux * 35;
   const sy = start.y + uy * 35;
-  const ex = end.x - ux * 39;
-  const ey = end.y - uy * 39;
+  const ex = end.x - ux * 42;
+  const ey = end.y - uy * 42;
   const angle = (Math.atan2(ey - sy, ex - sx) * 180) / Math.PI;
 
   return (
@@ -108,17 +108,17 @@ function Arrow({ from, to, active }) {
         y1={sy}
         x2={ex}
         y2={ey}
-        stroke={active ? "currentColor" : "#a8a8a8"}
+        stroke={active ? "currentColor" : "#64748b"}
         strokeWidth={active ? 3 : 2}
         className={active ? "text-indigo-600" : ""}
-        opacity={active ? 0.95 : 0.55}
+        opacity={active ? 0.95 : 0.7}
       />
       <polygon
-        points="0,-5 10,0 0,5"
+        points="0,-7 14,0 0,7"
         transform={`translate(${ex},${ey}) rotate(${angle})`}
-        fill={active ? "currentColor" : "#a8a8a8"}
+        fill={active ? "currentColor" : "#475569"}
         className={active ? "text-indigo-600" : ""}
-        opacity={active ? 0.95 : 0.55}
+        opacity={active ? 0.95 : 0.85}
       />
       {active && (
         <motion.circle

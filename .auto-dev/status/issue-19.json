@@ -1,0 +1,82 @@
+{
+  "issue": 19,
+  "title": "[auto-fix] PageRank 过程动画: 增加有向图的箭头",
+  "pipeline": "auto-fix",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4363321421,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T07:47:19.059Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-19.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T07:47:32.149Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-19.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T07:48:16.985Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-19/prd.md",
+      "message": "PRD is ready. Visual fix only — no algorithm changes needed."
+    },
+    {
+      "ts": "2026-05-02T07:48:59.315Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-19/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T07:49:20.151Z",
+      "from": "frontend",
+      "to": "frontend",
+      "stage": "frontend_coding",
+      "artifact": "src/animations/pagerank_process_animation.jsx",
+      "message": "Implementing arrow visibility improvements."
+    },
+    {
+      "ts": "2026-05-02T07:49:34.489Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/pagerank_process_animation.jsx",
+      "message": "Frontend animation is ready. Arrow visibility improved."
+    },
+    {
+      "ts": "2026-05-02T07:49:57.779Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-19/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T07:51:24.170Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-19/qa-report.md",
+      "message": "QA passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
