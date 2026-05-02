@@ -333,7 +333,7 @@ export default function InsertionSortAnimation() {
                 </span>
                 <span className="flex items-center gap-1">
                   <span className="inline-block h-3 w-3 rounded border-2 border-dashed border-slate-300 bg-slate-100" />
-                  key 已取出
+                  空位占位
                 </span>
               </div>
             </CardContent>
