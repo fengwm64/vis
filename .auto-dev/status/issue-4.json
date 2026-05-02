@@ -1,10 +1,10 @@
 {
   "issue": 4,
   "title": "冒泡排序",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4362742036,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/vis/pull/5",
   "history": [
     {
       "ts": "2026-05-02T03:01:46.091Z",
@@ -77,6 +77,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T03:06:51.969Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
