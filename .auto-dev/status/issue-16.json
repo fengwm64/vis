@@ -1,0 +1,74 @@
+{
+  "issue": 16,
+  "title": "[auto-fix] 冒泡排序: 取消随机生成数组出现负数",
+  "pipeline": "auto-fix",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4363290914,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T07:30:14.280Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-16.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T07:30:46.595Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-16.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T07:31:14.044Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-16/prd.md",
+      "message": "PRD ready. Fix is component-only: change randomArray() range from [-99,98] to [1,99]. No algorithm changes needed."
+    },
+    {
+      "ts": "2026-05-02T07:31:40.762Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-16/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T07:31:56.495Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/bubble-sort.jsx",
+      "message": "Frontend fix is ready. randomArray range changed from [-99,98] to [1,99]. npm run build passed."
+    },
+    {
+      "ts": "2026-05-02T07:32:28.598Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-16/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T07:33:06.971Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-16/qa-report.md",
+      "message": "QA passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
