@@ -298,7 +298,7 @@ npm run build
    - PR 分支名类似 `auto-fix/issue-N`。
    - PR 只修改目标现有动画或必要的共享文件。
    - `/status` 页面能区分显示“新算法”和“修复优化”。
-6. 如果修复后仍未解决，在 `/status` 对应 auto-fix 行点击“继续修复”，填写新的复现步骤；系统会创建新的 auto-fix Issue，并自动引用原 Issue / PR。
+6. 如果修复后仍未解决且 PR 尚未合并，在 `/status` 对应 auto-fix 行点击“继续修复”，填写新的复现步骤；系统会创建新的 auto-fix Issue，并自动引用原 Issue / PR。已合并的修复不会显示“继续修复”入口，应从动画页提交新的 Auto-Fix。
 
 ### 8. 常见问题
 

@@ -90,6 +90,10 @@ function PipelineBadge({ pipeline }) {
   )
 }
 
+function canContinueFix(item) {
+  return item?.pipeline === 'auto-fix' && item?.target && !item?.prMerged
+}
+
 function ContinueFixDialog({
   item,
   form,
@@ -401,7 +405,7 @@ export default function Status() {
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          {item.pipeline === 'auto-fix' && item.target ? (
+                          {canContinueFix(item) ? (
                             <Button
                               type="button"
                               size="sm"
@@ -411,6 +415,8 @@ export default function Status() {
                             >
                               继续修复
                             </Button>
+                          ) : item.pipeline === 'auto-fix' && item.prMerged ? (
+                            <span className="text-slate-400">已合并</span>
                           ) : (
                             <span className="text-slate-400">-</span>
                           )}

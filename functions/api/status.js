@@ -110,6 +110,32 @@ async function loadIssueStatus(issueNumber, pipeline = 'auto-dev', headers = {})
   )
 }
 
+function getPullNumberFromUrl(url = '') {
+  return Number(url.match(/\/pull\/(\d+)/)?.[1] || 0)
+}
+
+async function fetchPullRequestState(prUrl, headers = {}) {
+  const pullNumber = getPullNumberFromUrl(prUrl)
+  if (!pullNumber) return null
+
+  const data = await fetchJson(
+    `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/pulls/${pullNumber}`,
+    {
+      ...headers,
+      'X-GitHub-Api-Version': '2022-11-28',
+    },
+  )
+
+  if (!data) return null
+
+  return {
+    number: pullNumber,
+    state: data.state || null,
+    merged: Boolean(data.merged_at),
+    mergedAt: data.merged_at || null,
+  }
+}
+
 function getPipelineFromIssue(issue) {
   const labels = Array.isArray(issue.labels) ? issue.labels : []
   const names = labels.map((label) => typeof label === 'string' ? label : label.name)
@@ -171,6 +197,7 @@ export async function onRequestGet({ env }) {
       issueItems.map(async (issue) => {
         const pipeline = getPipelineFromIssue(issue)
         const status = await loadIssueStatus(issue.number, pipeline, authHeaders).catch(() => null)
+        const prState = await fetchPullRequestState(status?.pr_url, authHeaders).catch(() => null)
 
         return {
           issueNumber: issue.number,
@@ -182,6 +209,9 @@ export async function onRequestGet({ env }) {
           lastActivityAt: latestHistoryTs(status, issue.updated_at),
           issueUrl: issue.html_url,
           prUrl: status?.pr_url || null,
+          prState: prState?.state || null,
+          prMerged: prState?.merged || false,
+          prMergedAt: prState?.mergedAt || null,
           status,
         }
       }),
