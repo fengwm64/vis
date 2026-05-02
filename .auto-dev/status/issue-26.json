@@ -1,0 +1,145 @@
+{
+  "issue": 26,
+  "title": "[auto-fix] PageRank 过程动画: 允许用户自定义",
+  "pipeline": "auto-fix",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4363444110,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T08:51:43.703Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-26.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T08:52:11.413Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-26.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T08:52:50.478Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-26/prd.md",
+      "message": "PRD is ready. Algorithm module extraction needed first."
+    },
+    {
+      "ts": "2026-05-02T08:53:26.265Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/issues/issue-26/prd.md",
+      "message": "Algorithm design started."
+    },
+    {
+      "ts": "2026-05-02T08:54:24.902Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/pagerank/algorithm.js",
+      "message": "Algorithm module and tests are ready."
+    },
+    {
+      "ts": "2026-05-02T08:54:52.709Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-26/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T08:55:46.134Z",
+      "from": "frontend",
+      "to": "frontend",
+      "stage": "frontend_coding",
+      "message": "Frontend coding started."
+    },
+    {
+      "ts": "2026-05-02T08:59:40.897Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/pagerank_process_animation.jsx",
+      "message": "Frontend animation is ready."
+    },
+    {
+      "ts": "2026-05-02T09:00:26.657Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-26/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T09:01:31.916Z",
+      "from": "qa",
+      "to": "frontend",
+      "stage": "qa_returned_to_frontend",
+      "artifact": ".auto-dev/issues/issue-26/qa-report.md",
+      "message": "QA found frontend defects: damping slider and rounds input use defaultValue, not visually reset on '恢复默认'."
+    },
+    {
+      "ts": "2026-05-02T09:03:18.647Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/pagerank_process_animation.jsx",
+      "message": "Fixed controlled components: damping slider and rounds input now use value (controlled) instead of defaultValue. Build and algorithm tests pass."
+    },
+    {
+      "ts": "2026-05-02T09:03:52.303Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-26/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T09:05:47.530Z",
+      "from": "qa",
+      "to": "frontend",
+      "stage": "qa_returned_to_frontend",
+      "artifact": ".auto-dev/issues/issue-26/qa-report.md",
+      "message": "QA found frontend defects: duplicate buttons '应用参数' and '应用并重算' with identical behavior, misleading label."
+    },
+    {
+      "ts": "2026-05-02T09:06:42.743Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/pagerank_process_animation.jsx",
+      "message": "Fixed duplicate buttons: removed '应用并重算', renamed '应用参数' to '应用'. Build passes."
+    },
+    {
+      "ts": "2026-05-02T09:07:05.232Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-26/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T09:08:10.154Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-26/qa-report.md",
+      "message": "QA passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 2,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
