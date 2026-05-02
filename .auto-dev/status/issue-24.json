@@ -1,0 +1,74 @@
+{
+  "issue": 24,
+  "title": "[auto-fix] PageRank 过程动画: 继续修复 - 箭头线条会多出一截",
+  "pipeline": "auto-fix",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4363420140,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T08:36:47.064Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-24.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T08:37:29.673Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-24.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T08:38:08.060Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-24/prd.md",
+      "message": "PRD is ready. Visual fix only, routing to frontend."
+    },
+    {
+      "ts": "2026-05-02T08:38:29.191Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-24/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T08:39:11.924Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/pagerank_process_animation.jsx",
+      "message": "Frontend animation is ready."
+    },
+    {
+      "ts": "2026-05-02T08:39:34.283Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-24/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T08:40:58.153Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-24/qa-report.md",
+      "message": "QA passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
