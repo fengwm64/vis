@@ -2,10 +2,10 @@
   "issue": 50,
   "title": "[auto-dev] Kruskal",
   "pipeline": "auto-dev",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4364222009,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/AlgorithmVisualizations/pull/61",
   "history": [
     {
       "ts": "2026-05-02T16:16:55.670Z",
@@ -131,6 +131,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-50/qa-report.md",
       "message": "QA passed. All 11 acceptance items, UI/interaction/layout audits passed. Frontend fixes (step-back, speed control) verified."
+    },
+    {
+      "ts": "2026-05-02T16:30:39.039Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-50/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
