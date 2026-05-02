@@ -2,10 +2,10 @@
   "issue": 46,
   "title": "[auto-fix] 插入排序: 继续修复 - 冗余问题",
   "pipeline": "auto-fix",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4364210560,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/AlgorithmVisualizations/pull/47",
   "history": [
     {
       "ts": "2026-05-02T16:10:27.510Z",
@@ -70,6 +70,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-46/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T16:14:02.683Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-46/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
