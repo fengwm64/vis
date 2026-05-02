@@ -2,10 +2,10 @@
   "issue": 48,
   "title": "[auto-dev] Bellman-Ford",
   "pipeline": "auto-dev",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4364218834,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/AlgorithmVisualizations/pull/57",
   "history": [
     {
       "ts": "2026-05-02T16:15:16.690Z",
@@ -85,6 +85,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-48/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T16:23:21.437Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-48/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
