@@ -164,7 +164,7 @@ src/animations/binary-search.jsx  # 动画组件
   id: 'binary-search',
   name: '二分查找',
   description: '经典查找算法可视化',
-  path: '/binary-search',
+  path: '/animations/binary-search',
   component: BinarySearchAnimation
 }
 ```

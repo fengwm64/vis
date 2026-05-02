@@ -77,7 +77,7 @@
 | 边界：最后一步前进 | ✅ | Math.min(i+1, steps.length-1) 阻止越界 |
 | 自动播放停止 | ✅ | stepIndex >= steps.length - 1 时 setPlaying(false) |
 | 定时器清理 | ✅ | useEffect 返回 clearTimeout，无泄漏 |
-| 路由导航 | ✅ | 首页卡片 → /binary-search → 返回首页 |
+| 路由导航 | ✅ | 首页卡片 → /animations/binary-search → 返回首页 |
 | 响应式布局 | ✅ | 桌面端双栏、移动端单栏 |
 
 **审计结论**: 无交互 bug，播放控制边界正确，定时器无泄漏。
