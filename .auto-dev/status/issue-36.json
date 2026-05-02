@@ -2,10 +2,10 @@
   "issue": 36,
   "title": "[auto-dev] 插入排序",
   "pipeline": "auto-dev",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4363558422,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/AlgorithmVisualizations/pull/37",
   "history": [
     {
       "ts": "2026-05-02T10:07:05.766Z",
@@ -86,6 +86,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-36/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T10:15:49.737Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-36/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
