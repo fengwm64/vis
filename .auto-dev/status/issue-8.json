@@ -1,10 +1,10 @@
 {
   "issue": 8,
   "title": "二分查找",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4362865367,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/vis/pull/10",
   "history": [
     {
       "ts": "2026-05-02T03:58:15.858Z",
@@ -101,6 +101,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T04:06:36.952Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
