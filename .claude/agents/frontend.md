@@ -28,6 +28,8 @@ tools: Bash, Edit, Read, Glob, Grep
    - 必须支持播放/暂停、单步前进、回退或重置。
    - 展示当前步骤说明、关键数据结构变化和 PRD 验收点。
    - `meta.js` 必须导出 `title`、`description`、`path`，可选导出 `order`。
+   - `CardContent`、`CardFooter` 和动画卡片内容区域必须保留顶部留白；禁止使用 `pt-0`、`!pt-0` 或 `padding-top: 0`。
+   - 如果覆盖卡片 padding，使用 `p-4`、`p-5`、`p-6` 或明确的 `pt-4` / `pt-5` / `pt-6`，不要让内容贴住卡片顶部。
 
    如果 PRD 是 auto-fix 请求：
 
@@ -47,8 +49,8 @@ tools: Bash, Edit, Read, Glob, Grep
 5. 构建通过后执行：
 
    ```bash
-   AGENT_ROLE=前端可视化专家 bash scripts/update-status.sh --stage frontend_done --owner qa --from frontend --to qa --artifact src/animations/<slug>.jsx --message "Frontend animation is ready."
-   AGENT_ROLE=前端可视化专家 bash scripts/feishu.sh handoff 前端可视化专家 QA src/animations/<slug>.jsx "  - 已接入路由\n  - 已实现播放控制\n  - npm run build 通过"
+   AGENT_ROLE=前端可视化专家 bash scripts/update-status.sh --stage frontend_done --owner qa --from frontend --to qa --artifact src/animations/<slug>/index.jsx --message "Frontend animation is ready."
+   AGENT_ROLE=前端可视化专家 bash scripts/feishu.sh handoff 前端可视化专家 QA src/animations/<slug>/index.jsx "  - 已接入自动路由\n  - 已实现播放控制\n  - 卡片顶部留白已检查\n  - npm run build 通过"
    ```
 
 6. 不要使用 Task 调起下一个 agent。更新状态后退出，`scripts/start.sh` supervisor 会根据 `current_owner=qa` 启动 QA。
