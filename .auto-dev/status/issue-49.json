@@ -2,10 +2,10 @@
   "issue": 49,
   "title": "[auto-dev] Floyd-Warshall",
   "pipeline": "auto-dev",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4364220496,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/AlgorithmVisualizations/pull/59",
   "history": [
     {
       "ts": "2026-05-02T16:16:07.732Z",
@@ -102,6 +102,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-49/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T16:27:35.345Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-49/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
