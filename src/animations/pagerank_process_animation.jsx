@@ -87,7 +87,7 @@ function Icon({ type }) {
   return <span className={common} aria-hidden="true">{labelByType[type]}</span>;
 }
 
-function Arrow({ from, to, active }) {
+function Arrow({ from, to, active, sourceRadius = 30, targetRadius = 30 }) {
   const start = nodeMap[from];
   const end = nodeMap[to];
   const dx = end.x - start.x;
@@ -95,10 +95,10 @@ function Arrow({ from, to, active }) {
   const len = Math.sqrt(dx * dx + dy * dy);
   const ux = dx / len;
   const uy = dy / len;
-  const sx = start.x + ux * 35;
-  const sy = start.y + uy * 35;
-  const ex = end.x - ux * 39;
-  const ey = end.y - uy * 39;
+  const sx = start.x + ux * (sourceRadius + 4);
+  const sy = start.y + uy * (sourceRadius + 4);
+  const ex = end.x - ux * (targetRadius + 14);
+  const ey = end.y - uy * (targetRadius + 14);
   const angle = (Math.atan2(ey - sy, ex - sx) * 180) / Math.PI;
 
   return (
@@ -199,9 +199,20 @@ export default function PageRankProcessAnimation() {
               </div>
 
               <svg viewBox="0 0 560 380" className="h-[430px] w-full rounded-2xl bg-white" role="img" aria-label="PageRank 有向链接图动画">
-                {edges.map(([from, to]) => (
-                  <Arrow key={`${from}-${to}`} from={from} to={to} active={playing || round > 0} />
-                ))}
+                {edges.map(([from, to]) => {
+                  const sourceRadius = 30 + 34 * (current.rank[from] / maxRank);
+                  const targetRadius = 30 + 34 * (current.rank[to] / maxRank);
+                  return (
+                    <Arrow
+                      key={`${from}-${to}`}
+                      from={from}
+                      to={to}
+                      active={playing || round > 0}
+                      sourceRadius={sourceRadius}
+                      targetRadius={targetRadius}
+                    />
+                  );
+                })}
 
                 {nodes.map((node) => {
                   const rank = current.rank[node.id];
