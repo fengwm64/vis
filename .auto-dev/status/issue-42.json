@@ -1,0 +1,90 @@
+{
+  "issue": 42,
+  "title": "[auto-dev] DFS遍历算法",
+  "pipeline": "auto-dev",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4364115996,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T15:17:57.195Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-42.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T15:18:16.304Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-42.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T15:20:26.878Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-42/prd.md",
+      "message": "PRD is ready."
+    },
+    {
+      "ts": "2026-05-02T15:21:04.831Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/issues/issue-42/prd.md",
+      "message": "Algorithm design started."
+    },
+    {
+      "ts": "2026-05-02T15:22:26.587Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/dfs/algorithm.js",
+      "message": "Algorithm module and tests are ready."
+    },
+    {
+      "ts": "2026-05-02T15:23:22.535Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-42/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T15:25:03.765Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/dfs/index.jsx",
+      "message": "Frontend animation is ready."
+    },
+    {
+      "ts": "2026-05-02T15:25:49.735Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-42/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T15:29:10.446Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-42/qa-report.md",
+      "message": "QA passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
