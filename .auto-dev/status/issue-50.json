@@ -1,0 +1,143 @@
+{
+  "issue": 50,
+  "title": "[auto-dev] Kruskal",
+  "pipeline": "auto-dev",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4364222009,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T16:16:55.670Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-50.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T16:17:13.626Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-50.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T16:17:44.607Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-50/prd.md",
+      "message": "PRD is ready."
+    },
+    {
+      "ts": "2026-05-02T16:18:17.723Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/issues/issue-50/prd.md",
+      "message": "Algorithm design started."
+    },
+    {
+      "ts": "2026-05-02T16:18:25.007Z",
+      "from": "algorithm",
+      "to": "algorithm",
+      "stage": "algorithm_coding",
+      "message": "Writing algorithm implementation."
+    },
+    {
+      "ts": "2026-05-02T16:19:13.795Z",
+      "from": "algorithm",
+      "to": "algorithm",
+      "stage": "algorithm_testing",
+      "message": "Running algorithm self-tests."
+    },
+    {
+      "ts": "2026-05-02T16:20:08.456Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/kruskal-mst/algorithm.js",
+      "message": "Algorithm module and tests are ready."
+    },
+    {
+      "ts": "2026-05-02T16:20:57.704Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-50/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T16:22:11.656Z",
+      "from": "frontend",
+      "to": "frontend",
+      "stage": "frontend_coding",
+      "message": "Writing frontend animation files."
+    },
+    {
+      "ts": "2026-05-02T16:23:17.201Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/kruskal-mst/index.jsx",
+      "message": "Frontend animation is ready."
+    },
+    {
+      "ts": "2026-05-02T16:24:31.885Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-50/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T16:25:44.023Z",
+      "from": "qa",
+      "to": "frontend",
+      "stage": "qa_returned_to_frontend",
+      "artifact": ".auto-dev/issues/issue-50/qa-report.md",
+      "message": "QA found frontend defects: missing step-back button and speed control per PRD."
+    },
+    {
+      "ts": "2026-05-02T16:26:19.018Z",
+      "from": "qa",
+      "to": "frontend",
+      "stage": "frontend_coding",
+      "artifact": "src/animations/kruskal-mst/index.jsx",
+      "message": "Fixing QA defects: adding step-back button and speed control."
+    },
+    {
+      "ts": "2026-05-02T16:27:43.799Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/kruskal-mst/index.jsx",
+      "message": "Frontend fixed: added step-back button and speed control slider."
+    },
+    {
+      "ts": "2026-05-02T16:28:15.166Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-50/prd.md",
+      "message": "QA started. Second pass - verifying frontend fixes."
+    },
+    {
+      "ts": "2026-05-02T16:30:16.891Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-50/qa-report.md",
+      "message": "QA passed. All 11 acceptance items, UI/interaction/layout audits passed. Frontend fixes (step-back, speed control) verified."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 1,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
