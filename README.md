@@ -34,6 +34,7 @@
 
 - **无后端服务**：网站仍是 Cloudflare Pages SPA，API 只用 Pages Functions。
 - **无中央 orchestrator agent**：`scripts/start.sh` 是 shell supervisor，按 status JSON 启动各角色；agent 只负责产物和 handoff 状态，PR 创建由 finalizer 统一收口。
+- **降低 PR 冲突**：GitHub Actions 串行执行 auto-dev issue；新动画通过 `src/animations/<slug>/meta.js` 和 `index.jsx` 自动注册，不需要改 `src/App.jsx`。
 - **三路可观测性**：`.auto-dev/status/issue-N.json`、Issue sticky comment、网站 `/status` 页面。
 - **实时通知**：阶段切换、handoff、失败会通过飞书机器人广播。
 - **QA 交互审计**：QA 会检查无用/冗余按钮、死按钮、播放控制边界、文案行为一致性和潜在交互 bug。
@@ -123,7 +124,10 @@ npm run preview
 │   │   ├── button.jsx             # Button 组件
 │   │   └── card.jsx               # Card 组件
 │   └── animations/                # 算法动画页面
-│       └── pagerank_process_animation.jsx
+│       ├── pagerank_process_animation.jsx
+│       └── pagerank/
+│           ├── index.jsx          # 动画入口组件
+│           └── meta.js            # 首页卡片与路由元数据
 ├── index.html                     # HTML 入口
 ├── vite.config.js                 # Vite 配置
 ├── tailwind.config.js             # Tailwind CSS 配置
@@ -135,12 +139,12 @@ npm run preview
 
 ## 添加新的算法动画
 
-1. **创建动画组件**
+1. **创建动画目录**
 
-   在 `src/animations/` 目录下新建 `.jsx` 文件，例如：
+   在 `src/animations/` 下创建独立目录，例如：
 
    ```jsx
-   // src/animations/dijkstra_animation.jsx
+   // src/animations/dijkstra/index.jsx
    export default function DijkstraAnimation() {
      return (
        <div className="min-h-screen bg-slate-50 p-6">
@@ -151,28 +155,20 @@ npm run preview
    }
    ```
 
-2. **注册到路由**
+2. **添加元数据**
 
-   在 `src/App.jsx` 的 `animations` 数组中添加配置：
+   在同一目录添加 `meta.js`：
 
    ```js
-   import DijkstraAnimation from './animations/dijkstra_animation'
-
-   const animations = [
-     // ... 已有动画
-     {
-       id: 'dijkstra',
-       title: 'Dijkstra 最短路径',
-       description: '可视化贪心策略下的单源最短路径求解过程。',
-       path: '/animations/dijkstra',
-       component: DijkstraAnimation,
-     },
-   ]
+   // src/animations/dijkstra/meta.js
+   export const title = 'Dijkstra 最短路径'
+   export const description = '可视化贪心策略下的单源最短路径求解过程。'
+   export const path = '/animations/dijkstra'
    ```
 
 3. **完成**
 
-   首页会自动展示新卡片，路由和导航栏均已配置完毕。
+   `src/App.jsx` 会通过 Vite `import.meta.glob` 自动发现动画，不需要手动改共享入口文件。首页会自动展示新卡片，路由和导航栏均已配置完毕。
 
 ---
 
@@ -278,6 +274,7 @@ npm run build
 - 如果 `/api/submit` 或 `/api/fix` 返回 GitHub 错误，先确认 Cloudflare Pages 的 `GITHUB_TOKEN` 是否存在，且 token 对目标仓库有 `Issues: Read and write` 权限。
 - 如果 Issue 创建失败并提示 label 相关错误，确认仓库中已存在 `auto-dev` label。
 - 如果 workflow 没启动，确认 Issue 是被加上 `auto-dev` label 后触发的，且 Actions 已启用。
+- 如果多个 auto-dev Issue 同时提交，后提交的 workflow 会排队等待前一个完成；这是为了减少自动生成 PR 之间的入口文件冲突。
 - 如果 Claude Code 报 `Not supported model ***`，把 GitHub Secret `ANTHROPIC_MODEL` 改成小写接口 ID，例如 `mimo-v2.5-pro`。`MiMo-V2.5-Pro` 是展示名，网关会拒绝。
 - 如果 Claude Code 报 sandbox 阻止 `npm` 或 `git`，确认 workflow 已更新到使用 `--permission-mode bypassPermissions`，并且 QA agent 不再直接执行 git；最终 PR 应由 `scripts/start.sh` finalizer 创建。
 - 如果日志里没有 `Claude Code environment diagnostics` 分组，说明 workflow 还没有运行到包含诊断逻辑的最新提交。

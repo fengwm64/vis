@@ -218,6 +218,8 @@ run_agent_supervisor() {
 open_pr_from_current_changes() {
   local branch="auto-dev/issue-${ISSUE_NUMBER}"
   local status_path=".auto-dev/status/issue-${ISSUE_NUMBER}.json"
+  local stash_name="auto-dev-issue-${ISSUE_NUMBER}"
+  local stashed="false"
   local pr_url
 
   echo "::group::Auto-dev finalization"
@@ -231,9 +233,20 @@ open_pr_from_current_changes() {
     return 1
   fi
 
+  if ! git diff --quiet || ! git diff --cached --quiet || [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
+    git stash push --include-untracked -m "$stash_name" || return 1
+    stashed="true"
+  fi
+
+  git fetch origin main || return 1
   git config user.name "github-actions[bot]" || return 1
   git config user.email "41898282+github-actions[bot]@users.noreply.github.com" || return 1
-  git checkout -B "$branch" || return 1
+  git checkout -B "$branch" origin/main || return 1
+
+  if [[ "$stashed" == "true" ]]; then
+    git stash pop || return 1
+  fi
+
   git add -A -- src .auto-dev || return 1
 
   if git diff --cached --quiet; then

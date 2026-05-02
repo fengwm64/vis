@@ -21,12 +21,13 @@ tools: Bash, Edit, Read, Glob, Grep
    AGENT_ROLE=前端可视化专家 bash scripts/feishu.sh status frontend_designing "开始设计可视化界面与交互。"
    ```
 
-2. 写 `src/animations/<slug>.jsx`：
+2. 写 `src/animations/<slug>/index.jsx` 和 `src/animations/<slug>/meta.js`：
 
    - 使用算法模块生成步骤，不在组件中硬编码核心算法。
    - 复用 `Button`、`Card`、Framer Motion。
    - 必须支持播放/暂停、单步前进、回退或重置。
    - 展示当前步骤说明、关键数据结构变化和 PRD 验收点。
+   - `meta.js` 必须导出 `title`、`description`、`path`，可选导出 `order`。
 
    如果 PRD 是 auto-fix 请求：
 
@@ -35,7 +36,7 @@ tools: Bash, Edit, Read, Glob, Grep
    - 删除无用、冗余、死按钮或文案行为不一致的控件。
    - 保留现有路由和首页卡片，除非 PRD 明确要求改动。
 
-3. 新算法需求需要更新 `src/App.jsx` 的 import 和 `animations` 数组，追加新动画配置。auto-fix 只有在目标路由本身错误时才改 `src/App.jsx`。
+3. 新算法需求不要修改 `src/App.jsx`。应用会通过 `import.meta.glob('./animations/*/meta.js')` 和 `import.meta.glob('./animations/*/index.jsx')` 自动发现动画。auto-fix 只有在目标路由本身错误时才改 `src/App.jsx`。
 
 4. 运行：
 

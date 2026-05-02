@@ -9,6 +9,10 @@ permissions:
   pull-requests: write
   issues: write
 
+concurrency:
+  group: auto-dev-agents-${{ github.repository }}
+  cancel-in-progress: false
+
 jobs:
   auto-dev:
     if: github.event.label.name == 'auto-dev'

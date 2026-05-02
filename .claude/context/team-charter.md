@@ -79,8 +79,8 @@ bash scripts/update-status.sh --stage qa_returned_to_frontend --owner frontend -
 新增动画遵循现有结构：
 
 - 算法纯函数放在 `src/animations/<slug>/algorithm.js`，零 DOM 依赖，导出计算函数和测试函数。
-- 动画组件放在 `src/animations/<slug>.jsx`，复用 `src/components/ui/button.jsx`、`src/components/ui/card.jsx`、Framer Motion 和 `pagerank_process_animation.jsx` 的播放控制模式。
-- 在 `src/App.jsx` 的 `animations` 数组追加配置。
+- 动画组件放在 `src/animations/<slug>/index.jsx`，元数据放在 `src/animations/<slug>/meta.js`；复用 `src/components/ui/button.jsx`、`src/components/ui/card.jsx`、Framer Motion 和 `pagerank_process_animation.jsx` 的播放控制模式。
+- 不要为了新增动画修改 `src/App.jsx`；应用会通过 Vite `import.meta.glob` 自动发现动画目录，避免多个自动开发 PR 冲突。
 - 运行 `npm run build`，算法自检使用 Node ESM import。
 - QA 必须检查无用按钮、重复按钮、死按钮、文案行为不一致、播放控制边界 bug 和自动播放定时器泄漏；发现问题时回调 frontend。
 

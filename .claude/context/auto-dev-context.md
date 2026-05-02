@@ -9,7 +9,7 @@
 - Pages Functions 只负责轻量 API：创建 GitHub Issue、聚合自动开发状态。
 - 当前已有动画是 PageRank：`src/animations/pagerank_process_animation.jsx`。
 - 通用 UI 组件在 `src/components/ui/button.jsx` 和 `src/components/ui/card.jsx`。
-- 首页和动画路由集中在 `src/App.jsx` 的 `animations` 数组。
+- 首页和动画路由由 `src/App.jsx` 使用 Vite `import.meta.glob` 自动发现 `src/animations/*/meta.js` 和 `src/animations/*/index.jsx`。
 
 ## 自动开发目标
 
@@ -39,6 +39,7 @@
 - `scripts/start.sh` 会在 GitHub Actions 日志中打印安全诊断信息，并强制用 `claude -p --model "$ANTHROPIC_MODEL"` 启动，避免 Claude Code 默认别名回退到 Anthropic 官方模型。
 - 飞书通知使用 `FEISHU_WEBHOOK`。
 - GitHub 操作使用 workflow 内置 `GH_TOKEN`。
+- `.github/workflows/auto-dev.yml` 使用 repo 级 concurrency，多个 auto-dev issue 会排队串行执行，避免同时修改 `src/App.jsx`、status 文件或共享动画入口造成冲突。
 
 ## 关键文件契约
 
@@ -87,8 +88,9 @@ PM 必须产出：
 
 前端可视化专家必须产出：
 
-- `src/animations/<slug>.jsx`。
-- 更新 `src/App.jsx` 的 import 和 `animations` 数组。
+- `src/animations/<slug>/index.jsx`。
+- `src/animations/<slug>/meta.js`，导出 `title`、`description`、`path`，可选导出 `order`。
+- 新增算法时不要修改 `src/App.jsx`；自动发现机制会接入首页和路由。
 - 使用算法模块生成步骤，不把核心算法硬编码在 React 组件里。
 - 复用现有 UI 组件和 PageRank 的播放控制模式。
 - 每个按钮和交互控件都必须有明确用途、可触发可见状态变化，并和文案一致；不要添加占位、重复、无用或不可达按钮。
@@ -103,6 +105,8 @@ QA 必须产出：
 - 交互 bug 审计结果：逐项说明播放/暂停、单步、回退、重置、边界步骤、自动播放定时器、路由和响应式布局是否通过。
 - 通过后只把状态推进到 `qa_passed`；不要直接执行 git 或 gh 命令。
 - `scripts/start.sh` finalizer 负责创建 `auto-dev/issue-N` 分支和 PR，并把 `pr_opened`、`pr_url` 写回 status JSON 后推送。
+- finalizer 在创建 PR 分支前会 stash 生成变更、`git fetch origin main`、从 `origin/main` 创建分支，再 pop 回变更；如果 pop 冲突则失败并停止，避免静默覆盖其他任务。
+- 新动画必须使用独立目录自动注册，不要编辑 `src/App.jsx` 这种共享入口文件，降低多个未合并 PR 之间的冲突概率。
 
 ## 状态与可观测性
 
@@ -125,6 +129,7 @@ QA 必须产出：
 - 文件 slug 使用小写短横线或小写单词，避免中文文件名。
 - 算法步骤数据结构应足够驱动单步、回退、自动播放和说明面板。
 - 可视化应展示“当前步骤做了什么”和“关键数据结构如何变化”。
+- 新动画目录必须自包含：`src/animations/<slug>/algorithm.js`、`src/animations/<slug>/index.jsx`、`src/animations/<slug>/meta.js`。
 - 控件数量宁少勿滥；按钮必须对应真实能力，不能为了“看起来完整”添加无功能或重复功能的按钮。
 - 不要新增后端服务、数据库或持久化依赖。
 - 不要引入新的大型 UI 库，除非需求无法用现有栈实现。

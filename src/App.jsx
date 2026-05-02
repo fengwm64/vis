@@ -1,36 +1,31 @@
 import React from 'react'
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom'
-import PageRankProcessAnimation from './animations/pagerank_process_animation'
-import BubbleSortAnimation from './animations/bubble-sort'
-import BinarySearchAnimation from './animations/binary-search'
 import Submit from './pages/Submit'
 import Status from './pages/Status'
 import { Button } from './components/ui/button'
 import AutoFixPanel from './components/AutoFixPanel'
 
-const animations = [
-  {
-    id: 'pagerank',
-    title: 'PageRank 过程动画',
-    description: '可视化 PageRank 算法在有向图上的迭代传播过程，展示每个节点的重要性分数如何收敛。',
-    path: '/animations/pagerank',
-    component: PageRankProcessAnimation,
-  },
-  {
-    id: 'bubble-sort',
-    title: '冒泡排序',
-    description: '经典排序算法可视化，支持自定义数组和随机生成，展示每一步比较和交换过程。',
-    path: '/animations/bubble-sort',
-    component: BubbleSortAnimation,
-  },
-  {
-    id: 'binary-search',
-    title: '二分查找',
-    description: '经典查找算法可视化，支持自定义数组和目标值，展示每一步缩小搜索范围的过程。',
-    path: '/animations/binary-search',
-    component: BinarySearchAnimation,
-  },
-]
+const animationModules = import.meta.glob('./animations/*/index.jsx', { eager: true })
+const animationMetaModules = import.meta.glob('./animations/*/meta.js', { eager: true })
+
+const animations = Object.entries(animationMetaModules)
+  .map(([metaPath, metaModule]) => {
+    const id = metaPath.match(/\.\/animations\/([^/]+)\/meta\.js$/)?.[1]
+    const component = animationModules[`./animations/${id}/index.jsx`]?.default
+
+    if (!id || !component) return null
+
+    return {
+      id,
+      title: metaModule.title,
+      description: metaModule.description,
+      path: metaModule.path || `/animations/${id}`,
+      order: metaModule.order ?? 1000,
+      component,
+    }
+  })
+  .filter(Boolean)
+  .sort((a, b) => a.order - b.order)
 
 function GitHubIcon({ className }) {
   return (
