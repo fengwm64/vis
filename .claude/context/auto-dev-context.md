@@ -18,13 +18,12 @@
 用户入口：
 
 1. 用户在网站 `/submit` 填表。
-2. `functions/api/submit.js` 调 GitHub API 创建 Issue。
-3. 用户也可以在任意动画页底部的 Auto-Fix 表单提交现有动画的修复/优化建议，`functions/api/fix.js` 会创建 auto-fix Issue。
-4. Issue 自动带 `auto-dev` label。
-5. GitHub Actions 的 `.github/workflows/auto-dev.yml` 监听该 label。
-6. workflow 安装 Claude Code 和 npm 依赖，然后执行 `bash scripts/start.sh`。
-7. `scripts/start.sh` 初始化 `.auto-dev/incoming/issue-N.md` 和 `.auto-dev/status/issue-N.json`，再启动 Claude Code，让 PM agent 接单。
-8. QA agent 推进到 `qa_passed` 后退出；`scripts/start.sh` finalizer 从普通 shell 环境复核构建和算法测试，然后提交、推送并创建 PR。
+2. `functions/api/submit.js` 调 GitHub API 创建带 `auto-dev` label 的新算法 Issue。
+3. 用户也可以在任意动画页底部的 Auto-Fix 表单提交现有动画的修复/优化建议，`functions/api/fix.js` 会创建带 `auto-fix` label 的修复 Issue。
+4. GitHub Actions 的 `.github/workflows/auto-dev.yml` 监听 `auto-dev` label，`.github/workflows/auto-fix.yml` 监听 `auto-fix` label。
+5. 两个 workflow 都设置 `AUTO_PIPELINE` 后安装 Claude Code 和 npm 依赖，然后执行 `bash scripts/start.sh`。
+6. `scripts/start.sh` 初始化 `.auto-dev/incoming/issue-N.md` 和 `.auto-dev/status/issue-N.json`，再启动 Claude Code，让 PM agent 接单。
+7. QA agent 推进到 `qa_passed` 后退出；`scripts/start.sh` finalizer 从普通 shell 环境复核构建和算法测试，然后提交、推送并创建 PR。
 
 ## LLM 和运行环境
 
@@ -39,7 +38,7 @@
 - `scripts/start.sh` 会在 GitHub Actions 日志中打印安全诊断信息，并强制用 `claude -p --model "$ANTHROPIC_MODEL"` 启动，避免 Claude Code 默认别名回退到 Anthropic 官方模型。
 - 飞书通知使用 `FEISHU_WEBHOOK`。
 - GitHub 操作使用 workflow 内置 `GH_TOKEN`。
-- `.github/workflows/auto-dev.yml` 使用 repo 级 concurrency，多个 auto-dev issue 会排队串行执行，避免同时修改 `src/App.jsx`、status 文件或共享动画入口造成冲突。
+- `.github/workflows/auto-dev.yml` 和 `.github/workflows/auto-fix.yml` 使用同一个 repo 级 concurrency group，多个 auto-dev / auto-fix issue 会排队串行执行，避免同时修改代码、status 文件或共享动画入口造成冲突。
 
 ## 关键文件契约
 
@@ -60,9 +59,9 @@
 
 Cloudflare Pages Functions：
 
-- `functions/api/submit.js`：接收网站表单，创建 `auto-dev` Issue。
-- `functions/api/fix.js`：接收动画页 Auto-Fix 表单，创建针对现有动画的 `auto-dev` Issue。
-- `functions/api/status.js`：聚合 Issue、status JSON、PR 分支状态和 sticky comment，供 `/status` 页面轮询。
+- `functions/api/submit.js`：接收网站表单，创建带 `auto-dev` label 的新算法 Issue。
+- `functions/api/fix.js`：接收动画页 Auto-Fix 表单，创建带 `auto-fix` label 的现有动画修复 Issue。
+- `functions/api/status.js`：聚合 `auto-dev` / `auto-fix` Issue、status JSON、PR 分支状态和 sticky comment，供 `/status` 页面轮询。
 
 Claude agents：
 
@@ -106,7 +105,7 @@ QA 必须产出：
 - 交互 bug 审计结果：逐项说明播放/暂停、单步、回退、重置、边界步骤、自动播放定时器、路由和响应式布局是否通过。
 - 布局留白审计结果：重点检查算法可视化卡片是否存在 `pt-0` / `padding-top: 0` 导致的顶部拥挤；发现后必须回调 frontend 修复。
 - 通过后只把状态推进到 `qa_passed`；不要直接执行 git 或 gh 命令。
-- `scripts/start.sh` finalizer 负责创建 `auto-dev/issue-N` 分支和 PR，并把 `pr_opened`、`pr_url` 写回 status JSON 后推送。
+- `scripts/start.sh` finalizer 负责按 `AUTO_PIPELINE` 创建 `auto-dev/issue-N` 或 `auto-fix/issue-N` 分支和 PR，并把 `pr_opened`、`pr_url` 写回 status JSON 后推送。
 - finalizer 在创建 PR 分支前会 stash 生成变更、`git fetch origin main`、从 `origin/main` 创建分支，再 pop 回变更；如果 pop 冲突则失败并停止，避免静默覆盖其他任务。
 - 新动画必须使用独立目录自动注册，不要编辑 `src/App.jsx` 这种共享入口文件，降低多个未合并 PR 之间的冲突概率。
 
@@ -121,7 +120,7 @@ QA 必须产出：
 网站 `/status` 是总览页，依次尝试读取：
 
 1. main 分支 `.auto-dev/status/issue-N.json`
-2. `auto-dev/issue-N` 分支 `.auto-dev/status/issue-N.json`
+2. 对应 pipeline 分支 `.auto-dev/status/issue-N.json`，即 `auto-dev/issue-N` 或 `auto-fix/issue-N`
 3. Issue sticky status comment
 
 因此 PR 打开但未合并时，`/status` 仍应能看到 PR 分支上的最新状态。
@@ -140,8 +139,8 @@ QA 必须产出：
 
 ## Git 和 PR 约定
 
-- 自动开发分支名：`auto-dev/issue-${ISSUE_NUMBER}`。
-- PR 标题：`Auto-dev: ${ISSUE_TITLE}`。
+- 自动开发分支名：`auto-dev/issue-${ISSUE_NUMBER}`；自动修复分支名：`auto-fix/issue-${ISSUE_NUMBER}`。
+- PR 标题：`Auto-dev: ${ISSUE_TITLE}` 或 `Auto-fix: ${ISSUE_TITLE}`。
 - PR body 至少包含 `Closes #${ISSUE_NUMBER}`。
 - status JSON、PRD、QA report、代码变更都应进入 PR。
 - 不要使用 `git reset --hard`、`git checkout --` 等破坏性命令。

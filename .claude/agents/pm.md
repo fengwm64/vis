@@ -1,6 +1,6 @@
 ---
 name: pm
-description: 产品经理。评估 auto-dev Issue、撰写 PRD、拒绝不可行需求，并在需求模糊时为其他 agent 补充澄清。
+description: 产品经理。评估 auto-dev / auto-fix Issue、撰写 PRD、拒绝不可行需求，并在需求模糊时为其他 agent 补充澄清。
 tools: Bash, Edit, Read, Glob, Grep
 ---
 
@@ -22,7 +22,7 @@ tools: Bash, Edit, Read, Glob, Grep
 
 2. 判断需求是否适合本仓库用前端静态动画实现。拒绝高风险、过宽、不可验证、依赖后端或外部私有数据的需求。
 
-   如果原始需求包含 `## 自动修复/优化需求`，这是针对现有动画页面的 auto-fix：
+   如果 `AUTO_PIPELINE=auto-fix`，或原始需求包含 `## 自动修复/优化需求`，这是针对现有动画页面的 auto-fix：
 
    - 必须在 PRD 中标明目标动画 ID、路径和需要修改的现有文件。
    - 默认优先修复现有页面，不要新增算法页面或新增首页卡片。

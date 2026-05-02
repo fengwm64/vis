@@ -40,6 +40,16 @@ const stageTone = {
   pm_drafting_prd: 'bg-violet-100 text-violet-700 ring-violet-200',
 }
 
+const pipelineLabels = {
+  'auto-dev': '新算法',
+  'auto-fix': '修复优化',
+}
+
+const pipelineTone = {
+  'auto-dev': 'bg-cyan-100 text-cyan-700 ring-cyan-200',
+  'auto-fix': 'bg-orange-100 text-orange-700 ring-orange-200',
+}
+
 function formatTime(value) {
   if (!value) return '暂无'
   return new Intl.DateTimeFormat('zh-CN', {
@@ -54,6 +64,14 @@ function StageBadge({ stage }) {
   return (
     <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ring-1 ${stageTone[stage] || 'bg-slate-100 text-slate-700 ring-slate-200'}`}>
       {stageLabels[stage] || stage || '未知'}
+    </span>
+  )
+}
+
+function PipelineBadge({ pipeline }) {
+  return (
+    <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ring-1 ${pipelineTone[pipeline] || 'bg-slate-100 text-slate-700 ring-slate-200'}`}>
+      {pipelineLabels[pipeline] || pipeline || '未知'}
     </span>
   )
 }
@@ -109,9 +127,9 @@ export default function Status() {
 
         <Card className="overflow-hidden rounded-[2rem] border-white/10 bg-white text-slate-950 shadow-2xl">
           <CardHeader className="border-b border-slate-200 bg-[linear-gradient(135deg,#f8fafc,#e0f2fe)]">
-            <CardTitle className="text-3xl">自动开发进度</CardTitle>
+            <CardTitle className="text-3xl">自动开发 / 修复进度</CardTitle>
             <CardDescription>
-              每 10 秒轮询 GitHub Issue 与仓库状态文件。最近刷新：{formatTime(updatedAt)}
+              同时跟踪 auto-dev 新算法需求和 auto-fix 现有动画修复。最近刷新：{formatTime(updatedAt)}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0">
@@ -126,15 +144,16 @@ export default function Status() {
             )}
 
             {!error && !loading && items.length === 0 && (
-              <div className="p-8 text-center text-slate-500">暂无带 auto-dev label 的需求。</div>
+              <div className="p-8 text-center text-slate-500">暂无 auto-dev 或 auto-fix 自动任务。</div>
             )}
 
             {!error && items.length > 0 && (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[860px] text-left text-sm">
+                <table className="w-full min-w-[960px] text-left text-sm">
                   <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                     <tr>
                       <th className="px-6 py-4">标题</th>
+                      <th className="px-6 py-4">类型</th>
                       <th className="px-6 py-4">当前阶段</th>
                       <th className="px-6 py-4">负责 Agent</th>
                       <th className="px-6 py-4">最近活动</th>
@@ -148,6 +167,9 @@ export default function Status() {
                         <td className="px-6 py-4">
                           <div className="font-semibold text-slate-900">{item.title}</div>
                           <div className="mt-1 text-xs text-slate-500">#{item.issueNumber}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <PipelineBadge pipeline={item.pipeline} />
                         </td>
                         <td className="px-6 py-4">
                           <StageBadge stage={item.currentStage} />

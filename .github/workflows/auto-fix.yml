@@ -1,4 +1,4 @@
-name: Auto Dev Agents
+name: Auto Fix Agents
 
 on:
   issues:
@@ -14,8 +14,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  auto-dev:
-    if: github.event.label.name == 'auto-dev'
+  auto-fix:
+    if: github.event.label.name == 'auto-fix'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -24,7 +24,7 @@ jobs:
       ISSUE_TITLE: ${{ github.event.issue.title }}
       ISSUE_BODY: ${{ github.event.issue.body }}
       ISSUE_URL: ${{ github.event.issue.html_url }}
-      AUTO_PIPELINE: auto-dev
+      AUTO_PIPELINE: auto-fix
       ANTHROPIC_BASE_URL: ${{ secrets.ANTHROPIC_BASE_URL }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       ANTHROPIC_AUTH_TOKEN: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -48,5 +48,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run auto-dev agent team
+      - name: Run auto-fix agent team
         run: bash scripts/start.sh

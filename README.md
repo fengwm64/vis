@@ -13,7 +13,7 @@
 ```text
 /submit 表单
   -> Cloudflare Pages Function 创建 auto-dev Issue
-  -> GitHub Actions 监听 issue.labeled
+  -> GitHub Actions 监听 auto-dev label
   -> scripts/start.sh 启动 Claude Code
   -> PM / algorithm / frontend / QA 四个 agent 点对点协作
   -> QA 通过后创建 auto-dev/issue-N 分支和 PR
@@ -23,18 +23,20 @@
 
 ```text
 动画页 Auto-Fix 表单
-  -> /api/fix 创建 auto-dev Issue
+  -> /api/fix 创建 auto-fix Issue
+  -> GitHub Actions 监听 auto-fix label
   -> PM 判断是否直接交给 frontend 或先交给 algorithm
   -> Agent 修改现有动画页面
   -> QA 检查交互 bug 和冗余控件
-  -> 自动创建修复 PR
+  -> QA 通过后创建 auto-fix/issue-N 分支和 PR
 ```
 
 关键设计：
 
 - **无后端服务**：网站仍是 Cloudflare Pages SPA，API 只用 Pages Functions。
 - **无中央 orchestrator agent**：`scripts/start.sh` 是 shell supervisor，按 status JSON 启动各角色；agent 只负责产物和 handoff 状态，PR 创建由 finalizer 统一收口。
-- **降低 PR 冲突**：GitHub Actions 串行执行 auto-dev issue；新动画通过 `src/animations/<slug>/meta.js` 和 `index.jsx` 自动注册，不需要改 `src/App.jsx`。
+- **分离入口**：新算法开发使用 `auto-dev` label 和 `Auto Dev Agents` workflow；现有动画修复使用 `auto-fix` label 和 `Auto Fix Agents` workflow。
+- **降低 PR 冲突**：两个 workflow 共用同一个 GitHub Actions concurrency group，因此 auto-dev / auto-fix 任务会排队串行执行；新动画通过 `src/animations/<slug>/meta.js` 和 `index.jsx` 自动注册，不需要改 `src/App.jsx`。
 - **三路可观测性**：`.auto-dev/status/issue-N.json`、Issue sticky comment、网站 `/status` 页面。
 - **实时通知**：阶段切换、handoff、失败会通过飞书机器人广播。
 - **QA 交互审计**：QA 会检查无用/冗余按钮、死按钮、播放控制边界、文案行为一致性和潜在交互 bug。
@@ -106,7 +108,8 @@ npm run preview
 │   └── context/                   # 自动开发团队共享上下文
 ├── .github/
 │   └── workflows/
-│       └── auto-dev.yml           # auto-dev Issue 触发的自动开发 workflow
+│       ├── auto-dev.yml           # auto-dev Issue 触发的新算法开发 workflow
+│       └── auto-fix.yml           # auto-fix Issue 触发的现有动画修复 workflow
 ├── .auto-dev/
 │   └── status/                    # 自动开发状态 JSON，随 PR 入仓
 ├── scripts/
@@ -177,7 +180,7 @@ npm run preview
 ### 1. GitHub 仓库准备
 
 1. 确认仓库已推送到 GitHub，例如 `fengwm64/vis`。
-2. 创建 Issue label：`auto-dev`。
+2. 创建 Issue label：`auto-dev` 和 `auto-fix`。
 3. 在仓库设置中启用 Actions：
    - `Settings -> Actions -> General`
    - 确认允许 workflow 运行。
@@ -230,8 +233,8 @@ npm run preview
 Cloudflare Pages 会自动识别 `functions/api/submit.js`、`functions/api/fix.js` 和 `functions/api/status.js`：
 
 - `POST /api/submit`：创建带 `auto-dev` label 的 GitHub Issue。
-- `POST /api/fix`：为现有动画创建带 `auto-dev` label 的修复/优化 Issue。
-- `GET /api/status`：聚合自动开发状态供 `/status` 页面轮询。
+- `POST /api/fix`：为现有动画创建带 `auto-fix` label 的修复/优化 Issue。
+- `GET /api/status`：聚合 `auto-dev` 和 `auto-fix` 状态供 `/status` 页面轮询。
 
 Issue 标题约定：
 
@@ -269,21 +272,32 @@ npm run build
    - PR 中包含 `.auto-dev/status/issue-N.json`、`.auto-dev/prd.md`、`.auto-dev/qa-report.md` 和动画代码。
    - `/status` 页面能看到当前阶段和 PR 链接。
 
-### 7. 常见问题
+### 7. 验证 Auto-Fix 链路
+
+1. 打开任意动画页面，例如 `/animations/pagerank`。
+2. 在页面底部 Auto-Fix 表单提交一个具体修复建议。
+3. 确认 GitHub 出现新 Issue，并带 `auto-fix` label。
+4. 确认 GitHub Actions 自动启动 `Auto Fix Agents` workflow。
+5. workflow 结束后检查：
+   - PR 分支名类似 `auto-fix/issue-N`。
+   - PR 只修改目标现有动画或必要的共享文件。
+   - `/status` 页面能区分显示“新算法”和“修复优化”。
+
+### 8. 常见问题
 
 - 如果 `/api/submit` 或 `/api/fix` 返回 GitHub 错误，先确认 Cloudflare Pages 的 `GITHUB_TOKEN` 是否存在，且 token 对目标仓库有 `Issues: Read and write` 权限。
-- 如果 Issue 创建失败并提示 label 相关错误，确认仓库中已存在 `auto-dev` label。
-- 如果 workflow 没启动，确认 Issue 是被加上 `auto-dev` label 后触发的，且 Actions 已启用。
-- 如果多个 auto-dev Issue 同时提交，后提交的 workflow 会排队等待前一个完成；这是为了减少自动生成 PR 之间的入口文件冲突。
+- 如果 Issue 创建失败并提示 label 相关错误，确认仓库中已存在 `auto-dev` 和 `auto-fix` 两个 label。
+- 如果 workflow 没启动，确认新算法 Issue 带 `auto-dev` label，修复 Issue 带 `auto-fix` label，且 Actions 已启用。
+- 如果多个 auto-dev / auto-fix Issue 同时提交，后提交的 workflow 会排队等待前一个完成；这是为了减少自动生成 PR 之间的入口文件冲突。
 - 如果 Claude Code 报 `Not supported model ***`，把 GitHub Secret `ANTHROPIC_MODEL` 改成小写接口 ID，例如 `mimo-v2.5-pro`。`MiMo-V2.5-Pro` 是展示名，网关会拒绝。
 - 如果 Claude Code 报 sandbox 阻止 `npm` 或 `git`，确认 workflow 已更新到使用 `--permission-mode bypassPermissions`，并且 QA agent 不再直接执行 git；最终 PR 应由 `scripts/start.sh` finalizer 创建。
 - 如果日志里没有 `Claude Code environment diagnostics` 分组，说明 workflow 还没有运行到包含诊断逻辑的最新提交。
 - `Claude Code environment diagnostics` 只打印 `ANTHROPIC_BASE_URL` 的 protocol / host / path，以及 token 是否存在，不会打印 API Key。
 - 如果 Claude Code 无法调用模型，确认 GitHub Secrets 中的 `ANTHROPIC_BASE_URL`、`ANTHROPIC_API_KEY`、`ANTHROPIC_MODEL` 已配置；Token Plan 用户的 Base URL 以订阅控制台显示为准。
 - 如果没有飞书消息，确认 `FEISHU_WEBHOOK` 是 GitHub Actions Secret，而不是 Cloudflare Pages 环境变量。
-- 如果 `/status` 暂时看不到 PR 状态，先看 Issue sticky comment；`/status` 会依次尝试 main 分支、`auto-dev/issue-N` 分支和 sticky comment。
+- 如果 `/status` 暂时看不到 PR 状态，先看 Issue sticky comment；`/status` 会依次尝试 main 分支、对应 pipeline 分支（`auto-dev/issue-N` 或 `auto-fix/issue-N`）和 sticky comment。
 
-### 8. Wrangler 手动部署
+### 9. Wrangler 手动部署
 
 如需不用 Git 集成，也可以手动部署：
 

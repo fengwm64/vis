@@ -74,7 +74,7 @@ export default function AutoFixPanel({ animation }) {
           <div>
             <CardTitle>发现这个动画可以改进？</CardTitle>
             <CardDescription className="mt-2">
-              提交关于「{animation.title}」的 bug、交互问题或优化建议，Agent 会自动创建修复 PR。
+              提交关于「{animation.title}」的 bug、交互问题或优化建议，系统会创建 auto-fix Issue 并自动生成修复 PR。
             </CardDescription>
           </div>
           <Button

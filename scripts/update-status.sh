@@ -74,6 +74,7 @@ ARTIFACT="$ARTIFACT" \
 MESSAGE="$MESSAGE" \
 PR_URL="$PR_URL" \
 BUMP_RETRY="$BUMP_RETRY" \
+AUTO_PIPELINE="${AUTO_PIPELINE:-auto-dev}" \
 node --input-type=module <<'NODE'
 import fs from 'node:fs'
 
@@ -109,6 +110,7 @@ if (process.env.MESSAGE) entry.message = process.env.MESSAGE
 
 status.issue = issue
 status.title = title
+status.pipeline = status.pipeline || process.env.AUTO_PIPELINE || 'auto-dev'
 status.current_stage = process.env.STAGE
 status.current_owner = process.env.OWNER || entry.to
 status.history = Array.isArray(status.history) ? status.history : []
@@ -130,11 +132,12 @@ fs.writeFileSync(statusPath, `${JSON.stringify(status, null, 2)}\n`)
 NODE
 
 render_comment() {
-  STATUS_PATH="$STATUS_PATH" ISSUE_URL="${ISSUE_URL:-https://github.com/$REPO/issues/$ISSUE_NUMBER}" node --input-type=module <<'NODE'
+  STATUS_PATH="$STATUS_PATH" ISSUE_URL="${ISSUE_URL:-https://github.com/$REPO/issues/$ISSUE_NUMBER}" AUTO_PIPELINE="${AUTO_PIPELINE:-auto-dev}" node --input-type=module <<'NODE'
 import fs from 'node:fs'
 
 const status = JSON.parse(fs.readFileSync(process.env.STATUS_PATH, 'utf8'))
 const history = Array.isArray(status.history) ? status.history : []
+const pipeline = status.pipeline || process.env.AUTO_PIPELINE || 'auto-dev'
 const cell = (value) => String(value || '').replace(/\n/g, ' ').replace(/\|/g, '\\|')
 const rows = history.slice(-12).map((item) => {
   const artifact = item.artifact ? `\`${cell(item.artifact)}\`` : ''
@@ -143,13 +146,14 @@ const rows = history.slice(-12).map((item) => {
 
 const prLine = status.pr_url ? `\nPR: ${status.pr_url}\n` : ''
 
-console.log(`<!-- auto-dev-status:${status.issue} -->
-## Auto Dev Status
+console.log(`<!-- auto-agent-status:${status.issue} -->
+## Auto Agent Status
 
 Issue: ${process.env.ISSUE_URL}
 ${prLine}
 | Field | Value |
 | --- | --- |
+| Pipeline | \`${pipeline}\` |
 | Current stage | \`${status.current_stage || ''}\` |
 | Current owner | \`${status.current_owner || ''}\` |
 | Updated at | \`${history.at(-1)?.ts || ''}\` |

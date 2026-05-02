@@ -1,6 +1,7 @@
 const REPO_OWNER = 'fengwm64'
 const REPO_NAME = 'vis'
 const DEFAULT_BRANCH = 'main'
+const PIPELINE_LABELS = ['auto-dev', 'auto-fix']
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -23,7 +24,7 @@ async function fetchJson(url, headers = {}) {
   const response = await fetch(url, {
     headers: {
       Accept: 'application/vnd.github+json',
-      'User-Agent': 'vis-auto-dev-status',
+      'User-Agent': 'vis-auto-agent-status',
       ...headers,
     },
   })
@@ -56,8 +57,11 @@ async function fetchStatusFile(issueNumber, ref, headers = {}) {
 }
 
 function parseStatusComment(body) {
-  if (!body?.includes('<!-- auto-dev-status:')) return null
+  if (!body?.includes('<!-- auto-dev-status:') && !body?.includes('<!-- auto-agent-status:')) {
+    return null
+  }
 
+  const pipeline = body.match(/\| Pipeline \| `([^`]+)` \|/)?.[1]
   const stage = body.match(/\| Current stage \| `([^`]+)` \|/)?.[1]
   const owner = body.match(/\| Current owner \| `([^`]+)` \|/)?.[1]
   const updatedAt = body.match(/\| Updated at \| `([^`]+)` \|/)?.[1]
@@ -66,6 +70,7 @@ function parseStatusComment(body) {
   if (!stage && !owner) return null
 
   return {
+    pipeline: pipeline || null,
     current_stage: stage || 'submitted',
     current_owner: owner || 'pm',
     pr_url: prUrl || null,
@@ -90,12 +95,27 @@ async function fetchStatusComment(issueNumber, headers = {}) {
     .at(-1) || null
 }
 
-async function loadIssueStatus(issueNumber, headers = {}) {
+async function loadIssueStatus(issueNumber, pipeline = 'auto-dev', headers = {}) {
+  const branchRefs = [
+    `${pipeline}/issue-${issueNumber}`,
+    `auto-dev/issue-${issueNumber}`,
+    `auto-fix/issue-${issueNumber}`,
+  ]
+
   return (
     (await fetchStatusFile(issueNumber, DEFAULT_BRANCH, headers)) ||
-    (await fetchStatusFile(issueNumber, `auto-dev/issue-${issueNumber}`, headers)) ||
+    (await Promise.all(branchRefs.map((ref) => fetchStatusFile(issueNumber, ref, headers).catch(() => null))))
+      .find(Boolean) ||
     (await fetchStatusComment(issueNumber, headers))
   )
+}
+
+function getPipelineFromIssue(issue) {
+  const labels = Array.isArray(issue.labels) ? issue.labels : []
+  const names = labels.map((label) => typeof label === 'string' ? label : label.name)
+
+  if (names.includes('auto-fix')) return 'auto-fix'
+  return 'auto-dev'
 }
 
 function latestHistoryTs(status, fallback) {
@@ -114,22 +134,34 @@ export async function onRequestGet({ env }) {
     : {}
 
   try {
-    const issues = await fetchJson(
-      `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues?state=all&labels=auto-dev&per_page=50`,
-      {
-        ...authHeaders,
-        'X-GitHub-Api-Version': '2022-11-28',
-      },
+    const issueGroups = await Promise.all(
+      PIPELINE_LABELS.map((label) => fetchJson(
+        `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues?state=all&labels=${label}&per_page=50`,
+        {
+          ...authHeaders,
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+      )),
     )
 
-    const issueItems = (issues || []).filter((issue) => !issue.pull_request)
+    const issueItems = Array.from(
+      new Map(
+        issueGroups
+          .flat()
+          .filter((issue) => issue && !issue.pull_request)
+          .map((issue) => [issue.number, issue]),
+      ).values(),
+    )
+
     const statuses = await Promise.all(
       issueItems.map(async (issue) => {
-        const status = await loadIssueStatus(issue.number, authHeaders).catch(() => null)
+        const pipeline = getPipelineFromIssue(issue)
+        const status = await loadIssueStatus(issue.number, pipeline, authHeaders).catch(() => null)
 
         return {
           issueNumber: issue.number,
           title: issue.title,
+          pipeline: status?.pipeline || pipeline,
           currentStage: status?.current_stage || 'submitted',
           currentOwner: status?.current_owner || 'pm',
           lastActivityAt: latestHistoryTs(status, issue.updated_at),

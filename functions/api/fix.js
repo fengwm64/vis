@@ -60,7 +60,7 @@ ${description}
 
 ---
 
-创建后由 GitHub Actions 监听 \`auto-dev\` label，并启动 Claude Code Agent 团队自动修复。`
+创建后由 GitHub Actions 监听 \`auto-fix\` label，并启动 Claude Code Agent 团队自动修复。`
 }
 
 export async function onRequestOptions() {
@@ -104,13 +104,13 @@ export async function onRequestPost({ request, env }) {
       Accept: 'application/vnd.github+json',
       Authorization: `Bearer ${env.GITHUB_TOKEN}`,
       'Content-Type': 'application/json',
-      'User-Agent': 'vis-auto-dev-fix',
+      'User-Agent': 'vis-auto-fix-submit',
       'X-GitHub-Api-Version': '2022-11-28',
     },
     body: JSON.stringify({
       title: withPrefix(`${animationTitle}: ${title}`, '[auto-fix]'),
       body: buildIssueBody({ animationId, animationTitle, animationPath, area, title, description }),
-      labels: ['auto-dev'],
+      labels: ['auto-fix'],
     }),
   })
 
