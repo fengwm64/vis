@@ -1,0 +1,74 @@
+{
+  "issue": 40,
+  "title": "[auto-fix] 插入排序: 动画问题",
+  "pipeline": "auto-fix",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4364110794,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T15:15:06.953Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-40.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T15:16:32.998Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-40.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T15:17:07.868Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-40/prd.md",
+      "message": "PRD is ready. Auto-fix: visual confusion in shift step highlighting."
+    },
+    {
+      "ts": "2026-05-02T15:18:17.784Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-40/prd.md",
+      "message": "Frontend design started. Auto-fix for insertion sort shift highlighting."
+    },
+    {
+      "ts": "2026-05-02T15:19:15.975Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/insertion-sort/index.jsx",
+      "message": "Frontend fix ready. Shift source (cyan) now highlighted instead of destination; key original position (rose) preserved."
+    },
+    {
+      "ts": "2026-05-02T15:20:04.313Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-40/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T15:21:05.952Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-40/qa-report.md",
+      "message": "QA passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}

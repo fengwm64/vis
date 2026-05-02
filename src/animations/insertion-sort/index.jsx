@@ -101,7 +101,9 @@ export default function InsertionSortAnimation() {
   function barColor(index) {
     if (current.inserting && index === current.current)
       return "bg-purple-500";
-    if (current.shifting && index === current.comparing)
+    if (current.shifting && current.comparing !== null && index === current.comparing - 1)
+      return "bg-cyan-500";
+    if (current.shifting && current.comparing !== null && index === current.comparing)
       return "bg-blue-500";
     if (current.comparing !== null && index === current.comparing)
       return "bg-amber-400";
@@ -234,6 +236,7 @@ export default function InsertionSortAnimation() {
                   const isSorted = i < current.sortedEnd;
                   const isNegative = !isNull && value < 0;
                   const isInsertTarget = current.inserting && current.insertTarget === i;
+                  const isShiftSource = current.shifting && current.comparing !== null && i === current.comparing - 1;
 
                   const zeroBottom = minVal < 0 ? (maxVal / range) * 92 : 0;
                   const barBottom = isNegative ? zeroBottom - heightPct : zeroBottom;
@@ -282,7 +285,7 @@ export default function InsertionSortAnimation() {
                         animate={{
                           bottom: `${Math.max(0, barBottom)}%`,
                           height: `${Math.max(2, heightPct)}%`,
-                          scale: isComparing || isCurrent || isInsertTarget ? 1.08 : 1,
+                          scale: isComparing || isCurrent || isInsertTarget || isShiftSource ? 1.08 : 1,
                         }}
                         transition={{
                           type: "spring",
@@ -312,8 +315,12 @@ export default function InsertionSortAnimation() {
                   比较中
                 </span>
                 <span className="flex items-center gap-1">
+                  <span className="inline-block h-3 w-3 rounded bg-cyan-500" />
+                  移位源
+                </span>
+                <span className="flex items-center gap-1">
                   <span className="inline-block h-3 w-3 rounded bg-blue-500" />
-                  移位中
+                  移位目标
                 </span>
                 <span className="flex items-center gap-1">
                   <span className="inline-block h-3 w-3 rounded bg-purple-500" />
