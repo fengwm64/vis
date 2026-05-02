@@ -1,0 +1,122 @@
+{
+  "issue": 38,
+  "title": "[auto-fix] 插入排序: 动画没有体现出来插入",
+  "pipeline": "auto-fix",
+  "current_stage": "pr_opened",
+  "current_owner": "qa",
+  "pinned_comment_id": 4363601073,
+  "pr_url": "https://github.com/fengwm64/AlgorithmVisualizations/pull/39",
+  "history": [
+    {
+      "ts": "2026-05-02T10:34:19.191Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-38.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T10:34:49.409Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-38.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T10:36:18.390Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-38/prd.md",
+      "message": "PRD is ready. Algorithm needs to add keyValue/insertTarget metadata fields first, then frontend implements visual animation."
+    },
+    {
+      "ts": "2026-05-02T10:37:02.821Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/issues/issue-38/prd.md",
+      "message": "Algorithm design started. Adding keyValue/insertTarget metadata fields."
+    },
+    {
+      "ts": "2026-05-02T10:39:44.831Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/insertion-sort/algorithm.js",
+      "message": "Algorithm module updated with keyValue/insertTarget metadata fields. All 16 self-tests pass."
+    },
+    {
+      "ts": "2026-05-02T10:40:23.900Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-38/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T10:43:48.144Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/insertion-sort/index.jsx",
+      "message": "Frontend animation is ready. Fixed barColor order, added key holding area with AnimatePresence, null-value placeholder bars, insertion pill animation, and updated legend."
+    },
+    {
+      "ts": "2026-05-02T10:44:46.811Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-38/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T10:47:25.594Z",
+      "from": "qa",
+      "to": "algorithm",
+      "stage": "qa_returned_to_algorithm",
+      "artifact": ".auto-dev/issues/issue-38/qa-report.md",
+      "message": "QA found algorithm defect: shift step sets comparing=j (source/null slot) instead of comparing=j+1 (destination/shifted element). Blue bar never visible."
+    },
+    {
+      "ts": "2026-05-02T10:48:48.083Z",
+      "from": "algorithm",
+      "to": "qa",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/insertion-sort/algorithm.js",
+      "message": "Fixed shift step comparing index: now set to j+1 (destination in heldArray) instead of j (null slot). Added regression test #17."
+    },
+    {
+      "ts": "2026-05-02T10:49:22.917Z",
+      "from": "algorithm",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-38/prd.md",
+      "message": "QA started. Running build, algorithm tests, and acceptance audit."
+    },
+    {
+      "ts": "2026-05-02T10:51:57.860Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-38/qa-report.md",
+      "message": "QA passed. All 12 acceptance criteria met, all legend items used, no UI/interaction defects."
+    },
+    {
+      "ts": "2026-05-02T10:53:00.395Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-38/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 1,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
