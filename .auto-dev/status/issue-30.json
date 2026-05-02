@@ -2,10 +2,10 @@
   "issue": 30,
   "title": "[auto-fix] PageRank 过程动画: 继续修复 - 当前节点之间的间距过小",
   "pipeline": "auto-fix",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4363484598,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/vis/pull/32",
   "history": [
     {
       "ts": "2026-05-02T09:17:51.577Z",
@@ -70,6 +70,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-30/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T09:23:08.140Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-30/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
