@@ -81,6 +81,107 @@ if command -v claude >/dev/null 2>&1; then
   claude --version || true
 fi
 
+run_algorithm_tests() {
+  node --input-type=module <<'NODE'
+import fs from 'node:fs'
+import path from 'node:path'
+import { pathToFileURL } from 'node:url'
+
+function findAlgorithmModules(dir) {
+  if (!fs.existsSync(dir)) return []
+
+  const modules = []
+  const entries = fs.readdirSync(dir, { withFileTypes: true })
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name)
+
+    if (entry.isDirectory()) {
+      modules.push(...findAlgorithmModules(fullPath))
+    } else if (entry.isFile() && entry.name === 'algorithm.js') {
+      modules.push(fullPath)
+    }
+  }
+
+  return modules
+}
+
+const modules = findAlgorithmModules('src/animations')
+
+if (modules.length === 0) {
+  console.log('No standalone algorithm.js modules found; skipping algorithm self-tests.')
+  process.exit(0)
+}
+
+for (const modulePath of modules) {
+  const mod = await import(pathToFileURL(path.resolve(modulePath)).href)
+
+  if (typeof mod.runAlgorithmTests === 'function') {
+    console.log(`Running algorithm self-test: ${modulePath}`)
+    await mod.runAlgorithmTests()
+  } else {
+    console.log(`Skipping ${modulePath}: runAlgorithmTests export not found.`)
+  }
+}
+NODE
+}
+
+open_pr_from_current_changes() {
+  local branch="auto-dev/issue-${ISSUE_NUMBER}"
+  local status_path=".auto-dev/status/issue-${ISSUE_NUMBER}.json"
+  local pr_url
+
+  echo "::group::Auto-dev finalization"
+  echo "Finalizing issue #${ISSUE_NUMBER} from qa_passed state."
+
+  npm run build || return 1
+  run_algorithm_tests || return 1
+
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "gh CLI is required to create the pull request." >&2
+    return 1
+  fi
+
+  git config user.name "github-actions[bot]" || return 1
+  git config user.email "41898282+github-actions[bot]@users.noreply.github.com" || return 1
+  git checkout -B "$branch" || return 1
+  git add -A -- src .auto-dev || return 1
+
+  if git diff --cached --quiet; then
+    echo "No generated code changes found after qa_passed; aborting PR creation." >&2
+    return 1
+  fi
+
+  git commit -m "Auto-dev: add visualization for issue #${ISSUE_NUMBER}" || return 1
+  git push --set-upstream origin "$branch" --force-with-lease || return 1
+
+  if ! pr_url="$(gh pr view "$branch" --json url --jq '.url' 2>/dev/null)"; then
+    pr_url="$(gh pr create \
+      --title "Auto-dev: ${ISSUE_TITLE}" \
+      --body "Closes #${ISSUE_NUMBER}" \
+      --base main \
+      --head "$branch")" || return 1
+  fi
+
+  AGENT_ROLE=QA bash scripts/update-status.sh \
+    --stage pr_opened \
+    --owner qa \
+    --from qa \
+    --to maintainer \
+    --artifact .auto-dev/qa-report.md \
+    --pr-url "$pr_url" \
+    --message "PR opened by start.sh finalizer." || return 1
+
+  git add "$status_path" || return 1
+  if ! git diff --cached --quiet; then
+    git commit -m "Record auto-dev PR status for issue #${ISSUE_NUMBER}" || return 1
+    git push || return 1
+  fi
+
+  bash scripts/feishu.sh status pr_opened "QA 通过，已创建 PR：${pr_url}"
+  echo "::endgroup::"
+}
+
 mkdir -p ".auto-dev/incoming" ".auto-dev/status"
 
 INCOMING_PATH=".auto-dev/incoming/issue-${ISSUE_NUMBER}.md"
@@ -137,7 +238,7 @@ SHARED_SYSTEM_PROMPT="$(cat .claude/context/team-charter.md && printf '\n\n' && 
 
 claude -p \
   --model "$ANTHROPIC_MODEL" \
-  --permission-mode acceptEdits \
+  --permission-mode bypassPermissions \
   --append-system-prompt "$SHARED_SYSTEM_PROMPT" <<EOF_PROMPT
 你是算法可视化自动开发团队的入口进程。不要自己扮演中央 orchestrator。
 
@@ -162,6 +263,23 @@ NODE
 case "$FINAL_STAGE" in
   pr_opened)
     bash scripts/feishu.sh status pr_opened "Issue #${ISSUE_NUMBER} 已完成并创建 PR。"
+    ;;
+  qa_passed)
+    if ! open_pr_from_current_changes; then
+      MESSAGE="Auto-dev reached qa_passed but start.sh failed to create PR."
+      AGENT_ROLE=system bash scripts/update-status.sh \
+        --stage aborted \
+        --owner system \
+        --from system \
+        --to maintainer \
+        --artifact ".auto-dev/status/issue-${ISSUE_NUMBER}.json" \
+        --message "$MESSAGE"
+      if command -v gh >/dev/null 2>&1 && [[ -n "${GH_TOKEN:-${GITHUB_TOKEN:-}}" ]]; then
+        gh issue comment "$ISSUE_NUMBER" --body "$MESSAGE" >/dev/null
+      fi
+      bash scripts/feishu.sh status aborted "$MESSAGE"
+      exit 1
+    fi
     ;;
   rejected|aborted)
     MESSAGE="Auto-dev finished with terminal stage: ${FINAL_STAGE}"

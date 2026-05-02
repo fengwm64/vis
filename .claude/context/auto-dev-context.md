@@ -23,6 +23,7 @@
 4. GitHub Actions 的 `.github/workflows/auto-dev.yml` 监听该 label。
 5. workflow 安装 Claude Code 和 npm 依赖，然后执行 `bash scripts/start.sh`。
 6. `scripts/start.sh` 初始化 `.auto-dev/incoming/issue-N.md` 和 `.auto-dev/status/issue-N.json`，再启动 Claude Code，让 PM agent 接单。
+7. QA agent 推进到 `qa_passed` 后退出；`scripts/start.sh` finalizer 从普通 shell 环境复核构建和算法测试，然后提交、推送并创建 PR。
 
 ## LLM 和运行环境
 
@@ -93,7 +94,8 @@ QA 必须产出：
 
 - `.auto-dev/qa-report.md`。
 - 构建结果、算法测试结果、PRD 验收项逐项结论。
-- 通过后创建 `auto-dev/issue-N` 分支和 PR，并把 `pr_opened`、`pr_url` 写回 status JSON 后推送。
+- 通过后只把状态推进到 `qa_passed`；不要直接执行 git 或 gh 命令。
+- `scripts/start.sh` finalizer 负责创建 `auto-dev/issue-N` 分支和 PR，并把 `pr_opened`、`pr_url` 写回 status JSON 后推送。
 
 ## 状态与可观测性
 

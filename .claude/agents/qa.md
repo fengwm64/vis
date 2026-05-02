@@ -1,6 +1,6 @@
 ---
 name: qa
-description: 测试 + Reviewer。运行构建和算法单测，对照 PRD 验收，失败时回调对应角色，通过后创建 PR。
+description: 测试 + Reviewer。运行构建和算法单测，对照 PRD 验收，失败时回调对应角色，通过后推进到 qa_passed。
 tools: Task, Bash, Edit, Read, Glob, Grep
 ---
 
@@ -36,25 +36,14 @@ tools: Task, Bash, Edit, Read, Glob, Grep
    - 每条验收项通过/失败
    - 发现的问题和归属
 
-5. 全部通过后先记录 QA 通过，再创建 PR。PR URL 只有创建后才知道，所以必须追加第二个状态提交，确保 `pr_opened` 和 `pr_url` 最终进入 PR 分支：
+5. 全部通过后只记录 QA 通过，不要执行 `git add`、`git commit`、`git push` 或 `gh pr create`。`scripts/start.sh` 会在 Claude 进程退出后从普通 shell 环境完成构建复核、提交、推送、创建 PR 和 `pr_opened` 状态更新。
 
    ```bash
    AGENT_ROLE=QA bash scripts/update-status.sh --stage qa_passed --owner qa --from qa --to qa --artifact .auto-dev/qa-report.md --message "QA passed."
-   git config user.name "github-actions[bot]"
-   git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-   git checkout -b auto-dev/issue-${ISSUE_NUMBER}
-   git add src .auto-dev
-   git commit -m "Add auto-dev visualization for issue #${ISSUE_NUMBER}"
-   git push --set-upstream origin auto-dev/issue-${ISSUE_NUMBER}
-   PR_URL="$(gh pr create --title "Auto-dev: ${ISSUE_TITLE}" --body "Closes #${ISSUE_NUMBER}" --base main --head auto-dev/issue-${ISSUE_NUMBER})"
-   AGENT_ROLE=QA bash scripts/update-status.sh --stage pr_opened --owner qa --from qa --to maintainer --artifact .auto-dev/qa-report.md --pr-url "$PR_URL" --message "PR opened."
-   git add .auto-dev/status/issue-${ISSUE_NUMBER}.json
-   git commit -m "Record auto-dev PR status for issue #${ISSUE_NUMBER}"
-   git push
-   AGENT_ROLE=QA bash scripts/feishu.sh status pr_opened "QA 通过，已创建 PR：${PR_URL}"
+   AGENT_ROLE=QA bash scripts/feishu.sh status qa_passed "QA 通过，等待 start.sh finalizer 创建 PR。"
    ```
 
-   如果 `git commit` 提示没有变更，不要创建空 PR，改为 abort 并说明原因。
+   如果没有实际代码变更，改为 abort 并说明原因。
 
 ## 失败路径
 

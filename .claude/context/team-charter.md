@@ -41,6 +41,8 @@ bash scripts/feishu.sh handoff 算法工程师 前端可视化专家 src/animati
 
 `submitted -> pm_triage -> pm_drafting_prd -> prd_done -> algorithm_designing -> algorithm_coding -> algorithm_testing -> algorithm_done -> frontend_designing -> frontend_coding -> frontend_done -> qa_running -> qa_passed -> pr_opened`
 
+`qa_passed -> pr_opened` 由 `scripts/start.sh` finalizer 在 Claude 进程退出后完成，不由 QA agent 直接执行 git 或 gh 命令。
+
 终止路径：
 
 `pm_triage -> rejected`

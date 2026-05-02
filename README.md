@@ -22,7 +22,7 @@
 关键设计：
 
 - **无后端服务**：网站仍是 Cloudflare Pages SPA，API 只用 Pages Functions。
-- **无中央 orchestrator agent**：入口脚本只启动 PM，后续由 agent 使用 Task 工具非线性交接。
+- **无中央 orchestrator agent**：入口脚本只启动 PM，后续由 agent 使用 Task 工具非线性交接；PR 创建由 `scripts/start.sh` finalizer 统一收口。
 - **三路可观测性**：`.auto-dev/status/issue-N.json`、Issue sticky comment、网站 `/status` 页面。
 - **实时通知**：阶段切换、handoff、失败会通过飞书机器人广播。
 - **LLM 调用统一入口**：所有模型调用都由 Claude Code 完成，workflow 通过 MiMo Anthropic 兼容网关注入 `ANTHROPIC_BASE_URL`。
@@ -259,6 +259,7 @@ npm run build
 - 如果 Issue 创建失败并提示 label 相关错误，确认仓库中已存在 `auto-dev` label。
 - 如果 workflow 没启动，确认 Issue 是被加上 `auto-dev` label 后触发的，且 Actions 已启用。
 - 如果 Claude Code 报 `Not supported model ***`，把 GitHub Secret `ANTHROPIC_MODEL` 改成小写接口 ID，例如 `mimo-v2.5-pro`。`MiMo-V2.5-Pro` 是展示名，网关会拒绝。
+- 如果 Claude Code 报 sandbox 阻止 `npm` 或 `git`，确认 workflow 已更新到使用 `--permission-mode bypassPermissions`，并且 QA agent 不再直接执行 git；最终 PR 应由 `scripts/start.sh` finalizer 创建。
 - 如果日志里没有 `Claude Code environment diagnostics` 分组，说明 workflow 还没有运行到包含诊断逻辑的最新提交。
 - `Claude Code environment diagnostics` 只打印 `ANTHROPIC_BASE_URL` 的 protocol / host / path，以及 token 是否存在，不会打印 API Key。
 - 如果 Claude Code 无法调用模型，确认 GitHub Secrets 中的 `ANTHROPIC_BASE_URL`、`ANTHROPIC_API_KEY`、`ANTHROPIC_MODEL` 已配置；Token Plan 用户的 Base URL 以订阅控制台显示为准。
