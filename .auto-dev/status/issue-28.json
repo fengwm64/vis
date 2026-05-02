@@ -1,0 +1,106 @@
+{
+  "issue": 28,
+  "title": "[auto-dev] 普里姆（Prim）最小生成树算法",
+  "pipeline": "auto-dev",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4363471579,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T09:08:43.880Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-28.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T09:09:05.372Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-28.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T09:10:13.856Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-28/prd.md",
+      "message": "PRD is ready."
+    },
+    {
+      "ts": "2026-05-02T09:10:56.838Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/issues/issue-28/prd.md",
+      "message": "Algorithm design started."
+    },
+    {
+      "ts": "2026-05-02T09:12:10.318Z",
+      "from": "algorithm",
+      "to": "algorithm",
+      "stage": "algorithm_coding",
+      "artifact": "src/animations/prim-mst/algorithm.js",
+      "message": "Algorithm implementation in progress."
+    },
+    {
+      "ts": "2026-05-02T09:12:46.750Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/prim-mst/algorithm.js",
+      "message": "Algorithm module and tests are ready."
+    },
+    {
+      "ts": "2026-05-02T09:14:11.415Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-28/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T09:15:17.134Z",
+      "from": "frontend",
+      "to": "frontend",
+      "stage": "frontend_coding",
+      "artifact": "src/animations/prim-mst/index.jsx",
+      "message": "Frontend animation implementation in progress."
+    },
+    {
+      "ts": "2026-05-02T09:15:43.723Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/prim-mst/index.jsx",
+      "message": "Frontend animation is ready."
+    },
+    {
+      "ts": "2026-05-02T09:16:27.886Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-28/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T09:17:22.058Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-28/qa-report.md",
+      "message": "QA passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
