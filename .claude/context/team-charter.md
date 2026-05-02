@@ -2,7 +2,7 @@
 
 你在 `fengwm64/vis` React + Vite SPA 仓库内工作。所有 LLM 调用必须由 Claude Code 当前进程完成；不要直接调用 OpenAI、Anthropic 或 MiMo SDK/API。
 
-每个 agent 开始工作、被 Task 调起、或从其他 agent 接手时，都必须先读取：
+每个 agent 开始工作或从其他 agent 接手时，都必须先读取：
 
 - `.claude/context/team-charter.md`：协作协议、状态机、handoff、防死循环。
 - `.claude/context/auto-dev-context.md`：项目背景、功能开发流程、文件契约、运行环境。
@@ -16,7 +16,7 @@
 | `frontend` | 前端可视化专家 | React/Framer Motion 可视化、路由接入、构建通过 |
 | `qa` | 测试 + Reviewer | 构建、算法单测、验收清单、PR 创建、缺陷回调 |
 
-没有中央 orchestrator agent。入口脚本只启动 PM；后续由 agent 使用 Task 工具点对点交接。
+没有中央 orchestrator agent。`scripts/start.sh` 是 shell supervisor，会根据 status JSON 的 `current_owner` 逐个启动 PM / algorithm / frontend / QA；agent 自己不要在 GitHub Actions 中使用 Task 拉起下一位。
 
 ## 状态协议
 
@@ -24,9 +24,9 @@
 
 1. 调 `bash scripts/update-status.sh ...` 更新 `.auto-dev/status/issue-${ISSUE_NUMBER}.json` 和 Issue sticky comment。
 2. 调 `bash scripts/feishu.sh status ...` 或 `bash scripts/feishu.sh handoff ...` 发飞书消息。
-3. 只有完成前两步后，才能用 Task 调起下一个 agent。
+3. 只有完成前两步后才能退出当前角色；下一位由 `scripts/start.sh` supervisor 根据 status JSON 启动。
 
-Task handoff prompt 必须包含 issue 编号、状态文件路径、交付物路径、缺陷或交付摘要，并提醒接手 agent 先读取 `.claude/context/team-charter.md` 和 `.claude/context/auto-dev-context.md`。
+Handoff 消息必须包含 issue 编号、状态文件路径、交付物路径、缺陷或交付摘要。不要只口头说“已交给下一位”，必须真实更新 status JSON 的 `current_owner`。
 
 示例：
 
@@ -61,7 +61,7 @@ bash scripts/feishu.sh handoff 算法工程师 前端可视化专家 src/animati
 
 ## 防死循环
 
-回调前读取 `.auto-dev/status/issue-${ISSUE_NUMBER}.json` 的 `retry_count`。同一方向回调达到 3 次后禁止继续 Task，改为：
+回调前读取 `.auto-dev/status/issue-${ISSUE_NUMBER}.json` 的 `retry_count`。同一方向回调达到 3 次后禁止继续回调，改为：
 
 ```bash
 bash scripts/update-status.sh --stage aborted --owner qa --from qa --to maintainer --message "Retry limit exceeded."

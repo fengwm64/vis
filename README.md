@@ -22,7 +22,7 @@
 关键设计：
 
 - **无后端服务**：网站仍是 Cloudflare Pages SPA，API 只用 Pages Functions。
-- **无中央 orchestrator agent**：入口脚本只启动 PM，后续由 agent 使用 Task 工具非线性交接；PR 创建由 `scripts/start.sh` finalizer 统一收口。
+- **无中央 orchestrator agent**：`scripts/start.sh` 是 shell supervisor，按 status JSON 启动各角色；agent 只负责产物和 handoff 状态，PR 创建由 finalizer 统一收口。
 - **三路可观测性**：`.auto-dev/status/issue-N.json`、Issue sticky comment、网站 `/status` 页面。
 - **实时通知**：阶段切换、handoff、失败会通过飞书机器人广播。
 - **LLM 调用统一入口**：所有模型调用都由 Claude Code 完成，workflow 通过 MiMo Anthropic 兼容网关注入 `ANTHROPIC_BASE_URL`。

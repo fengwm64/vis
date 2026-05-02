@@ -126,6 +126,95 @@ for (const modulePath of modules) {
 NODE
 }
 
+read_status_field() {
+  local field="${1:?field is required}"
+
+  STATUS_PATH=".auto-dev/status/issue-${ISSUE_NUMBER}.json" FIELD="$field" node --input-type=module <<'NODE'
+import fs from 'node:fs'
+
+const status = JSON.parse(fs.readFileSync(process.env.STATUS_PATH, 'utf8'))
+const value = status[process.env.FIELD]
+console.log(value == null ? '' : value)
+NODE
+}
+
+run_agent_role() {
+  local role="${1:?role is required}"
+  local agent_file=".claude/agents/${role}.md"
+  local stage owner role_prompt
+
+  if [[ ! -f "$agent_file" ]]; then
+    echo "Unknown agent role: ${role}" >&2
+    return 1
+  fi
+
+  stage="$(read_status_field current_stage)"
+  owner="$(read_status_field current_owner)"
+  role_prompt="$(cat "$agent_file")"
+
+  echo "::group::Auto-dev agent: ${role}"
+  echo "Starting role=${role}, current_stage=${stage}, current_owner=${owner}"
+
+  claude -p \
+    --model "$ANTHROPIC_MODEL" \
+    --permission-mode bypassPermissions \
+    --append-system-prompt "$SHARED_SYSTEM_PROMPT"$'\n\n'"$role_prompt" <<EOF_AGENT
+你现在直接扮演 ${role} agent，处理 Issue #${ISSUE_NUMBER}。
+
+当前文件：
+- 原始需求: ${INCOMING_PATH}
+- 状态文件: .auto-dev/status/issue-${ISSUE_NUMBER}.json
+- PRD: .auto-dev/prd.md
+- QA 报告: .auto-dev/qa-report.md
+
+当前状态：
+- current_stage: ${stage}
+- current_owner: ${owner}
+
+执行规则：
+- 先读取 .claude/context/team-charter.md、.claude/context/auto-dev-context.md 和 ${agent_file}。
+- 不要等待用户输入。
+- 不要假装已经交给下一个 agent；必须真实写入交付物并调用 scripts/update-status.sh 更新 owner/stage。
+- 本次调用不要使用 Task 工具拉起下一个 agent。GitHub Actions 中由 scripts/start.sh supervisor 根据 status 文件继续启动下一位。
+- 如果你完成 handoff，只需更新 status、发飞书消息并退出。
+- 如果你发现需要回退，更新 owner/stage 到对应角色并退出。
+- 如果你是 QA，通过后只推进到 qa_passed，不要执行 git 或 gh；PR 由 start.sh finalizer 创建。
+EOF_AGENT
+
+  echo "::endgroup::"
+}
+
+run_agent_supervisor() {
+  local max_steps=18
+  local step stage owner
+
+  for step in $(seq 1 "$max_steps"); do
+    stage="$(read_status_field current_stage)"
+    owner="$(read_status_field current_owner)"
+
+    echo "Auto-dev supervisor step ${step}: stage=${stage}, owner=${owner}"
+
+    case "$stage" in
+      pr_opened|rejected|aborted|qa_passed)
+        return 0
+        ;;
+    esac
+
+    case "$owner" in
+      pm|algorithm|frontend|qa)
+        run_agent_role "$owner"
+        ;;
+      *)
+        echo "Unknown current_owner '${owner}' at stage '${stage}'." >&2
+        return 1
+        ;;
+    esac
+  done
+
+  echo "Auto-dev supervisor exceeded ${max_steps} steps." >&2
+  return 1
+}
+
 open_pr_from_current_changes() {
   local branch="auto-dev/issue-${ISSUE_NUMBER}"
   local status_path=".auto-dev/status/issue-${ISSUE_NUMBER}.json"
@@ -236,22 +325,21 @@ bash scripts/feishu.sh status submitted "新需求已进入 PM 评估：${ISSUE_
 
 SHARED_SYSTEM_PROMPT="$(cat .claude/context/team-charter.md && printf '\n\n' && cat .claude/context/auto-dev-context.md)"
 
-claude -p \
-  --model "$ANTHROPIC_MODEL" \
-  --permission-mode bypassPermissions \
-  --append-system-prompt "$SHARED_SYSTEM_PROMPT" <<EOF_PROMPT
-你是算法可视化自动开发团队的入口进程。不要自己扮演中央 orchestrator。
-
-当前需求：
-- Issue: #${ISSUE_NUMBER}
-- 标题: ${ISSUE_TITLE}
-- 原始需求文件: ${INCOMING_PATH}
-- 状态文件: .auto-dev/status/issue-${ISSUE_NUMBER}.json
-
-只做一件事：使用 Task 工具调起 pm agent，让 PM 接单并开始非线性团队协作。
-PM 完成后续判断、PRD、handoff、回退与终止；之后所有角色之间用 Task 点对点协作。
-调起 PM 时，明确要求 PM 先读取 .claude/context/team-charter.md 和 .claude/context/auto-dev-context.md。
-EOF_PROMPT
+if ! run_agent_supervisor; then
+  MESSAGE="Auto-dev supervisor failed before reaching a terminal stage."
+  AGENT_ROLE=system bash scripts/update-status.sh \
+    --stage aborted \
+    --owner system \
+    --from system \
+    --to maintainer \
+    --artifact ".auto-dev/status/issue-${ISSUE_NUMBER}.json" \
+    --message "$MESSAGE"
+  if command -v gh >/dev/null 2>&1 && [[ -n "${GH_TOKEN:-${GITHUB_TOKEN:-}}" ]]; then
+    gh issue comment "$ISSUE_NUMBER" --body "$MESSAGE" >/dev/null
+  fi
+  bash scripts/feishu.sh status aborted "$MESSAGE"
+  exit 1
+fi
 
 FINAL_STAGE="$(STATUS_PATH=".auto-dev/status/issue-${ISSUE_NUMBER}.json" node --input-type=module <<'NODE'
 import fs from 'node:fs'

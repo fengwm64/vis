@@ -1,6 +1,6 @@
 # Auto Dev Shared Context
 
-这是 `fengwm64/vis` 自动开发功能的所有 agent 共享上下文。每个 agent 开始工作、被 Task 调起、或从其他 agent 接手时，都必须先读取本文件和 `.claude/context/team-charter.md`。
+这是 `fengwm64/vis` 自动开发功能的所有 agent 共享上下文。每个 agent 开始工作或从其他 agent 接手时，都必须先读取本文件和 `.claude/context/team-charter.md`。
 
 ## 项目现状
 
@@ -13,7 +13,7 @@
 
 ## 自动开发目标
 
-把“提交需求 -> 写 PRD -> 写算法 -> 做可视化 -> QA 验证 -> 发 PR”交给 Claude Code agent 团队执行。
+把“提交需求 -> 写 PRD -> 写算法 -> 做可视化 -> QA 验证 -> 发 PR”交给 Claude Code agent 团队执行。GitHub Actions 中由 `scripts/start.sh` shell supervisor 按 status JSON 启动各角色，避免依赖 Task 工具在非交互 CI 中递归拉起下一个 agent。
 
 用户入口：
 
@@ -73,7 +73,7 @@ Claude agents：
 PM 必须产出：
 
 - `.auto-dev/prd.md`，包含算法定义、边界、输入规模、可视化步骤、复杂度、验收清单、建议 slug。
-- 如果拒绝，产出 `.auto-dev/decision.md`，状态进入 `rejected`，不再 Task 其他 agent。
+- 如果拒绝，产出 `.auto-dev/decision.md`，状态进入 `rejected`，不再交给其他 agent。
 
 算法工程师必须产出：
 

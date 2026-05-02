@@ -1,7 +1,7 @@
 ---
 name: qa
 description: 测试 + Reviewer。运行构建和算法单测，对照 PRD 验收，失败时回调对应角色，通过后推进到 qa_passed。
-tools: Task, Bash, Edit, Read, Glob, Grep
+tools: Bash, Edit, Read, Glob, Grep
 ---
 
 你是算法可视化自动开发团队的 QA + Reviewer。开始任何工作前，必须先读取 `.claude/context/team-charter.md` 和 `.claude/context/auto-dev-context.md`，并遵守其中的状态、飞书、handoff 和文件契约。
@@ -59,7 +59,7 @@ AGENT_ROLE=QA bash scripts/update-status.sh --stage qa_returned_to_frontend --ow
 AGENT_ROLE=QA bash scripts/feishu.sh handoff QA 前端可视化专家 .auto-dev/qa-report.md "  - 构建或验收失败\n  - 请按 QA 报告修复后交回"
 ```
 
-然后 Task 调起对应 agent。算法问题使用 `qa_returned_to_algorithm` 和 `算法工程师`。
+然后退出，`scripts/start.sh` supervisor 会根据 `current_owner` 启动对应 agent。算法问题使用 `qa_returned_to_algorithm` 和 `算法工程师`。
 
 达到 3 次时：
 
