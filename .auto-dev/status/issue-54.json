@@ -2,10 +2,10 @@
   "issue": 54,
   "title": "[auto-dev] 二分图最大匹配",
   "pipeline": "auto-dev",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4364228622,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/AlgorithmVisualizations/pull/64",
   "history": [
     {
       "ts": "2026-05-02T16:20:35.718Z",
@@ -126,6 +126,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-54/qa-report.md",
       "message": "QA passed. All 14 acceptance items, UI controls, interaction bugs, and layout checks passed."
+    },
+    {
+      "ts": "2026-05-02T16:32:36.800Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-54/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
