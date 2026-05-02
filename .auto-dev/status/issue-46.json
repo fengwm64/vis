@@ -1,0 +1,82 @@
+{
+  "issue": 46,
+  "title": "[auto-fix] 插入排序: 继续修复 - 冗余问题",
+  "pipeline": "auto-fix",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4364210560,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T16:10:27.510Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-46.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T16:10:45.040Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-46.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T16:11:02.514Z",
+      "from": "pm",
+      "to": "pm",
+      "stage": "pm_drafting_prd",
+      "artifact": ".auto-dev/incoming/issue-46.md",
+      "message": "Drafting PRD for visual fix."
+    },
+    {
+      "ts": "2026-05-02T16:11:27.665Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-46/prd.md",
+      "message": "PRD is ready. Visual/copy fix, routing to frontend."
+    },
+    {
+      "ts": "2026-05-02T16:12:01.442Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-46/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T16:12:20.588Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/insertion-sort/index.jsx",
+      "message": "Frontend fix ready. Changed legend text from 'key 已取出' to '空位占位' to eliminate redundancy with '当前取出'."
+    },
+    {
+      "ts": "2026-05-02T16:12:48.850Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-46/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T16:13:43.596Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-46/qa-report.md",
+      "message": "QA passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
