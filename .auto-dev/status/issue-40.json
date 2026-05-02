@@ -2,10 +2,10 @@
   "issue": 40,
   "title": "[auto-fix] 插入排序: 动画问题",
   "pipeline": "auto-fix",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4364110794,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/AlgorithmVisualizations/pull/43",
   "history": [
     {
       "ts": "2026-05-02T15:15:06.953Z",
@@ -62,6 +62,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-40/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T15:21:25.018Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-40/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
