@@ -118,6 +118,20 @@ function getPipelineFromIssue(issue) {
   return 'auto-dev'
 }
 
+function parseAutoFixTarget(body = '') {
+  const animationId = body.match(/- ID:\s*(.+)/)?.[1]?.trim()
+  const animationTitle = body.match(/- 标题:\s*(.+)/)?.[1]?.trim()
+  const animationPath = body.match(/- 路径:\s*(.+)/)?.[1]?.trim()
+
+  if (!animationId || !animationPath) return null
+
+  return {
+    animationId,
+    animationTitle: animationTitle || animationId,
+    animationPath,
+  }
+}
+
 function latestHistoryTs(status, fallback) {
   const history = Array.isArray(status?.history) ? status.history : []
   const latest = history[history.length - 1]
@@ -162,6 +176,7 @@ export async function onRequestGet({ env }) {
           issueNumber: issue.number,
           title: issue.title,
           pipeline: status?.pipeline || pipeline,
+          target: pipeline === 'auto-fix' ? parseAutoFixTarget(issue.body || '') : null,
           currentStage: status?.current_stage || 'submitted',
           currentOwner: status?.current_owner || 'pm',
           lastActivityAt: latestHistoryTs(status, issue.updated_at),

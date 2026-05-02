@@ -41,6 +41,7 @@
 - **实时通知**：阶段切换、handoff、失败会通过飞书机器人广播。
 - **QA 交互审计**：QA 会检查无用/冗余按钮、死按钮、播放控制边界、文案行为一致性和潜在交互 bug。
 - **Auto-Fix 入口**：每个算法动画页底部都可以提交对当前动画的修复或优化建议。
+- **继续修复入口**：`/status` 页的 auto-fix 任务支持继续修复，会自动引用原 Issue / PR 和目标动画信息。
 - **LLM 调用统一入口**：所有模型调用都由 Claude Code 完成，workflow 通过 MiMo Anthropic 兼容网关注入 `ANTHROPIC_BASE_URL`。
 
 ---
@@ -297,6 +298,7 @@ npm run build
    - PR 分支名类似 `auto-fix/issue-N`。
    - PR 只修改目标现有动画或必要的共享文件。
    - `/status` 页面能区分显示“新算法”和“修复优化”。
+6. 如果修复后仍未解决，在 `/status` 对应 auto-fix 行点击“继续修复”，填写新的复现步骤；系统会创建新的 auto-fix Issue，并自动引用原 Issue / PR。
 
 ### 8. 常见问题
 

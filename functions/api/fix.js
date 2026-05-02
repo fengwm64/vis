@@ -32,7 +32,32 @@ function withPrefix(title, prefix) {
   return title.startsWith(prefix) ? title : `${prefix} ${title}`
 }
 
-function buildIssueBody({ animationId, animationTitle, animationPath, area, title, description }) {
+function buildFollowUpSection({ previousIssueNumber, previousIssueUrl, previousPrUrl }) {
+  if (!previousIssueNumber && !previousIssueUrl && !previousPrUrl) return ''
+
+  return `
+### 继续修复来源
+- 原 Issue: ${previousIssueNumber ? `#${previousIssueNumber}` : '未提供'}
+- 原 Issue 链接: ${previousIssueUrl || '未提供'}
+- 原 PR: ${previousPrUrl || '未提供'}
+
+### 继续修复要求
+- 先阅读原 Issue、原 PR 和本次说明，判断为什么上次修复没有完全解决。
+- QA 必须重点验证本次描述的复现步骤，不能只验证构建通过。
+`
+}
+
+function buildIssueBody({
+  animationId,
+  animationTitle,
+  animationPath,
+  area,
+  title,
+  description,
+  previousIssueNumber,
+  previousIssueUrl,
+  previousPrUrl,
+}) {
   return `## 自动修复/优化需求
 
 ### 目标动画
@@ -48,6 +73,7 @@ ${title}
 
 ### 具体说明
 ${description}
+${buildFollowUpSection({ previousIssueNumber, previousIssueUrl, previousPrUrl })}
 
 ### 处理要求
 - 这是针对现有算法可视化页面的 auto-fix 请求，优先修改现有文件，不要默认新增算法页面。
@@ -112,6 +138,9 @@ export async function onRequestPost({ request, env }) {
   const title = cleanText(payload.title, 100)
   const description = cleanText(payload.description, 3000)
   const area = ALLOWED_AREAS.has(payload.area) ? payload.area : 'interaction'
+  const previousIssueNumber = cleanText(payload.previousIssueNumber, 20)
+  const previousIssueUrl = cleanText(payload.previousIssueUrl, 220)
+  const previousPrUrl = cleanText(payload.previousPrUrl, 220)
 
   if (!animationId || !animationPath.startsWith('/animations/')) {
     return json({ error: '目标动画无效' }, { status: 400 })
@@ -135,8 +164,18 @@ export async function onRequestPost({ request, env }) {
       'X-GitHub-Api-Version': '2022-11-28',
     },
     body: JSON.stringify({
-      title: withPrefix(`${animationTitle}: ${title}`, '[auto-fix]'),
-      body: buildIssueBody({ animationId, animationTitle, animationPath, area, title, description }),
+      title: withPrefix(`${animationTitle}: ${previousIssueNumber ? '继续修复 - ' : ''}${title}`, '[auto-fix]'),
+      body: buildIssueBody({
+        animationId,
+        animationTitle,
+        animationPath,
+        area,
+        title,
+        description,
+        previousIssueNumber,
+        previousIssueUrl,
+        previousPrUrl,
+      }),
       labels: ['auto-fix'],
     }),
   })

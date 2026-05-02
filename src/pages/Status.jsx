@@ -50,6 +50,20 @@ const pipelineTone = {
   'auto-fix': 'bg-orange-100 text-orange-700 ring-orange-200',
 }
 
+const continueInitialForm = {
+  area: 'interaction',
+  title: '',
+  description: '',
+}
+
+const areaOptions = [
+  { value: 'interaction', label: '交互问题' },
+  { value: 'visual', label: '视觉优化' },
+  { value: 'content', label: '文案/讲解' },
+  { value: 'algorithm', label: '算法逻辑' },
+  { value: 'performance', label: '性能/兼容性' },
+]
+
 function formatTime(value) {
   if (!value) return '暂无'
   return new Intl.DateTimeFormat('zh-CN', {
@@ -76,12 +90,137 @@ function PipelineBadge({ pipeline }) {
   )
 }
 
+function ContinueFixDialog({
+  item,
+  form,
+  submitting,
+  error,
+  result,
+  onClose,
+  onChange,
+  onSubmit,
+}) {
+  if (!item) return null
+
+  const target = item.target
+
+  return (
+    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-slate-950/70 px-4 py-8 backdrop-blur-sm">
+      <div className="w-full max-w-2xl overflow-hidden rounded-[2rem] bg-white text-slate-950 shadow-2xl">
+        <div className="border-b border-slate-200 bg-[linear-gradient(135deg,#fff7ed,#ecfeff)] p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-orange-600">Follow-up Auto-Fix</p>
+              <h2 className="mt-2 text-2xl font-black">继续修复 #{item.issueNumber}</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                新 issue 会自动引用原 Issue 和 PR，并要求 QA 重点验证这次的复现步骤。
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-full bg-white px-3 py-1 text-sm font-bold text-slate-500 shadow-sm hover:text-slate-950"
+            >
+              关闭
+            </button>
+          </div>
+        </div>
+
+        <form className="space-y-5 p-6" onSubmit={onSubmit}>
+          <div className="rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-slate-600">
+            <div><span className="font-semibold text-slate-900">目标动画：</span>{target?.animationTitle || '未知'}</div>
+            <div><span className="font-semibold text-slate-900">路径：</span>{target?.animationPath || '未知'}</div>
+            <div><span className="font-semibold text-slate-900">原 Issue：</span>#{item.issueNumber}</div>
+            {item.prUrl && <div><span className="font-semibold text-slate-900">原 PR：</span>{item.prUrl}</div>}
+          </div>
+
+          <label className="block">
+            <span className="text-sm font-semibold text-slate-700">问题类型</span>
+            <select
+              value={form.area}
+              onChange={(event) => onChange('area', event.target.value)}
+              className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-slate-900 focus:ring-4 focus:ring-slate-200"
+            >
+              {areaOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-semibold text-slate-700">继续修复标题</span>
+            <input
+              value={form.title}
+              onChange={(event) => onChange('title', event.target.value)}
+              required
+              minLength={2}
+              maxLength={100}
+              placeholder="例如：随机生成数组仍然出现负数"
+              className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-slate-900 focus:ring-4 focus:ring-slate-200"
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-semibold text-slate-700">仍未解决的问题和复现步骤</span>
+            <textarea
+              value={form.description}
+              onChange={(event) => onChange('description', event.target.value)}
+              required
+              minLength={10}
+              maxLength={3000}
+              rows={6}
+              placeholder="说明上次修复后还存在什么问题、如何复现、这次期望如何验证。"
+              className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none transition focus:border-slate-900 focus:ring-4 focus:ring-slate-200"
+            />
+          </label>
+
+          {error && (
+            <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              {error}
+            </div>
+          )}
+
+          {result && (
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+              已创建继续修复 Issue #{result.issueNumber}：
+              <a
+                href={result.issueUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-1 font-semibold underline"
+              >
+                查看 GitHub Issue
+              </a>
+            </div>
+          )}
+
+          <div className="flex flex-wrap justify-end gap-3">
+            <Button type="button" variant="outline" onClick={onClose} className="rounded-2xl">
+              取消
+            </Button>
+            <Button type="submit" disabled={submitting || !target} className="rounded-2xl">
+              {submitting ? '提交中…' : '创建继续修复 Issue'}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
+
 export default function Status() {
   const navigate = useNavigate()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [updatedAt, setUpdatedAt] = useState(null)
+  const [continueItem, setContinueItem] = useState(null)
+  const [continueForm, setContinueForm] = useState(continueInitialForm)
+  const [continueSubmitting, setContinueSubmitting] = useState(false)
+  const [continueError, setContinueError] = useState('')
+  const [continueResult, setContinueResult] = useState(null)
 
   async function loadStatus({ silent = false } = {}) {
     if (!silent) setLoading(true)
@@ -109,6 +248,62 @@ export default function Status() {
     const timer = window.setInterval(() => loadStatus({ silent: true }), 10000)
     return () => window.clearInterval(timer)
   }, [])
+
+  function openContinueFix(item) {
+    setContinueItem(item)
+    setContinueForm(continueInitialForm)
+    setContinueError('')
+    setContinueResult(null)
+  }
+
+  function closeContinueFix() {
+    setContinueItem(null)
+    setContinueForm(continueInitialForm)
+    setContinueError('')
+    setContinueResult(null)
+  }
+
+  function updateContinueField(field, value) {
+    setContinueForm((current) => ({ ...current, [field]: value }))
+  }
+
+  async function submitContinueFix(event) {
+    event.preventDefault()
+    if (!continueItem?.target) return
+
+    setContinueSubmitting(true)
+    setContinueError('')
+    setContinueResult(null)
+
+    try {
+      const response = await fetch('/api/fix', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...continueForm,
+          animationId: continueItem.target.animationId,
+          animationTitle: continueItem.target.animationTitle,
+          animationPath: continueItem.target.animationPath,
+          previousIssueNumber: String(continueItem.issueNumber),
+          previousIssueUrl: continueItem.issueUrl,
+          previousPrUrl: continueItem.prUrl || '',
+        }),
+      })
+      const payload = await response.json().catch(() => ({}))
+
+      if (!response.ok) {
+        throw new Error(payload.error || '继续修复提交失败')
+      }
+
+      setContinueResult(payload)
+      setContinueForm(continueInitialForm)
+      loadStatus({ silent: true })
+    } catch (submitError) {
+      setContinueError(submitError.message)
+    } finally {
+      setContinueSubmitting(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 px-6 py-8 text-slate-100">
@@ -149,7 +344,7 @@ export default function Status() {
 
             {!error && items.length > 0 && (
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[960px] text-left text-sm">
+                <table className="w-full min-w-[1040px] text-left text-sm">
                   <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                     <tr>
                       <th className="px-6 py-4">标题</th>
@@ -159,6 +354,7 @@ export default function Status() {
                       <th className="px-6 py-4">最近活动</th>
                       <th className="px-6 py-4">Issue</th>
                       <th className="px-6 py-4">PR</th>
+                      <th className="px-6 py-4">操作</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -204,6 +400,21 @@ export default function Status() {
                             <span className="text-slate-400">暂无</span>
                           )}
                         </td>
+                        <td className="px-6 py-4">
+                          {item.pipeline === 'auto-fix' && item.target ? (
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => openContinueFix(item)}
+                              className="rounded-full"
+                            >
+                              继续修复
+                            </Button>
+                          ) : (
+                            <span className="text-slate-400">-</span>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -213,6 +424,16 @@ export default function Status() {
           </CardContent>
         </Card>
       </div>
+      <ContinueFixDialog
+        item={continueItem}
+        form={continueForm}
+        submitting={continueSubmitting}
+        error={continueError}
+        result={continueResult}
+        onClose={closeContinueFix}
+        onChange={updateContinueField}
+        onSubmit={submitContinueFix}
+      />
     </div>
   )
 }

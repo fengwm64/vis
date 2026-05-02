@@ -79,6 +79,7 @@ PM 必须产出：
 - `$PRD_PATH`，即 `.auto-dev/issues/issue-N/prd.md`，包含算法定义、边界、输入规模、可视化步骤、复杂度、验收清单、建议 slug。
 - 如果拒绝，产出 `$DECISION_PATH`，即 `.auto-dev/issues/issue-N/decision.md`，状态进入 `rejected`，不再交给其他 agent。
 - 如果是 auto-fix Issue，PRD 必须包含目标动画 ID、目标路径、现有文件、问题类型、复现方式和验收标准；交互/视觉/文案问题可直接交给 frontend。
+- 如果 auto-fix Issue 包含 `### 继续修复来源`，PRD 必须引用原 Issue / PR，说明上次修复可能遗漏的原因，并把用户提供的复现步骤提升为 QA 必验项。
 
 算法工程师必须产出：
 
