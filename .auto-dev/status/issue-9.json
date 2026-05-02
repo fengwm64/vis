@@ -1,10 +1,10 @@
 {
   "issue": 9,
   "title": "[auto-fix] 冒泡排序: 无法正确处理负数",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4362878526,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/vis/pull/11",
   "history": [
     {
       "ts": "2026-05-02T04:05:00.052Z",
@@ -77,6 +77,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T04:11:32.673Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
