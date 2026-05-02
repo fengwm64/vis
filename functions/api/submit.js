@@ -63,7 +63,34 @@ ${expectedComplexity}
 
 ---
 
-创建后由 GitHub Actions 监听 \`auto-dev\` label，并启动 Claude Code Agent 团队自动开发。`
+创建后由 Cloudflare Pages Function 直接触发 \`Auto Dev Agents\` workflow，并启动 Claude Code Agent 团队自动开发。`
+}
+
+async function dispatchWorkflow({ token, issueNumber }) {
+  const response = await fetch(
+    `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/auto-dev.yml/dispatches`,
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'User-Agent': 'vis-auto-dev-dispatch',
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
+      body: JSON.stringify({
+        ref: 'main',
+        inputs: {
+          issue_number: String(issueNumber),
+        },
+      }),
+    },
+  )
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.message || `workflow dispatch failed: ${response.status}`)
+  }
 }
 
 export async function onRequestOptions() {
@@ -119,6 +146,19 @@ export async function onRequestPost({ request, env }) {
     return json(
       { error: data.message || 'GitHub Issue 创建失败' },
       { status: response.status },
+    )
+  }
+
+  try {
+    await dispatchWorkflow({ token: env.GITHUB_TOKEN, issueNumber: data.number })
+  } catch (dispatchError) {
+    return json(
+      {
+        error: `Issue 已创建，但 Auto Dev workflow 启动失败：${dispatchError.message}`,
+        issueNumber: data.number,
+        issueUrl: data.html_url,
+      },
+      { status: 502 },
     )
   }
 

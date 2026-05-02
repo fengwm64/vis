@@ -18,10 +18,10 @@
 用户入口：
 
 1. 用户在网站 `/submit` 填表。
-2. `functions/api/submit.js` 调 GitHub API 创建带 `auto-dev` label 的新算法 Issue。
-3. 用户也可以在任意动画页底部的 Auto-Fix 表单提交现有动画的修复/优化建议，`functions/api/fix.js` 会创建带 `auto-fix` label 的修复 Issue。
-4. GitHub Actions 的 `.github/workflows/auto-dev.yml` 监听 `auto-dev` label，`.github/workflows/auto-fix.yml` 监听 `auto-fix` label。
-5. 两个 workflow 都设置 `AUTO_PIPELINE` 后安装 Claude Code 和 npm 依赖，然后执行 `bash scripts/start.sh`。
+2. `functions/api/submit.js` 调 GitHub API 创建带 `auto-dev` label 的新算法 Issue，然后直接 dispatch `.github/workflows/auto-dev.yml`。
+3. 用户也可以在任意动画页底部的 Auto-Fix 表单提交现有动画的修复/优化建议，`functions/api/fix.js` 会创建带 `auto-fix` label 的修复 Issue，然后直接 dispatch `.github/workflows/auto-fix.yml`。
+4. 两个 workflow 都设置 `AUTO_PIPELINE` 后安装 Claude Code 和 npm 依赖，然后执行 `bash scripts/start.sh`。
+5. 不再让两个 workflow 同时监听 `issues.labeled`，避免一次 label 事件创建两个 Actions run。
 6. `scripts/start.sh` 初始化 `.auto-dev/incoming/issue-N.md` 和 `.auto-dev/status/issue-N.json`，再启动 Claude Code，让 PM agent 接单。
 7. QA agent 推进到 `qa_passed` 后退出；`scripts/start.sh` finalizer 从普通 shell 环境复核构建和算法测试，然后提交、推送并创建 PR。
 
@@ -59,8 +59,8 @@
 
 Cloudflare Pages Functions：
 
-- `functions/api/submit.js`：接收网站表单，创建带 `auto-dev` label 的新算法 Issue。
-- `functions/api/fix.js`：接收动画页 Auto-Fix 表单，创建带 `auto-fix` label 的现有动画修复 Issue。
+- `functions/api/submit.js`：接收网站表单，创建带 `auto-dev` label 的新算法 Issue，并 dispatch `Auto Dev Agents` workflow。
+- `functions/api/fix.js`：接收动画页 Auto-Fix 表单，创建带 `auto-fix` label 的现有动画修复 Issue，并 dispatch `Auto Fix Agents` workflow。
 - `functions/api/status.js`：聚合 `auto-dev` / `auto-fix` Issue、status JSON、PR 分支状态和 sticky comment，供 `/status` 页面轮询。
 
 Claude agents：

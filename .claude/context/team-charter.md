@@ -16,7 +16,7 @@
 | `frontend` | 前端可视化专家 | React/Framer Motion 可视化、路由接入、构建通过 |
 | `qa` | 测试 + Reviewer | 构建、算法单测、验收清单、UI/交互审计、缺陷回调 |
 
-没有中央 orchestrator agent。`scripts/start.sh` 是 shell supervisor，会根据 status JSON 的 `current_owner` 逐个启动 PM / algorithm / frontend / QA；agent 自己不要在 GitHub Actions 中使用 Task 拉起下一位。新算法开发由 `auto-dev` label / workflow 触发，现有动画修复由 `auto-fix` label / workflow 触发，两者通过 `AUTO_PIPELINE` 区分。
+没有中央 orchestrator agent。`scripts/start.sh` 是 shell supervisor，会根据 status JSON 的 `current_owner` 逐个启动 PM / algorithm / frontend / QA；agent 自己不要在 GitHub Actions 中使用 Task 拉起下一位。新算法开发由 `functions/api/submit.js` dispatch `Auto Dev Agents` workflow，现有动画修复由 `functions/api/fix.js` dispatch `Auto Fix Agents` workflow，两者通过 `AUTO_PIPELINE` 区分。
 
 ## 状态协议
 

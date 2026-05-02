@@ -13,7 +13,7 @@
 ```text
 /submit 表单
   -> Cloudflare Pages Function 创建 auto-dev Issue
-  -> GitHub Actions 监听 auto-dev label
+  -> Cloudflare Pages Function dispatch Auto Dev Agents workflow
   -> scripts/start.sh 启动 Claude Code
   -> PM / algorithm / frontend / QA 四个 agent 点对点协作
   -> QA 通过后创建 auto-dev/issue-N 分支和 PR
@@ -24,7 +24,7 @@
 ```text
 动画页 Auto-Fix 表单
   -> /api/fix 创建 auto-fix Issue
-  -> GitHub Actions 监听 auto-fix label
+  -> Cloudflare Pages Function dispatch Auto Fix Agents workflow
   -> PM 判断是否直接交给 frontend 或先交给 algorithm
   -> Agent 修改现有动画页面
   -> QA 检查交互 bug 和冗余控件
@@ -35,7 +35,7 @@
 
 - **无后端服务**：网站仍是 Cloudflare Pages SPA，API 只用 Pages Functions。
 - **无中央 orchestrator agent**：`scripts/start.sh` 是 shell supervisor，按 status JSON 启动各角色；agent 只负责产物和 handoff 状态，PR 创建由 finalizer 统一收口。
-- **分离入口**：新算法开发使用 `auto-dev` label 和 `Auto Dev Agents` workflow；现有动画修复使用 `auto-fix` label 和 `Auto Fix Agents` workflow。
+- **分离入口**：新算法开发使用 `auto-dev` label 和 `Auto Dev Agents` workflow；现有动画修复使用 `auto-fix` label 和 `Auto Fix Agents` workflow。两个 workflow 都由 Pages Function 精确 dispatch，不再监听同一个 `issues.labeled` 事件。
 - **降低 PR 冲突**：两个 workflow 共用同一个 GitHub Actions concurrency group，因此 auto-dev / auto-fix 任务会排队串行执行；新动画通过 `src/animations/<slug>/meta.js` 和 `index.jsx` 自动注册，不需要改 `src/App.jsx`。
 - **三路可观测性**：`.auto-dev/status/issue-N.json`、Issue sticky comment、网站 `/status` 页面。
 - **实时通知**：阶段切换、handoff、失败会通过飞书机器人广播。
@@ -217,6 +217,7 @@ npm run preview
 2. 选择目标仓库 `fengwm64/vis`。
 3. Repository permissions 至少开启：
    - `Issues: Read and write`
+   - `Actions: Read and write`
    - `Metadata: Read-only`
 4. 生成 token，后续填到 Cloudflare Pages 环境变量 `GITHUB_TOKEN`。
 
@@ -245,6 +246,8 @@ Cloudflare Pages 会自动识别 `functions/api/submit.js`、`functions/api/fix.
 - `POST /api/submit`：创建带 `auto-dev` label 的 GitHub Issue。
 - `POST /api/fix`：为现有动画创建带 `auto-fix` label 的修复/优化 Issue。
 - `GET /api/status`：聚合 `auto-dev` 和 `auto-fix` 状态供 `/status` 页面轮询。
+
+`/api/submit` 和 `/api/fix` 创建 Issue 后会直接调用 GitHub Actions workflow dispatch API。不要再依赖手动给 Issue 加 label 来启动 workflow；label 只用于任务分类、筛选和状态展示。
 
 Issue 标题约定：
 
@@ -295,9 +298,9 @@ npm run build
 
 ### 8. 常见问题
 
-- 如果 `/api/submit` 或 `/api/fix` 返回 GitHub 错误，先确认 Cloudflare Pages 的 `GITHUB_TOKEN` 是否存在，且 token 对目标仓库有 `Issues: Read and write` 权限。
+- 如果 `/api/submit` 或 `/api/fix` 返回 GitHub 错误，先确认 Cloudflare Pages 的 `GITHUB_TOKEN` 是否存在，且 token 对目标仓库有 `Issues: Read and write` 和 `Actions: Read and write` 权限。
 - 如果 Issue 创建失败并提示 label 相关错误，确认仓库中已存在 `auto-dev` 和 `auto-fix` 两个 label。
-- 如果 workflow 没启动，确认新算法 Issue 带 `auto-dev` label，修复 Issue 带 `auto-fix` label，且 Actions 已启用。
+- 如果 workflow 没启动，确认 Cloudflare `GITHUB_TOKEN` 有 `Actions: Read and write` 权限，且 `.github/workflows/auto-dev.yml` / `.github/workflows/auto-fix.yml` 已在默认分支。
 - 如果多个 auto-dev / auto-fix Issue 同时提交，后提交的 workflow 会排队等待前一个完成；这是为了减少自动生成 PR 之间的入口文件冲突。
 - 如果 Claude Code 报 `Not supported model ***`，把 GitHub Secret `ANTHROPIC_MODEL` 改成小写接口 ID，例如 `mimo-v2.5-pro`。`MiMo-V2.5-Pro` 是展示名，网关会拒绝。
 - 如果 Claude Code 报 sandbox 阻止 `npm` 或 `git`，确认 workflow 已更新到使用 `--permission-mode bypassPermissions`，并且 QA agent 不再直接执行 git；最终 PR 应由 `scripts/start.sh` finalizer 创建。
