@@ -2,10 +2,10 @@
   "issue": 22,
   "title": "[auto-fix] PageRank 过程动画: 继续修复 - 还是看不见有向边的箭头",
   "pipeline": "auto-fix",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4363406771,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/vis/pull/23",
   "history": [
     {
       "ts": "2026-05-02T08:27:58.630Z",
@@ -62,6 +62,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-22/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T08:33:05.536Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-22/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
