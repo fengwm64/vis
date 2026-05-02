@@ -1,0 +1,97 @@
+{
+  "issue": 4,
+  "title": "冒泡排序",
+  "current_stage": "pr_opened",
+  "current_owner": "qa",
+  "pinned_comment_id": 4362742036,
+  "pr_url": "https://github.com/fengwm64/vis/pull/5",
+  "history": [
+    {
+      "ts": "2026-05-02T03:01:46.091Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-4.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T03:02:02.241Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-4.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T03:02:32.010Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/prd.md",
+      "message": "PRD is ready."
+    },
+    {
+      "ts": "2026-05-02T03:02:57.996Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/prd.md",
+      "message": "Algorithm design started."
+    },
+    {
+      "ts": "2026-05-02T03:03:48.812Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/bubble-sort/algorithm.js",
+      "message": "Algorithm module and tests are ready."
+    },
+    {
+      "ts": "2026-05-02T03:04:20.656Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T03:05:32.771Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/bubble-sort.jsx",
+      "message": "Frontend animation is ready."
+    },
+    {
+      "ts": "2026-05-02T03:06:02.035Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T03:06:38.839Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T03:06:51.969Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}

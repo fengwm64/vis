@@ -1,6 +1,7 @@
 import React from 'react'
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom'
 import PageRankProcessAnimation from './animations/pagerank_process_animation'
+import BubbleSortAnimation from './animations/bubble-sort'
 import Submit from './pages/Submit'
 import Status from './pages/Status'
 import { Button } from './components/ui/button'
@@ -13,6 +14,13 @@ const animations = [
     description: '可视化 PageRank 算法在有向图上的迭代传播过程，展示每个节点的重要性分数如何收敛。',
     path: '/animations/pagerank',
     component: PageRankProcessAnimation,
+  },
+  {
+    id: 'bubble-sort',
+    title: '冒泡排序',
+    description: '经典排序算法可视化，支持自定义数组和随机生成，展示每一步比较和交换过程。',
+    path: '/animations/bubble-sort',
+    component: BubbleSortAnimation,
   },
 ]
 
