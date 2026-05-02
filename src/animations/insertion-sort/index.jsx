@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { computeSteps } from "./algorithm";
@@ -49,8 +49,9 @@ export default function InsertionSortAnimation() {
   const totalSteps = steps.length;
 
   const { minVal, maxVal, range } = useMemo(() => {
-    const lo = Math.min(...current.array, 0);
-    const hi = Math.max(...current.array, 0);
+    const values = current.array.filter((v) => v !== null);
+    const lo = Math.min(...values, 0);
+    const hi = Math.max(...values, 0);
     return { minVal: lo, maxVal: hi, range: hi - lo || 1 };
   }, [current.array]);
 
@@ -98,7 +99,6 @@ export default function InsertionSortAnimation() {
   }, [playing, stepIndex, steps.length, speed]);
 
   function barColor(index) {
-    if (index < current.sortedEnd) return "bg-emerald-500";
     if (current.inserting && index === current.current)
       return "bg-purple-500";
     if (current.shifting && index === current.comparing)
@@ -107,6 +107,7 @@ export default function InsertionSortAnimation() {
       return "bg-amber-400";
     if (current.current !== null && index === current.current)
       return "bg-rose-400";
+    if (index < current.sortedEnd) return "bg-emerald-500";
     return "bg-slate-400";
   }
 
@@ -178,16 +179,42 @@ export default function InsertionSortAnimation() {
               <div className="mb-2 flex items-center gap-2 text-xs text-slate-500">
                 <span className="inline-block h-2 w-6 rounded bg-emerald-500" />
                 已排序区间 [0, {current.sortedEnd})
-                {current.current !== null && (
-                  <>
-                    <span className="ml-3 inline-block h-2 w-6 rounded bg-rose-400" />
-                    当前取出元素 arr[{current.current}]
-                  </>
-                )}
+              </div>
+
+              {/* Key holding area */}
+              <div className="mb-2 flex items-center justify-center h-12">
+                <AnimatePresence mode="wait">
+                  {current.keyValue !== null && (
+                    <motion.div
+                      key="key-held"
+                      className="flex items-center gap-2 rounded-full bg-rose-100 border-2 border-rose-400 px-4 py-1.5 shadow-sm"
+                      initial={{ opacity: 0, y: -10, scale: 0.8 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8, y: 10 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    >
+                      <span className="text-xs font-medium text-rose-600">key</span>
+                      <span className="text-lg font-bold text-rose-700">{current.keyValue}</span>
+                    </motion.div>
+                  )}
+                  {current.inserting && current.insertTarget !== null && (
+                    <motion.div
+                      key="key-inserting"
+                      className="flex items-center gap-2 rounded-full bg-purple-100 border-2 border-purple-400 px-4 py-1.5 shadow-sm"
+                      initial={{ opacity: 0, y: -10, scale: 0.8 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8, y: 10 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    >
+                      <span className="text-xs font-medium text-purple-600">插入</span>
+                      <span className="text-lg font-bold text-purple-700">{current.array[current.insertTarget]}</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Bar chart */}
-              <div className="relative flex items-stretch justify-center gap-1 h-[320px] rounded-2xl bg-white p-4">
+              <div className="relative flex items-stretch justify-center gap-1 h-[280px] rounded-2xl bg-white p-4">
                 {minVal < 0 && (
                   <div
                     className="absolute left-4 right-4 border-t border-dashed border-slate-300 z-10"
@@ -197,17 +224,42 @@ export default function InsertionSortAnimation() {
                   </div>
                 )}
                 {current.array.map((value, i) => {
-                  const heightPct = (Math.abs(value) / range) * 92;
+                  const isNull = value === null;
+                  const absValue = isNull ? 0 : Math.abs(value);
+                  const heightPct = (absValue / range) * 92;
                   const isComparing =
                     current.comparing !== null && i === current.comparing;
                   const isCurrent =
                     current.current !== null && i === current.current;
                   const isSorted = i < current.sortedEnd;
-                  const isNegative = value < 0;
+                  const isNegative = !isNull && value < 0;
+                  const isInsertTarget = current.inserting && current.insertTarget === i;
 
                   const zeroBottom = minVal < 0 ? (maxVal / range) * 92 : 0;
                   const barBottom = isNegative ? zeroBottom - heightPct : zeroBottom;
                   const labelBottom = isNegative ? barBottom - 20 : barBottom + heightPct + 4;
+
+                  if (isNull) {
+                    return (
+                      <div
+                        key={i}
+                        className="relative flex-1 max-w-[60px]"
+                      >
+                        <motion.div
+                          className="absolute left-1 right-1 bottom-0 rounded-t-md border-2 border-dashed border-slate-300 bg-slate-100"
+                          initial={false}
+                          animate={{ height: "20%", opacity: 0.5 }}
+                          transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                        />
+                        <span className="absolute top-1/2 left-0 right-0 text-center text-lg text-slate-300 -translate-y-1/2">
+                          ∅
+                        </span>
+                        <span className="absolute bottom-0 left-0 right-0 text-center text-[10px] text-slate-400">
+                          {i}
+                        </span>
+                      </div>
+                    );
+                  }
 
                   return (
                     <div
@@ -230,7 +282,7 @@ export default function InsertionSortAnimation() {
                         animate={{
                           bottom: `${Math.max(0, barBottom)}%`,
                           height: `${Math.max(2, heightPct)}%`,
-                          scale: isComparing || isCurrent ? 1.08 : 1,
+                          scale: isComparing || isCurrent || isInsertTarget ? 1.08 : 1,
                         }}
                         transition={{
                           type: "spring",
@@ -243,7 +295,7 @@ export default function InsertionSortAnimation() {
                         {i}
                       </span>
 
-                      {isSorted && (
+                      {isSorted && !isNull && (
                         <span className="absolute -bottom-4 left-0 right-0 text-center text-[10px] text-emerald-600 font-medium">
                           ✓
                         </span>
@@ -278,6 +330,10 @@ export default function InsertionSortAnimation() {
                 <span className="flex items-center gap-1">
                   <span className="inline-block h-3 w-3 rounded bg-slate-400" />
                   未排序
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="inline-block h-3 w-3 rounded border-2 border-dashed border-slate-300 bg-slate-100" />
+                  key 已取出
                 </span>
               </div>
             </CardContent>
