@@ -32,14 +32,24 @@ function withPrefix(title, prefix) {
   return title.startsWith(prefix) ? title : `${prefix} ${title}`
 }
 
+function issueRef(number, url) {
+  if (number) return `#${number}`
+  return url || '未提供'
+}
+
+function pullRequestRef(url) {
+  const number = String(url || '').match(/\/pull\/(\d+)/)?.[1]
+  if (number) return `#${number}`
+  return url || '未提供'
+}
+
 function buildFollowUpSection({ previousIssueNumber, previousIssueUrl, previousPrUrl }) {
   if (!previousIssueNumber && !previousIssueUrl && !previousPrUrl) return ''
 
   return `
 ### 继续修复来源
-- 原 Issue: ${previousIssueNumber ? `#${previousIssueNumber}` : '未提供'}
-- 原 Issue 链接: ${previousIssueUrl || '未提供'}
-- 原 PR: ${previousPrUrl || '未提供'}
+- 原 Issue: ${issueRef(previousIssueNumber, previousIssueUrl)}
+- 原 PR: ${pullRequestRef(previousPrUrl)}
 
 ### 继续修复要求
 - 先阅读原 Issue、原 PR 和本次说明，判断为什么上次修复没有完全解决。
