@@ -1,0 +1,97 @@
+{
+  "issue": 9,
+  "title": "[auto-fix] 冒泡排序: 无法正确处理负数",
+  "current_stage": "pr_opened",
+  "current_owner": "qa",
+  "pinned_comment_id": 4362878526,
+  "pr_url": "https://github.com/fengwm64/vis/pull/11",
+  "history": [
+    {
+      "ts": "2026-05-02T04:05:00.052Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-9.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T04:05:16.095Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-9.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T04:06:05.527Z",
+      "from": "pm",
+      "to": "pm",
+      "stage": "pm_drafting_prd",
+      "artifact": ".auto-dev/prd.md",
+      "message": "Drafting PRD for bubble-sort negative number visualization fix."
+    },
+    {
+      "ts": "2026-05-02T04:06:47.278Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/prd.md",
+      "message": "PRD is ready. Bubble-sort negative number visualization is a frontend-only fix — algorithm is correct."
+    },
+    {
+      "ts": "2026-05-02T04:07:37.710Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T04:08:17.751Z",
+      "from": "frontend",
+      "to": "frontend",
+      "stage": "frontend_coding",
+      "artifact": "src/animations/bubble-sort.jsx",
+      "message": "Fixing negative number visualization."
+    },
+    {
+      "ts": "2026-05-02T04:08:40.884Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/bubble-sort.jsx",
+      "message": "Frontend animation is ready. Fixed negative number visualization with zero baseline. npm run build passes."
+    },
+    {
+      "ts": "2026-05-02T04:09:06.682Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T04:11:13.141Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T04:11:32.673Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
