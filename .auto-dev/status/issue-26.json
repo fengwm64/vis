@@ -2,10 +2,10 @@
   "issue": 26,
   "title": "[auto-fix] PageRank 过程动画: 允许用户自定义",
   "pipeline": "auto-fix",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4363444110,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/vis/pull/29",
   "history": [
     {
       "ts": "2026-05-02T08:51:43.703Z",
@@ -133,6 +133,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-26/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T09:08:26.752Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-26/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
