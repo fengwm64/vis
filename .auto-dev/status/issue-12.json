@@ -1,0 +1,90 @@
+{
+  "issue": 12,
+  "title": "[auto-fix] 二分查找: 查找 按钮无效",
+  "pipeline": "auto-fix",
+  "current_stage": "pr_opened",
+  "current_owner": "qa",
+  "pinned_comment_id": 4363224383,
+  "pr_url": "https://github.com/fengwm64/vis/pull/14",
+  "history": [
+    {
+      "ts": "2026-05-02T06:52:36.600Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-12.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T06:52:52.914Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-12.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T06:53:22.881Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_drafting_prd",
+      "artifact": ".auto-dev/prd.md",
+      "message": "Drafting PRD for binary-search button fix."
+    },
+    {
+      "ts": "2026-05-02T06:54:04.765Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/prd.md",
+      "message": "PRD is ready. Interaction fix: '查找' button should auto-play after confirming input."
+    },
+    {
+      "ts": "2026-05-02T06:54:46.853Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/prd.md",
+      "message": "Frontend design started. Fix: make '查找' button auto-play after confirming input."
+    },
+    {
+      "ts": "2026-05-02T06:55:18.133Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/binary-search.jsx",
+      "message": "Frontend fix ready: '查找' button now auto-plays after confirming input."
+    },
+    {
+      "ts": "2026-05-02T06:55:44.285Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T06:56:50.000Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T06:57:04.274Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
