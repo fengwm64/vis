@@ -2,10 +2,10 @@
   "issue": 16,
   "title": "[auto-fix] 冒泡排序: 取消随机生成数组出现负数",
   "pipeline": "auto-fix",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4363290914,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/vis/pull/17",
   "history": [
     {
       "ts": "2026-05-02T07:30:14.280Z",
@@ -62,6 +62,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/issues/issue-16/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T07:33:20.973Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-16/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
