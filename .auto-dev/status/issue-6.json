@@ -1,10 +1,10 @@
 {
   "issue": 6,
   "title": "[auto-fix] 冒泡排序: 排序 按钮无效",
-  "current_stage": "qa_passed",
+  "current_stage": "pr_opened",
   "current_owner": "qa",
   "pinned_comment_id": 4362858969,
-  "pr_url": null,
+  "pr_url": "https://github.com/fengwm64/vis/pull/7",
   "history": [
     {
       "ts": "2026-05-02T03:54:22.007Z",
@@ -61,6 +61,14 @@
       "stage": "qa_passed",
       "artifact": ".auto-dev/qa-report.md",
       "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T03:57:38.964Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
     }
   ],
   "retry_count": {
