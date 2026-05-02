@@ -1,0 +1,114 @@
+{
+  "issue": 49,
+  "title": "[auto-dev] Floyd-Warshall",
+  "pipeline": "auto-dev",
+  "current_stage": "qa_passed",
+  "current_owner": "qa",
+  "pinned_comment_id": 4364220496,
+  "pr_url": null,
+  "history": [
+    {
+      "ts": "2026-05-02T16:16:07.732Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-49.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T16:16:22.811Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-49.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T16:16:40.476Z",
+      "from": "pm",
+      "to": "pm",
+      "stage": "pm_drafting_prd",
+      "artifact": ".auto-dev/incoming/issue-49.md",
+      "message": "Drafting PRD for Floyd-Warshall."
+    },
+    {
+      "ts": "2026-05-02T16:17:10.832Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-49/prd.md",
+      "message": "PRD is ready."
+    },
+    {
+      "ts": "2026-05-02T16:17:57.540Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/issues/issue-49/prd.md",
+      "message": "Algorithm design started."
+    },
+    {
+      "ts": "2026-05-02T16:18:52.653Z",
+      "from": "algorithm",
+      "to": "algorithm",
+      "stage": "algorithm_coding",
+      "artifact": "src/animations/floyd-warshall/algorithm.js",
+      "message": "Algorithm coding in progress."
+    },
+    {
+      "ts": "2026-05-02T16:19:10.554Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/floyd-warshall/algorithm.js",
+      "message": "Algorithm module and tests are ready."
+    },
+    {
+      "ts": "2026-05-02T16:19:51.675Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-49/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T16:22:11.697Z",
+      "from": "frontend",
+      "to": "frontend",
+      "stage": "frontend_coding",
+      "artifact": "src/animations/floyd-warshall/index.jsx",
+      "message": "Frontend coding completed."
+    },
+    {
+      "ts": "2026-05-02T16:22:12.775Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/floyd-warshall/index.jsx",
+      "message": "Frontend animation is ready for QA."
+    },
+    {
+      "ts": "2026-05-02T16:22:47.861Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-49/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T16:23:38.033Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-49/qa-report.md",
+      "message": "QA passed."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
