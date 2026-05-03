@@ -1,0 +1,82 @@
+{
+  "issue": 66,
+  "title": "[auto-fix] 匈牙利算法 / KM 算法: 图例和节点重叠，边权重数字重叠",
+  "pipeline": "auto-fix",
+  "current_stage": "pr_opened",
+  "current_owner": "qa",
+  "pinned_comment_id": 4365771169,
+  "pr_url": "https://github.com/fengwm64/AlgorithmVisualizations/pull/67",
+  "history": [
+    {
+      "ts": "2026-05-03T08:39:10.644Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-66.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-03T08:39:40.443Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-66.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-03T08:40:24.581Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-66/prd.md",
+      "message": "PRD is ready. Visual fix only — legend and edge weight overlap."
+    },
+    {
+      "ts": "2026-05-03T08:41:02.597Z",
+      "from": "pm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-66/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-03T08:41:58.918Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/hungarian/index.jsx",
+      "message": "Frontend fix ready. Legend moved outside SVG; edge weight labels rotated and dimmed for non-highlighted edges."
+    },
+    {
+      "ts": "2026-05-03T08:42:23.502Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-66/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-03T08:43:33.114Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-66/qa-report.md",
+      "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-03T08:43:53.114Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-66/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
