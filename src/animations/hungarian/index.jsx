@@ -55,6 +55,14 @@ function GraphEdge({ x1, y1, x2, y2, weight, highlighted, color, dashed, bold })
   const midX = (x1 + x2) / 2;
   const midY = (y1 + y2) / 2;
 
+  // Rotate label along edge and offset perpendicular to reduce overlap
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const edgeLen = Math.sqrt(dx * dx + dy * dy) || 1;
+  const angleDeg = Math.atan2(dy, dx) * (180 / Math.PI);
+  const perpX = -(dy / edgeLen) * 10;
+  const perpY = (dx / edgeLen) * 10;
+
   return (
     <g>
       <motion.line
@@ -68,10 +76,15 @@ function GraphEdge({ x1, y1, x2, y2, weight, highlighted, color, dashed, bold })
         transition={{ duration: 0.3 }}
       />
       <text
-        x={midX}
-        y={midY - 8}
+        x={midX + perpX}
+        y={midY + perpY}
         textAnchor="middle"
-        className="select-none text-xs font-medium fill-slate-500"
+        dominantBaseline="middle"
+        fontSize={highlighted ? 12 : 10}
+        fontWeight={highlighted ? 600 : 400}
+        opacity={highlighted ? 1 : 0.45}
+        className="select-none fill-slate-500"
+        transform={`rotate(${angleDeg}, ${midX + perpX}, ${midY + perpY})`}
       >
         {weight}
       </text>
@@ -375,20 +388,31 @@ export default function HungarianAnimation() {
                   />
                 ))}
 
-                {/* Legend */}
-                <g transform={`translate(20, ${svgH - 40})`}>
-                  <line x1={0} y1={0} x2={20} y2={0} stroke="#10b981" strokeWidth={2.5} />
-                  <text x={24} y={4} className="text-xs fill-slate-500">等价子图</text>
-                  <line x1={80} y1={0} x2={100} y2={0} stroke="#ef4444" strokeWidth={3} />
-                  <text x={104} y={4} className="text-xs fill-slate-500">匹配</text>
-                  <line x1={140} y1={0} x2={160} y2={0} stroke="#f97316" strokeWidth={3} />
-                  <text x={164} y={4} className="text-xs fill-slate-500">增广路</text>
-                  <circle cx={220} cy={0} r={6} fill="#3b82f6" />
-                  <text x={230} y={4} className="text-xs fill-slate-500">已匹配</text>
-                  <circle cx={280} cy={0} r={6} fill="#f97316" />
-                  <text x={290} y={4} className="text-xs fill-slate-500">搜索中</text>
-                </g>
               </svg>
+
+              {/* Legend — moved outside SVG to avoid overlapping nodes */}
+              <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-slate-500">
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-0.5 w-5 rounded bg-emerald-500" />
+                  等价子图
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-0.5 w-5 rounded bg-red-500" style={{ height: 3 }} />
+                  匹配
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-0.5 w-5 rounded bg-orange-500" style={{ height: 3 }} />
+                  增广路
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-full bg-blue-500" />
+                  已匹配
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block h-3 w-3 rounded-full bg-orange-500" />
+                  搜索中
+                </span>
+              </div>
             </CardContent>
           </Card>
 
