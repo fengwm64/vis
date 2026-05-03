@@ -1,0 +1,98 @@
+{
+  "issue": 53,
+  "title": "[auto-dev] Kosaraju 强连通分量",
+  "pipeline": "auto-dev",
+  "current_stage": "pr_opened",
+  "current_owner": "qa",
+  "pinned_comment_id": 4364227814,
+  "pr_url": "https://github.com/fengwm64/AlgorithmVisualizations/pull/60",
+  "history": [
+    {
+      "ts": "2026-05-02T16:20:09.230Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "submitted",
+      "artifact": ".auto-dev/incoming/issue-53.md",
+      "message": "Issue submitted and queued for PM triage."
+    },
+    {
+      "ts": "2026-05-02T16:20:30.958Z",
+      "from": "system",
+      "to": "pm",
+      "stage": "pm_triage",
+      "artifact": ".auto-dev/incoming/issue-53.md",
+      "message": "PM triage started."
+    },
+    {
+      "ts": "2026-05-02T16:20:57.435Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "prd_done",
+      "artifact": ".auto-dev/issues/issue-53/prd.md",
+      "message": "PRD is ready."
+    },
+    {
+      "ts": "2026-05-02T16:21:30.040Z",
+      "from": "pm",
+      "to": "algorithm",
+      "stage": "algorithm_designing",
+      "artifact": ".auto-dev/issues/issue-53/prd.md",
+      "message": "Algorithm design started."
+    },
+    {
+      "ts": "2026-05-02T16:24:37.108Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "algorithm_done",
+      "artifact": "src/animations/kosaraju-scc/algorithm.js",
+      "message": "Algorithm module and tests are ready."
+    },
+    {
+      "ts": "2026-05-02T16:25:29.348Z",
+      "from": "algorithm",
+      "to": "frontend",
+      "stage": "frontend_designing",
+      "artifact": ".auto-dev/issues/issue-53/prd.md",
+      "message": "Frontend design started."
+    },
+    {
+      "ts": "2026-05-02T16:27:31.460Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "frontend_done",
+      "artifact": "src/animations/kosaraju-scc/index.jsx",
+      "message": "Frontend animation is ready."
+    },
+    {
+      "ts": "2026-05-02T16:28:22.355Z",
+      "from": "frontend",
+      "to": "qa",
+      "stage": "qa_running",
+      "artifact": ".auto-dev/issues/issue-53/prd.md",
+      "message": "QA started."
+    },
+    {
+      "ts": "2026-05-02T16:29:50.976Z",
+      "from": "qa",
+      "to": "qa",
+      "stage": "qa_passed",
+      "artifact": ".auto-dev/issues/issue-53/qa-report.md",
+      "message": "QA passed."
+    },
+    {
+      "ts": "2026-05-02T16:30:08.234Z",
+      "from": "qa",
+      "to": "maintainer",
+      "stage": "pr_opened",
+      "artifact": ".auto-dev/issues/issue-53/qa-report.md",
+      "message": "PR opened by start.sh finalizer."
+    }
+  ],
+  "retry_count": {
+    "qa_to_frontend": 0,
+    "qa_to_algorithm": 0,
+    "frontend_to_algorithm": 0,
+    "algorithm_to_pm": 0,
+    "frontend_to_pm": 0
+  }
+}
